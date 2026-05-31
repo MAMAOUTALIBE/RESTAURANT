@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nkulu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-nkulu}
+    volumes:
+      - nkulu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nkulu} -d ${POSTGRES_DB:-nkulu}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Applique les migrations une fois (image complète + CLI Prisma) puis s'arrête.
+  migrate:
+    build:
+      context: .
+      target: builder
+    command: ["node_modules/.bin/prisma", "migrate", "deploy"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nkulu}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-nkulu}?schema=public
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      # La base est jointe par le nom de service « db ».
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nkulu}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-nkulu}?schema=public
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      SESSION_SECRET: ${SESSION_SECRET}
+      ADMIN_EMAILS: ${ADMIN_EMAILS}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_SMS_FROM: ${TWILIO_SMS_FROM:-}
+      TWILIO_WHATSAPP_FROM: ${TWILIO_WHATSAPP_FROM:-}
+      CRON_SECRET: ${CRON_SECRET:-}
+    ports:
+      - "3000:3000"
+
+volumes:
+  nkulu_pgdata:
