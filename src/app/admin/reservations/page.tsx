@@ -14,10 +14,11 @@ const statusStyles: Record<string, string> = {
 export default async function AdminReservationsPage({
   searchParams,
 }: {
-  searchParams: { statut?: string };
+  searchParams: Promise<{ statut?: string }>;
 }) {
+  const { statut } = await searchParams;
   const reservations = await prisma.reservation.findMany({
-    where: searchParams.statut ? { status: searchParams.statut } : undefined,
+    where: statut ? { status: statut } : undefined,
     orderBy: [{ date: "asc" }, { time: "asc" }],
     take: 200,
   });
@@ -36,7 +37,7 @@ export default async function AdminReservationsPage({
         <form action="/admin/reservations" className="flex gap-2">
           <select
             name="statut"
-            defaultValue={searchParams.statut ?? ""}
+            defaultValue={statut ?? ""}
             className="rounded-xl border border-white/10 bg-ink-soft px-4 py-2 text-sm text-cream focus:border-gold/60 focus:outline-none"
           >
             <option value="">Tous les statuts</option>

@@ -9,13 +9,13 @@ import { CommandPalette } from "@/components/admin/CommandPalette";
 
 export const dynamic = "force-dynamic";
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // Garde d'accès centralisée pour toutes les routes /admin/*.
-  const email = getSessionEmail();
+  const email = await getSessionEmail();
   if (!email || !isAdminEmail(email)) redirect("/compte");
 
   return (

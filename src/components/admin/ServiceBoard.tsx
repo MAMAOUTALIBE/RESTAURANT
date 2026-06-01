@@ -325,7 +325,7 @@ function Card({
       }
     >
       <article
-        className={`rounded-2xl border bg-ink-soft p-4 ${border} ${active ? "alert-blink" : ""}`}
+        className={`relative rounded-2xl border bg-ink-soft p-4 ${border} ${active ? "alert-blink" : ""}`}
       >
         <div className="flex items-center justify-between">
           <span className="font-mono text-sm text-gold">{order.reference}</span>

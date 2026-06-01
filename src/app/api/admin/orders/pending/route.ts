@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 /** GET /api/admin/orders/pending — compteurs pour les notifications live. */
 export async function GET() {
-  if (!isAdminEmail(getSessionEmail())) {
+  if (!isAdminEmail(await getSessionEmail())) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
   const [pending, latest] = await Promise.all([

@@ -8,9 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function TicketPage({
   params,
 }: {
-  params: { reference: string };
+  params: Promise<{ reference: string }>;
 }) {
-  const order = await getOrderByReference(params.reference);
+  const { reference } = await params;
+  const order = await getOrderByReference(reference);
   if (!order) notFound();
 
   const mode =

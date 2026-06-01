@@ -8,9 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: { q?: string; segment?: string };
+  searchParams: Promise<{ q?: string; segment?: string }>;
 }) {
-  const customers = await listCustomers(searchParams.q, searchParams.segment);
+  const { q, segment } = await searchParams;
+  const customers = await listCustomers(q, segment);
 
   return (
     <div className="space-y-6">
@@ -20,13 +21,13 @@ export default async function ClientsPage({
         <input
           type="search"
           name="q"
-          defaultValue={searchParams.q ?? ""}
+          defaultValue={q ?? ""}
           placeholder="Rechercher par nom ou email…"
           className="min-w-[220px] flex-1 rounded-xl border border-white/10 bg-ink-soft px-4 py-2.5 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none"
         />
         <select
           name="segment"
-          defaultValue={searchParams.segment ?? ""}
+          defaultValue={segment ?? ""}
           className="rounded-xl border border-white/10 bg-ink-soft px-4 py-2.5 text-sm text-cream focus:border-gold/60 focus:outline-none"
         >
           <option value="">Tous les segments</option>

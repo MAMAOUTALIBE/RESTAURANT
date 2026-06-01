@@ -11,8 +11,8 @@ import type { OrderStatus } from "@/types";
 export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: { reference: string };
-  searchParams: { paid?: string };
+  params: Promise<{ reference: string }>;
+  searchParams: Promise<{ paid?: string }>;
 }
 
 // Étapes de suivi selon le mode (livraison ajoute « en livraison »).
@@ -30,10 +30,11 @@ const STEP_LABEL: Record<string, string> = {
 };
 
 export default async function OrderPage({ params, searchParams }: PageProps) {
-  const order = await getOrderByReference(params.reference);
+  const [{ reference }, { paid }] = await Promise.all([params, searchParams]);
+  const order = await getOrderByReference(reference);
   if (!order) notFound();
 
-  const isPaid = order.status !== "en attente" || searchParams.paid === "1";
+  const isPaid = order.status !== "en attente" || paid === "1";
   const steps = trackSteps(order.fulfillment === "livraison");
   const currentIdx = steps.indexOf(order.status as OrderStatus);
 

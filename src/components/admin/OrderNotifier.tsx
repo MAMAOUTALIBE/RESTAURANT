@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 
@@ -72,7 +73,7 @@ export function OrderNotifier() {
   }, [router]);
 
   return (
-    <a
+    <Link
       href="/admin/commandes?statut=en+attente"
       aria-label={`${pending} commande(s) en attente`}
       className="relative grid h-10 w-10 place-items-center rounded-full border border-white/10 text-cream transition hover:border-gold/60 hover:text-gold"
@@ -83,6 +84,6 @@ export function OrderNotifier() {
           {pending}
         </span>
       )}
-    </a>
+    </Link>
   );
 }

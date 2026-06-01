@@ -26,9 +26,10 @@ const statusStyles: Record<string, string> = {
 export default async function ComptePage({
   searchParams,
 }: {
-  searchParams: { error?: string; fid?: string };
+  searchParams: Promise<{ error?: string; fid?: string }>;
 }) {
-  const email = getSessionEmail();
+  const { error, fid } = await searchParams;
+  const email = await getSessionEmail();
 
   if (!email) {
     return (
@@ -41,7 +42,7 @@ export default async function ComptePage({
           <p className="mt-2 text-muted">
             Saisissez votre email : vous recevrez un lien de connexion sécurisé.
           </p>
-          <LoginForm initialError={Boolean(searchParams.error)} />
+          <LoginForm initialError={Boolean(error)} />
         </div>
       </main>
     );
@@ -60,27 +61,27 @@ export default async function ComptePage({
     <main className="min-h-screen bg-ink pb-20 pt-28">
       <div className="container-page max-w-2xl">
         <BackLink />
-        <div className="mt-6 flex items-center justify-between gap-4">
-          <div>
+        <div className="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <h1 className="font-display text-3xl font-bold text-cream">
               Mes commandes
             </h1>
-            <p className="text-sm text-muted">{email}</p>
+            <p className="break-all text-sm text-muted">{email}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
             {admin && (
               <Link
                 href="/admin"
-                className="inline-flex items-center gap-2 rounded-full border border-gold/40 px-4 py-2 text-sm text-gold transition hover:bg-gold/10"
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-gold/40 px-4 py-2 text-sm text-gold transition hover:bg-gold/10 sm:flex-none"
               >
                 <ShieldCheck className="h-4 w-4" />
                 Back-office
               </Link>
             )}
-            <form action={logout}>
+            <form action={logout} className="flex-1 sm:flex-none">
             <button
               type="submit"
-              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-cream transition hover:border-gold/60 hover:text-gold"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-cream transition hover:border-gold/60 hover:text-gold"
             >
               <LogOut className="h-4 w-4" />
               Déconnexion
@@ -106,24 +107,24 @@ export default async function ComptePage({
                 </p>
               </div>
             </div>
-            <form action={redeemLoyalty}>
+            <form action={redeemLoyalty} className="w-full sm:w-auto">
               <button
                 type="submit"
                 disabled={!canRedeem}
-                className="btn-primary disabled:opacity-50"
+                className="btn-primary w-full justify-center disabled:opacity-50 sm:w-auto"
               >
                 Convertir {POINTS_PER_REDEMPTION} pts → {REDEMPTION_VALUE_EUR} €
               </button>
             </form>
           </div>
-          {searchParams.fid === "insuffisant" && (
+          {fid === "insuffisant" && (
             <p className="mt-3 text-sm text-red-400">
               Pas assez de points (minimum {POINTS_PER_REDEMPTION}).
             </p>
           )}
-          {searchParams.fid && searchParams.fid !== "insuffisant" && (
+          {fid && fid !== "insuffisant" && (
             <p className="mt-3 text-sm text-green-400">
-              🎉 Code généré : <span className="font-mono font-bold">{searchParams.fid}</span> ({REDEMPTION_VALUE_EUR} € de remise). Utilisez-le à votre prochaine commande !
+              🎉 Code généré : <span className="font-mono font-bold">{fid}</span> ({REDEMPTION_VALUE_EUR} € de remise). Utilisez-le à votre prochaine commande !
             </p>
           )}
           <p className="mt-2 text-xs text-muted">

@@ -14,7 +14,7 @@ interface Result {
 
 /** GET /api/admin/search?q= — recherche globale (commandes, clients, plats). */
 export async function GET(request: Request) {
-  if (!isAdminEmail(getSessionEmail())) {
+  if (!isAdminEmail(await getSessionEmail())) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
   const q = (new URL(request.url).searchParams.get("q") ?? "").trim();

@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { orderSchema } from "@/lib/validation";
-import { createOrder, getOrderByReference } from "@/lib/orders";
+import {
+  createOrder,
+  getOrderByReference,
+  OrderCreationError,
+} from "@/lib/orders";
 
 /** POST /api/orders — crée une commande (validation Zod). */
 export async function POST(request: Request) {
@@ -16,15 +20,23 @@ export async function POST(request: Request) {
     name, email, phone, address, notes, promoCode,
     fulfillment, postalCode, tip, scheduledAt, items,
   } = parsed.data;
-  const order = await createOrder({
-    customer: { name, email, phone, address, notes },
-    items,
-    promoCode,
-    fulfillment,
-    postalCode,
-    tip,
-    scheduledAt,
-  });
+  let order;
+  try {
+    order = await createOrder({
+      customer: { name, email, phone, address, notes },
+      items,
+      promoCode,
+      fulfillment,
+      postalCode,
+      tip,
+      scheduledAt,
+    });
+  } catch (error) {
+    if (error instanceof OrderCreationError) {
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+    throw error;
+  }
   return NextResponse.json({ order }, { status: 201 });
 }
 

@@ -31,11 +31,12 @@ const statusStyles: Record<string, string> = {
 export default async function OrderDetailPage({
   params,
 }: {
-  params: { reference: string };
+  params: Promise<{ reference: string }>;
 }) {
-  const order = await getOrderByReference(params.reference);
+  const { reference } = await params;
+  const order = await getOrderByReference(reference);
   if (!order) notFound();
-  const events = await getOrderEvents(params.reference);
+  const events = await getOrderEvents(reference);
 
   return (
     <div className="space-y-6">

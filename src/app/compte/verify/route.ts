@@ -12,6 +12,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${siteConfig.url}/compte?error=expired`);
   }
 
-  createSession(email);
+  await createSession(email);
   return NextResponse.redirect(`${siteConfig.url}/compte`);
 }

@@ -28,6 +28,13 @@ interface CreateOrderInput {
 
 type OrderRow = Prisma.OrderGetPayload<{ include: { items: true } }>;
 
+export class OrderCreationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "OrderCreationError";
+  }
+}
+
 /** Convertit une ligne Prisma en type métier `Order`. */
 function toOrder(row: OrderRow): Order {
   return {
@@ -86,8 +93,11 @@ export async function createOrder({
 
   // Frais de livraison selon la zone (uniquement en mode livraison).
   let deliveryFee = 0;
-  if (fulfillment === "livraison" && postalCode) {
-    const q = await quoteDelivery(postalCode, subtotal);
+  if (fulfillment === "livraison") {
+    const q = await quoteDelivery(postalCode ?? "", subtotal);
+    if (!q.available) {
+      throw new OrderCreationError(q.reason ?? "Livraison indisponible.");
+    }
     deliveryFee = q.fee;
   }
 

@@ -16,9 +16,10 @@ const statusStyles: Record<string, string> = {
 export default async function ClientDetailPage({
   params,
 }: {
-  params: { email: string };
+  params: Promise<{ email: string }>;
 }) {
-  const email = decodeURIComponent(params.email);
+  const { email: rawEmail } = await params;
+  const email = decodeURIComponent(rawEmail);
   const d = await getCustomerDetail(email);
 
   return (

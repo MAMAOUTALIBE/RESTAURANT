@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 /** GET /api/admin/finance.csv — synthèse financière journalière (admin). */
 export async function GET() {
-  if (!isAdminEmail(getSessionEmail())) {
+  if (!isAdminEmail(await getSessionEmail())) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
 

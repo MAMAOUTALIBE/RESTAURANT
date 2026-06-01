@@ -11,9 +11,10 @@ const RANGES: Record<string, number> = { "7": 7, "30": 30, "90": 90 };
 export default async function RapportsPage({
   searchParams,
 }: {
-  searchParams: { periode?: string };
+  searchParams: Promise<{ periode?: string }>;
 }) {
-  const days = RANGES[searchParams.periode ?? "30"] ?? 30;
+  const { periode } = await searchParams;
+  const days = RANGES[periode ?? "30"] ?? 30;
   const now = Date.now();
   const since = now - days * 86_400_000;
   const prevSince = since - days * 86_400_000;

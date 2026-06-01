@@ -13,9 +13,10 @@ function dayBounds(dateStr?: string) {
 export default async function RecapPage({
   searchParams,
 }: {
-  searchParams: { date?: string };
+  searchParams: Promise<{ date?: string }>;
 }) {
-  const { start, end } = dayBounds(searchParams.date);
+  const { date } = await searchParams;
+  const { start, end } = dayBounds(date);
   const dateLabel = start.toLocaleDateString("fr-FR", {
     weekday: "long",
     day: "numeric",

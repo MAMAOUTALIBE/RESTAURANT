@@ -31,8 +31,9 @@ function unsign(signed: string): string | null {
 }
 
 /** Ouvre une session pour un email (auth passwordless, MVP). */
-export function createSession(email: string) {
-  cookies().set(COOKIE, sign(email.toLowerCase()), {
+export async function createSession(email: string) {
+  const cookieStore = await cookies();
+  cookieStore.set(COOKIE, sign(email.toLowerCase()), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
@@ -42,13 +43,15 @@ export function createSession(email: string) {
 }
 
 /** Retourne l'email connecté, ou null. */
-export function getSessionEmail(): string | null {
-  const raw = cookies().get(COOKIE)?.value;
+export async function getSessionEmail(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get(COOKIE)?.value;
   if (!raw) return null;
   return unsign(raw);
 }
 
 /** Ferme la session. */
-export function destroySession() {
-  cookies().delete(COOKIE);
+export async function destroySession() {
+  const cookieStore = await cookies();
+  cookieStore.delete(COOKIE);
 }

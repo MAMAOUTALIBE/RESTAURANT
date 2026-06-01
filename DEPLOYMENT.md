@@ -75,16 +75,12 @@ Sans clé, les emails sont **loggés en console** (mode dev/simulation).
 
 ## 6. Rate-limiting en production
 
-Le limiteur par défaut ([src/lib/rate-limit.ts](src/lib/rate-limit.ts)) est
-**en mémoire** : il ne suffit pas en multi-instances (serverless). En prod,
-brancher [Upstash Ratelimit](https://github.com/upstash/ratelimit) :
+Le limiteur ([src/lib/rate-limit.ts](src/lib/rate-limit.ts)) utilise
+automatiquement [Upstash Ratelimit](https://github.com/upstash/ratelimit) quand
+`UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` sont renseignées.
 
-```bash
-npm install @upstash/ratelimit @upstash/redis
-```
-
-puis remplacer l'implémentation de `rateLimit()` par un `Ratelimit.slidingWindow`
-adossé à Redis (variables `UPSTASH_REDIS_REST_*`).
+Sans ces variables, l'application conserve un fallback **en mémoire**, adapté au
+développement local mais insuffisant en multi-instances/serverless.
 
 ---
 

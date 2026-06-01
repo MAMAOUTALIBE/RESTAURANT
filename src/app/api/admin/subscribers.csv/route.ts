@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 /** GET /api/admin/subscribers.csv — export des abonnés newsletter (admin). */
 export async function GET() {
-  if (!isAdminEmail(getSessionEmail())) {
+  if (!isAdminEmail(await getSessionEmail())) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }
   const subs = await prisma.newsletterSubscriber.findMany({

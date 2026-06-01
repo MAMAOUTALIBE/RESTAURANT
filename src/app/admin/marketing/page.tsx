@@ -14,8 +14,9 @@ export const dynamic = "force-dynamic";
 export default async function AdminMarketingPage({
   searchParams,
 }: {
-  searchParams: { sent?: string; error?: string; audience?: string };
+  searchParams: Promise<{ sent?: string; error?: string; audience?: string }>;
 }) {
+  const { sent, audience } = await searchParams;
   const [count, customers, promos] = await Promise.all([
     prisma.newsletterSubscriber.count(),
     listCustomers(),
@@ -29,7 +30,7 @@ export default async function AdminMarketingPage({
   })).filter((x) => x.n > 0);
 
   // Pré-sélection si on arrive depuis « Lancer une relance » du dashboard.
-  const defaultAudience = searchParams.audience === "relance" ? "À risque" : "all";
+  const defaultAudience = audience === "relance" ? "À risque" : "all";
 
   return (
     <div className="space-y-8">
@@ -59,9 +60,9 @@ export default async function AdminMarketingPage({
         <h2 className="font-display text-lg font-semibold text-cream">
           Nouvelle campagne
         </h2>
-        {searchParams.sent && (
+        {sent && (
           <p role="status" className="mt-3 text-sm text-green-400">
-            Campagne envoyée à {searchParams.sent} destinataire(s).
+            Campagne envoyée à {sent} destinataire(s).
           </p>
         )}
         <form action={sendCampaign} className="mt-4 space-y-3">

@@ -12,9 +12,10 @@ export const dynamic = "force-dynamic";
 export default async function DishPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const dish = await getDishWithOptions(params.slug);
+  const { slug } = await params;
+  const dish = await getDishWithOptions(slug);
   if (!dish) notFound();
 
   const groups = dish.optionGroups.map((g) => ({

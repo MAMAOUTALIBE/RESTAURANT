@@ -29,10 +29,10 @@ const statusStyles: Record<string, string> = {
 export default async function CommandesPage({
   searchParams,
 }: {
-  searchParams: { statut?: string; q?: string };
+  searchParams: Promise<{ statut?: string; q?: string }>;
 }) {
   const all = await getAllOrders();
-  const { statut, q } = searchParams;
+  const { statut, q } = await searchParams;
 
   const orders = all.filter((o) => {
     if (statut && o.status !== statut) return false;

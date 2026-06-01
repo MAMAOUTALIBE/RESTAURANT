@@ -13,7 +13,7 @@ function csv(value: string | number): string {
 
 /** GET /api/admin/orders.csv — export des commandes (admin uniquement). */
 export async function GET() {
-  const email = getSessionEmail();
+  const email = await getSessionEmail();
   if (!isAdminEmail(email)) {
     return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
   }

@@ -22,7 +22,7 @@ africain. Design noir / blanc cassé / orange-or, ambiance africaine moderne.
 | **Auth** | Connexion par **lien magique** vérifié (`VerificationToken`, usage unique, 15 min) |
 | **Espace client** | `/compte` — historique des commandes (session cookie HMAC signée) |
 | **Back-office** | `/admin` — protégé par allowlist `ADMIN_EMAILS` : commandes + statuts + stats |
-| **Anti-spam** | Rate-limiting (in-memory) + honeypot sur les formulaires |
+| **Anti-spam** | Rate-limiting Upstash Redis en prod (fallback mémoire local) + honeypot |
 | **Persistance** | **PostgreSQL via Prisma** (`Order`, `OrderLine`, `NewsletterSubscriber`, `ContactMessage`, `VerificationToken`) |
 | **Emails** | Resend si `RESEND_API_KEY`, sinon log console |
 | **SEO** | `sitemap.ts`, `robots.ts`, JSON-LD `Restaurant`, Open Graph + Twitter |

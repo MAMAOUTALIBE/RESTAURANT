@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, Flame, Leaf, Utensils } from "lucide-react";
 import { DishCard } from "@/components/DishCard";
 import { Reveal } from "@/components/ui/Reveal";
@@ -42,13 +43,13 @@ export async function FeaturedDishes() {
                 </div>
               ))}
             </div>
-            <a
+            <Link
               href="/menu"
               className="inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-semibold text-ink transition hover:border-gold-600 hover:text-gold-600"
             >
               Voir tout le menu
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </Reveal>
         </div>
 

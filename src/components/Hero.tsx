@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Clock,
@@ -104,14 +105,14 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.18 }}
           >
-            <a href="/menu" className="btn-primary">
+            <Link href="/menu" className="btn-primary">
               <UtensilsCrossed className="h-4 w-4" />
               Voir le menu
-            </a>
-            <a href="/commander" className="btn-outline">
+            </Link>
+            <Link href="/commander" className="btn-outline">
               <ShoppingBag className="h-4 w-4" />
               Commander maintenant
-            </a>
+            </Link>
           </motion.div>
 
           <motion.div
