@@ -84,6 +84,7 @@ export interface OrderLine {
 
 export interface Order {
   id: string;
+  restaurantId?: string;
   reference: string;
   createdAt: string;
   status: OrderStatus;
@@ -105,4 +106,3 @@ export interface Order {
   prepTimeMin: number;
   total: number;
 }
-

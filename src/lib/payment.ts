@@ -1,6 +1,7 @@
 import "server-only";
 import type { Order } from "@/types";
 import { siteConfig } from "@/lib/config";
+import { getRestaurantConnectTransferData } from "@/lib/stripe-connect";
 
 export interface CheckoutResult {
   /** URL de redirection vers le paiement (Stripe) si disponible. */
@@ -21,6 +22,7 @@ export async function startCheckout(order: Order): Promise<CheckoutResult> {
   if (!secret) {
     return { simulated: true };
   }
+  const transferData = await getRestaurantConnectTransferData(order.restaurantId);
 
   // Import dynamique : Stripe n'est chargé que si une clé est présente.
   const { default: Stripe } = await import("stripe");
@@ -40,6 +42,12 @@ export async function startCheckout(order: Order): Promise<CheckoutResult> {
     client_reference_id: order.reference,
     success_url: `${siteConfig.url}/commande/${order.reference}?paid=1`,
     cancel_url: `${siteConfig.url}/commande/${order.reference}`,
+    payment_intent_data: transferData
+      ? {
+          transfer_data: transferData,
+          on_behalf_of: transferData.destination,
+        }
+      : undefined,
   });
 
   return { url: session.url ?? undefined, simulated: false };

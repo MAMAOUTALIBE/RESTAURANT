@@ -53,17 +53,26 @@ function IconWhatsApp() {
     </svg>
   );
 }
+function IconTelegram() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-4 w-4"
+      fill="currentColor"
+      aria-hidden
+    >
+      <path d="M21.9 4.08c.2-1.28-.95-2.3-2.1-1.82L3.2 9.18c-1.24.51-1.2 2.3.06 2.75l4.18 1.48 1.62 5.14c.39 1.24 1.99 1.57 2.84.59l2.33-2.69 4.26 3.15c1.1.81 2.66.18 2.88-1.17L21.9 4.08ZM5.02 10.67 18.9 4.88 8.48 12.2l-3.46-1.23Zm5.57 7.16-1.2-3.8 7.44-5.23-6.24 9.03Zm1.42-.6 2.62-3.78 4.67 3.46-.64 1.24-6.65-.92Z" />
+    </svg>
+  );
+}
 
 const socials = [
-  { label: "Facebook", Icon: IconFacebook, href: "https://facebook.com" },
-  { label: "Instagram", Icon: IconInstagram, href: "https://instagram.com" },
-  { label: "TikTok", Icon: IconTikTok, href: "https://tiktok.com" },
-  {
-    label: "WhatsApp",
-    Icon: IconWhatsApp,
-    href: `https://wa.me/${siteConfig.contact.phone.replace(/[^\d]/g, "")}`,
-  },
-];
+  { label: "Facebook", Icon: IconFacebook, href: siteConfig.socials.facebook },
+  { label: "Instagram", Icon: IconInstagram, href: siteConfig.socials.instagram },
+  { label: "TikTok", Icon: IconTikTok, href: siteConfig.socials.tiktok },
+  { label: "WhatsApp", Icon: IconWhatsApp, href: siteConfig.socials.whatsapp },
+  { label: "Telegram", Icon: IconTelegram, href: siteConfig.socials.telegram },
+].filter((item) => Boolean(item.href));
 
 const contact = [
   { Icon: MapPin, lines: [siteConfig.contact.address] },
@@ -87,14 +96,18 @@ export function Footer() {
               L&apos;authenticité de la cuisine africaine dans un cadre
               chaleureux.
             </p>
-            <div className="mt-5 flex gap-3">
+            <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold">
+              Suivez-nous
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3">
               {socials.map(({ label, Icon, href }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={label}
+                  aria-label={`Suivre N'KULU sur ${label}`}
+                  title={label}
                   className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-cream/80 transition hover:border-gold/60 hover:bg-gold hover:text-ink"
                 >
                   <Icon />

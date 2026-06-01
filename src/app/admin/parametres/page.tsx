@@ -7,8 +7,12 @@ import {
   adminDeleteZone,
   adminUpdateHours,
   adminUpdateOrderingSettings,
+  adminCreateRestaurant,
   adminCreateDriver,
+  adminOpenRestaurantStripeOnboarding,
+  adminSyncRestaurantStripeStatus,
   adminToggleDriver,
+  adminUpdateRestaurantStripeAccount,
 } from "@/app/actions";
 import { formatPrice } from "@/lib/utils";
 
@@ -20,15 +24,19 @@ const hhmm = (min: number) =>
 
 export default async function AdminParametresPage() {
   const admins = adminEmails();
-  const [zones, hours, setting, drivers] = await Promise.all([
+  const [zones, hours, setting, drivers, restaurants] = await Promise.all([
     prisma.deliveryZone.findMany({ orderBy: { postalCode: "asc" } }),
     prisma.openingHour.findMany({ orderBy: { dayOfWeek: "asc" } }),
     prisma.orderingSetting.findUnique({ where: { id: "default" } }),
     prisma.driver.findMany({ orderBy: { name: "asc" } }),
+    prisma.restaurant.findMany({ orderBy: [{ active: "desc" }, { name: "asc" }] }),
   ]);
+  const stripeSecretConfigured = Boolean(process.env.STRIPE_SECRET_KEY);
+  const stripeConnectedRestaurants = restaurants.filter((r) => r.stripeOnboardingComplete).length;
   const integrations = [
     { name: "Paiement Stripe", active: Boolean(process.env.STRIPE_SECRET_KEY) },
     { name: "Webhook Stripe", active: Boolean(process.env.STRIPE_WEBHOOK_SECRET) },
+    { name: "Stripe Connect restaurants", active: stripeConnectedRestaurants > 0 },
     { name: "Emails Resend", active: Boolean(process.env.RESEND_API_KEY) },
     { name: "SMS / WhatsApp (Twilio)", active: Boolean(process.env.TWILIO_ACCOUNT_SID) },
     { name: "Relance auto (cron)", active: Boolean(process.env.CRON_SECRET) },
@@ -81,6 +89,113 @@ export default async function AdminParametresPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Restaurants & Stripe Connect */}
+      <section className="rounded-2xl border border-white/10 bg-ink-soft p-6">
+        <h2 className="font-display text-lg font-semibold text-cream">
+          Restaurants & Stripe Connect
+        </h2>
+        <p className="mt-2 text-sm text-muted">
+          Gérez les comptes Stripe Connect par restaurant.{" "}
+          {stripeSecretConfigured
+            ? `Restaurants prêts au paiement: ${stripeConnectedRestaurants}/${restaurants.length || 0}.`
+            : "Ajoutez STRIPE_SECRET_KEY pour activer la connexion Stripe Connect."}
+        </p>
+
+        <ul className="mt-4 space-y-3">
+          {restaurants.map((r) => (
+            <li key={r.id} className="rounded-lg border border-white/10 bg-ink p-4">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
+                <span className="font-semibold text-cream">{r.name}</span>
+                <span className="rounded-full bg-white/10 px-2 py-0.5 font-mono text-xs text-cream/80">
+                  {r.slug}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    r.active ? "bg-green-500/15 text-green-300" : "bg-white/10 text-muted"
+                  }`}
+                >
+                  {r.active ? "actif" : "inactif"}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    r.stripeOnboardingComplete
+                      ? "bg-green-500/15 text-green-300"
+                      : "bg-white/10 text-cream/70"
+                  }`}
+                >
+                  {r.stripeOnboardingComplete
+                    ? "paiement prêt"
+                    : r.stripeAccountId
+                      ? "onboarding incomplet"
+                      : "non connecté"}
+                </span>
+              </div>
+
+              <div className="mt-2 space-y-1 text-xs text-muted">
+                <p>ID Connect: {r.stripeAccountId ?? "—"}</p>
+                <p>
+                  Paiements: {r.stripeChargesEnabled ? "oui" : "non"} · Payouts:{" "}
+                  {r.stripePayoutsEnabled ? "oui" : "non"} · Détails:{" "}
+                  {r.stripeDetailsSubmitted ? "soumis" : "à compléter"}
+                </p>
+                {r.stripeLastSyncedAt && (
+                  <p>Dernière synchro: {r.stripeLastSyncedAt.toLocaleString("fr-FR")}</p>
+                )}
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <form action={adminUpdateRestaurantStripeAccount} className="flex flex-wrap items-center gap-2">
+                  <input type="hidden" name="id" value={r.id} />
+                  <input
+                    name="stripeAccountId"
+                    defaultValue={r.stripeAccountId ?? ""}
+                    placeholder="acct_..."
+                    className="w-56 rounded-lg border border-white/10 bg-ink-soft px-3 py-2 text-xs text-cream focus:border-gold/60 focus:outline-none"
+                  />
+                  <button className="rounded-lg bg-white/10 px-3 py-2 text-xs text-cream hover:bg-white/20">
+                    Enregistrer ID
+                  </button>
+                </form>
+
+                <form action={adminOpenRestaurantStripeOnboarding}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button className="rounded-lg bg-gold px-3 py-2 text-xs font-semibold text-ink transition hover:bg-gold-400">
+                    Ouvrir onboarding
+                  </button>
+                </form>
+
+                <form action={adminSyncRestaurantStripeStatus}>
+                  <input type="hidden" name="id" value={r.id} />
+                  <button className="rounded-lg bg-white/10 px-3 py-2 text-xs text-cream hover:bg-white/20">
+                    Synchroniser
+                  </button>
+                </form>
+              </div>
+            </li>
+          ))}
+          {restaurants.length === 0 && (
+            <li className="text-sm text-muted">Aucun restaurant configuré.</li>
+          )}
+        </ul>
+
+        <form action={adminCreateRestaurant} className="mt-4 flex flex-wrap items-end gap-2">
+          <input
+            name="name"
+            placeholder="Nom du restaurant"
+            required
+            className="rounded-lg border border-white/10 bg-ink px-3 py-2 text-sm text-cream focus:border-gold/60 focus:outline-none"
+          />
+          <input
+            name="slug"
+            placeholder="slug (optionnel)"
+            className="rounded-lg border border-white/10 bg-ink px-3 py-2 text-sm text-cream focus:border-gold/60 focus:outline-none"
+          />
+          <button className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-ink transition hover:bg-gold-400">
+            Ajouter restaurant
+          </button>
+        </form>
       </section>
 
       {/* Horaires d'ouverture */}

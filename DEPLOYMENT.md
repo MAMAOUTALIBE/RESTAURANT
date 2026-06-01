@@ -22,12 +22,18 @@ et récupérer la chaîne de connexion (`postgresql://…`).
 | `NEXT_PUBLIC_SITE_URL` | ✅ | URL publique finale (ex. `https://nkulu-saveurs.fr`) |
 | `SESSION_SECRET` | ✅ | Secret aléatoire (`openssl rand -hex 32`) |
 | `ADMIN_EMAILS` | ✅ | Emails admin séparés par des virgules |
+| `DEFAULT_RESTAURANT_SLUG` | ⬜ | Slug du restaurant par défaut (ex. `nkulu-paris-11`) |
 | `STRIPE_SECRET_KEY` | ⬜ | Clé secrète Stripe (`sk_live_…`) |
 | `STRIPE_WEBHOOK_SECRET` | ⬜ | Secret du webhook Stripe (`whsec_…`) |
+| `STRIPE_CONNECT_COUNTRY` | ⬜ | Pays des comptes Connect créés depuis l’admin (ex. `FR`) |
 | `RESEND_API_KEY` | ⬜ | Clé API Resend (emails transactionnels) |
 | `EMAIL_FROM` | ⬜ | Expéditeur vérifié (ex. `N'KULU <commandes@nkulu-saveurs.fr>`) |
 | `NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER` | ⬜ | Numéro public pour les commandes WhatsApp (`+33...`) |
 | `NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME` | ⬜ | Username Telegram public du restaurant, sans `@` |
+| `NEXT_PUBLIC_FACEBOOK_URL` | ⬜ | URL de la page Facebook affichée dans le footer |
+| `NEXT_PUBLIC_INSTAGRAM_URL` | ⬜ | URL du compte Instagram affiché dans le footer |
+| `NEXT_PUBLIC_TIKTOK_URL` | ⬜ | URL du compte TikTok affiché dans le footer |
+| `NEXT_PUBLIC_TELEGRAM_URL` | ⬜ | URL Telegram explicite, si différente de l'username |
 | `WHATSAPP_ORDER_TO` | ⬜ | Numéro interne qui reçoit les commandes WhatsApp via Twilio |
 | `TELEGRAM_BOT_TOKEN` | ⬜ | Token du bot Telegram pour notifier le restaurant |
 | `TELEGRAM_ORDER_CHAT_ID` | ⬜ | Chat/groupe Telegram qui reçoit les commandes |
@@ -51,7 +57,7 @@ appliquées à chaque déploiement.
 
 ---
 
-## 4. Stripe (paiement réel)
+## 4. Stripe (paiement réel + Connect)
 
 1. Dashboard Stripe → **Developers → API keys** → copier `sk_live_…` dans `STRIPE_SECRET_KEY`.
 2. **Developers → Webhooks → Add endpoint** :
@@ -62,6 +68,11 @@ appliquées à chaque déploiement.
    ```bash
    stripe listen --forward-to localhost:3000/api/webhooks/stripe
    ```
+4. Dans `/admin/parametres` :
+   - créer/éditer les restaurants,
+   - cliquer **Ouvrir onboarding** pour chaque restaurant,
+   - finaliser l’onboarding Stripe Express,
+   - cliquer **Synchroniser** pour valider `charges_enabled` et `payouts_enabled`.
 
 Sans clé Stripe, le paiement reste en **mode simulation** (la commande passe
 directement en « payée »).
@@ -116,6 +127,7 @@ développement local mais insuffisant en multi-instances/serverless.
 - [ ] `SESSION_SECRET` fort et unique
 - [ ] Domaine + HTTPS configurés sur Vercel
 - [ ] Webhook Stripe testé en production
+- [ ] Stripe Connect finalisé pour chaque restaurant actif
 - [ ] Domaine email vérifié sur Resend
 - [ ] Numéros WhatsApp et bot Telegram testés avec de vraies commandes
 - [ ] Brancher un suivi d'erreurs (ex. Sentry) et analytics

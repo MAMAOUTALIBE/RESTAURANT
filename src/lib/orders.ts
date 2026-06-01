@@ -15,6 +15,7 @@ import { awardPointsForOrder } from "@/lib/loyalty";
 import { formatPrice } from "@/lib/utils";
 import { sendEmail } from "@/lib/email";
 import { sendSms } from "@/lib/sms";
+import { getDefaultRestaurant } from "@/lib/restaurants";
 
 interface CreateOrderInput {
   customer: Order["customer"];
@@ -39,6 +40,7 @@ export class OrderCreationError extends Error {
 function toOrder(row: OrderRow): Order {
   return {
     id: row.id,
+    restaurantId: row.restaurantId ?? undefined,
     reference: row.reference,
     createdAt: row.createdAt.toISOString(),
     status: row.status as OrderStatus,
@@ -79,6 +81,7 @@ export async function createOrder({
   tip = 0,
   scheduledAt,
 }: CreateOrderInput): Promise<Order> {
+  const restaurant = await getDefaultRestaurant();
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   let discount = 0;
@@ -121,6 +124,7 @@ export async function createOrder({
       customerName: customer.name,
       customerEmail: customer.email.toLowerCase(),
       customerPhone: customer.phone,
+      restaurantId: restaurant?.id,
       customerAddress: customer.address,
       customerNotes: customer.notes,
       subtotal,

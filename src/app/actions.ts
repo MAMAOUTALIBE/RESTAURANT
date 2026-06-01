@@ -25,6 +25,11 @@ import type { OrderStatus } from "@/types";
 import { sendEmail } from "@/lib/email";
 import { siteConfig } from "@/lib/config";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import {
+  createRestaurantOnboardingLink,
+  isStripeConnectConfigured,
+  syncRestaurantStripeStatus,
+} from "@/lib/stripe-connect";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
@@ -789,6 +794,103 @@ export async function adminUpdateOrderingSettings(formData: FormData): Promise<v
   });
   revalidatePath("/admin/parametres");
   redirect("/admin/parametres");
+}
+
+/** Back-office : ajoute un restaurant (socle multi-restaurant). */
+export async function adminCreateRestaurant(formData: FormData): Promise<void> {
+  if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
+  const name = String(formData.get("name") ?? "").trim();
+  const slugInput = String(formData.get("slug") ?? "").trim();
+  const active = formData.get("active") !== "false";
+
+  if (!name) redirect("/admin/parametres?restaurantError=missing-name");
+
+  const baseSlug = slugify(slugInput || name) || `resto-${Date.now()}`;
+  let slug = baseSlug;
+  let n = 1;
+  while (await prisma.restaurant.findUnique({ where: { slug } })) {
+    slug = `${baseSlug}-${++n}`;
+  }
+
+  await prisma.restaurant.create({ data: { name, slug, active } });
+  revalidatePath("/admin/parametres");
+  redirect("/admin/parametres?restaurantSaved=1");
+}
+
+/** Back-office : enregistre l'ID Stripe Connect d'un restaurant. */
+export async function adminUpdateRestaurantStripeAccount(
+  formData: FormData,
+): Promise<void> {
+  if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
+  const id = String(formData.get("id") ?? "");
+  const stripeAccountIdRaw = String(formData.get("stripeAccountId") ?? "").trim();
+  const stripeAccountId = stripeAccountIdRaw || null;
+  if (!id) redirect("/admin/parametres?stripeError=missing-restaurant");
+
+  await prisma.restaurant.update({
+    where: { id },
+    data: {
+      stripeAccountId,
+      ...(stripeAccountId
+        ? {}
+        : {
+            stripeDetailsSubmitted: false,
+            stripeChargesEnabled: false,
+            stripePayoutsEnabled: false,
+            stripeOnboardingComplete: false,
+            stripeLastSyncedAt: null,
+          }),
+    },
+  });
+
+  if (stripeAccountId && isStripeConnectConfigured()) {
+    await syncRestaurantStripeStatus(id).catch(() => {});
+  }
+
+  revalidatePath("/admin/parametres");
+  redirect("/admin/parametres?stripeSaved=1");
+}
+
+/** Back-office : ouvre le parcours Stripe Connect Express d'un restaurant. */
+export async function adminOpenRestaurantStripeOnboarding(
+  formData: FormData,
+): Promise<void> {
+  if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
+  if (!isStripeConnectConfigured()) {
+    redirect("/admin/parametres?stripeError=missing-secret");
+  }
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/admin/parametres?stripeError=missing-restaurant");
+
+  try {
+    const onboardingUrl = await createRestaurantOnboardingLink(id);
+    redirect(onboardingUrl);
+  } catch (error) {
+    console.error("[stripe:connect:onboarding]", error);
+    redirect("/admin/parametres?stripeError=onboarding");
+  }
+}
+
+/** Back-office : synchronise l'état Stripe Connect d'un restaurant. */
+export async function adminSyncRestaurantStripeStatus(formData: FormData): Promise<void> {
+  if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
+  if (!isStripeConnectConfigured()) {
+    redirect("/admin/parametres?stripeError=missing-secret");
+  }
+
+  const id = String(formData.get("id") ?? "");
+  if (!id) redirect("/admin/parametres?stripeError=missing-restaurant");
+
+  try {
+    await syncRestaurantStripeStatus(id);
+  } catch (error) {
+    console.error("[stripe:connect:sync]", error);
+    redirect("/admin/parametres?stripeError=sync");
+  }
+
+  revalidatePath("/admin/parametres");
+  redirect("/admin/parametres?stripeSynced=1");
 }
 
 /** Back-office : ajoute un livreur. */

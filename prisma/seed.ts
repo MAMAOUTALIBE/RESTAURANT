@@ -20,6 +20,13 @@ const extraDishes = [
 ];
 
 async function main() {
+  // Restaurant par défaut (base mono-site aujourd'hui, prêt multi-restaurants).
+  const defaultRestaurant = await prisma.restaurant.upsert({
+    where: { slug: "nkulu-paris-11" },
+    update: { name: "N'KULU Paris 11", active: true },
+    create: { slug: "nkulu-paris-11", name: "N'KULU Paris 11", active: true },
+  });
+
   // Catégories
   const catBySlug = new Map<string, string>();
   for (const c of categories) {
@@ -163,7 +170,9 @@ async function main() {
 
   const dishes = await prisma.dish.count();
   const zones = await prisma.deliveryZone.count();
-  console.log(`✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, AFRO10.`);
+  console.log(
+    `✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, AFRO10, restaurant ${defaultRestaurant.slug}.`,
+  );
 }
 
 main()

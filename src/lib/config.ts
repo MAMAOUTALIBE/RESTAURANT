@@ -2,6 +2,9 @@ const whatsappOrderNumber =
   process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33123456789";
 const telegramOrderUsername =
   process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "";
+const telegramUrl = telegramOrderUsername
+  ? `https://t.me/${telegramOrderUsername.replace(/^@/, "")}`
+  : "";
 
 /** Configuration centrale du site (SEO, QR code, emails, coordonnées). */
 export const siteConfig = {
@@ -20,6 +23,13 @@ export const siteConfig = {
   messaging: {
     whatsappOrderNumber,
     telegramOrderUsername,
+  },
+  socials: {
+    facebook: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://facebook.com",
+    instagram: process.env.NEXT_PUBLIC_INSTAGRAM_URL ?? "https://instagram.com",
+    tiktok: process.env.NEXT_PUBLIC_TIKTOK_URL ?? "https://tiktok.com",
+    whatsapp: `https://wa.me/${whatsappOrderNumber.replace(/\D/g, "")}`,
+    telegram: process.env.NEXT_PUBLIC_TELEGRAM_URL ?? telegramUrl,
   },
   currency: "EUR",
   priceRange: "€€",
