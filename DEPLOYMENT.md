@@ -26,6 +26,11 @@ et récupérer la chaîne de connexion (`postgresql://…`).
 | `STRIPE_WEBHOOK_SECRET` | ⬜ | Secret du webhook Stripe (`whsec_…`) |
 | `RESEND_API_KEY` | ⬜ | Clé API Resend (emails transactionnels) |
 | `EMAIL_FROM` | ⬜ | Expéditeur vérifié (ex. `N'KULU <commandes@nkulu-saveurs.fr>`) |
+| `NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER` | ⬜ | Numéro public pour les commandes WhatsApp (`+33...`) |
+| `NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME` | ⬜ | Username Telegram public du restaurant, sans `@` |
+| `WHATSAPP_ORDER_TO` | ⬜ | Numéro interne qui reçoit les commandes WhatsApp via Twilio |
+| `TELEGRAM_BOT_TOKEN` | ⬜ | Token du bot Telegram pour notifier le restaurant |
+| `TELEGRAM_ORDER_CHAT_ID` | ⬜ | Chat/groupe Telegram qui reçoit les commandes |
 | `UPSTASH_REDIS_REST_URL` | ⬜ | Rate-limiting distribué (recommandé en prod) |
 | `UPSTASH_REDIS_REST_TOKEN` | ⬜ | Jeton Upstash |
 
@@ -73,7 +78,26 @@ Sans clé, les emails sont **loggés en console** (mode dev/simulation).
 
 ---
 
-## 6. Rate-limiting en production
+## 6. Commandes WhatsApp / Telegram
+
+Les boutons de commande par messagerie utilisent :
+
+- WhatsApp : `https://wa.me/<numero>?text=<message>`
+- Telegram : `https://t.me/share/url?url=<site>&text=<message>`
+
+Pour recevoir automatiquement chaque commande côté restaurant :
+
+1. WhatsApp : renseigner `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`,
+   `TWILIO_WHATSAPP_FROM` et `WHATSAPP_ORDER_TO`.
+2. Telegram : créer un bot via BotFather, l'ajouter au chat/groupe de commande,
+   puis renseigner `TELEGRAM_BOT_TOKEN` et `TELEGRAM_ORDER_CHAT_ID`.
+
+Sans ces clés privées, le site reste fonctionnel et logge les notifications en
+mode simulation.
+
+---
+
+## 7. Rate-limiting en production
 
 Le limiteur ([src/lib/rate-limit.ts](src/lib/rate-limit.ts)) utilise
 automatiquement [Upstash Ratelimit](https://github.com/upstash/ratelimit) quand
@@ -84,7 +108,7 @@ développement local mais insuffisant en multi-instances/serverless.
 
 ---
 
-## 7. Checklist avant mise en ligne
+## 8. Checklist avant mise en ligne
 
 - [ ] Remplir les vraies coordonnées dans [src/lib/config.ts](src/lib/config.ts)
 - [ ] Compléter les pages légales (`/mentions-legales`, `/cgv`, `/confidentialite`)
@@ -93,4 +117,5 @@ développement local mais insuffisant en multi-instances/serverless.
 - [ ] Domaine + HTTPS configurés sur Vercel
 - [ ] Webhook Stripe testé en production
 - [ ] Domaine email vérifié sur Resend
+- [ ] Numéros WhatsApp et bot Telegram testés avec de vraies commandes
 - [ ] Brancher un suivi d'erreurs (ex. Sentry) et analytics

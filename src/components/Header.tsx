@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, ShoppingBag, User } from "lucide-react";
+import { Menu, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { MobileNav } from "@/components/MobileNav";
 import { navLinks } from "@/data/services";
@@ -10,12 +11,12 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
 import { useLang } from "@/context/LangContext";
-import { LangToggle } from "@/components/LangToggle";
 
 /** En-tête sticky avec navigation desktop, panier et menu mobile. */
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const { totalCount: cartCount, setOpen: setCartOpen } = useCart();
   const { choice } = useOrderChoice();
   const { t } = useLang();
@@ -36,10 +37,10 @@ export function Header() {
           : "bg-transparent",
       )}
     >
-      <div className="container-page flex h-20 items-center justify-between gap-4">
+      <div className="container-page flex h-20 items-center justify-between gap-5">
         <Logo />
 
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -53,14 +54,6 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <LangToggle />
-          <Link
-            href="/compte"
-            aria-label={t("cta.account", "Mon compte")}
-            className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-cream transition hover:border-gold/60 hover:text-gold"
-          >
-            <User className="h-5 w-5" />
-          </Link>
           <button
             aria-label={`Voir le panier (${cartCount} article${cartCount > 1 ? "s" : ""})`}
             onClick={() => setCartOpen(true)}
@@ -88,8 +81,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Bandeau contexte de commande (mode + créneau choisis) */}
-      {choice && (
+      {choice && pathname === "/commander" && (
         <Link
           href="/commander"
           className="flex items-center justify-center gap-2 bg-gold/90 px-4 py-1.5 text-center text-xs font-semibold text-ink transition hover:bg-gold"

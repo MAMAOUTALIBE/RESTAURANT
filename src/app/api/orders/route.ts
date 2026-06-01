@@ -37,6 +37,8 @@ export async function POST(request: Request) {
     }
     throw error;
   }
+  const { notifyOrderChannels } = await import("@/lib/order-notifications");
+  await notifyOrderChannels(order);
   return NextResponse.json({ order }, { status: 201 });
 }
 

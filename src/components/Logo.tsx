@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -9,8 +10,8 @@ interface LogoProps {
 /** Logo N'KULU : masque africain stylisé + wordmark. */
 export function Logo({ className, tone = "light" }: LogoProps) {
   return (
-    <a
-      href="#accueil"
+    <Link
+      href="/"
       className={cn("group flex items-center gap-3", className)}
       aria-label="N'KULU Saveurs Africaines — Accueil"
     >
@@ -49,6 +50,6 @@ export function Logo({ className, tone = "light" }: LogoProps) {
           Saveurs Africaines
         </span>
       </span>
-    </a>
+    </Link>
   );
 }

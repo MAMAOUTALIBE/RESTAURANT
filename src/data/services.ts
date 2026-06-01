@@ -11,14 +11,19 @@ export const services: Service[] = [
 
 /** Liens de navigation principaux. */
 export const navLinks: NavLink[] = [
-  { label: "Accueil", href: "#accueil" },
-  { label: "À propos", href: "#a-propos" },
   { label: "Menu", href: "/menu" },
   { label: "Commander", href: "/commander" },
   { label: "Réservation", href: "/reservation" },
   { label: "Traiteur", href: "/traiteur" },
-  { label: "Avis", href: "#avis" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/#contact" },
+];
+
+/** Liens plus complets pour les zones secondaires comme le footer. */
+export const footerLinks: NavLink[] = [
+  { label: "Accueil", href: "/" },
+  { label: "À propos", href: "/#a-propos" },
+  ...navLinks,
+  { label: "Avis", href: "/#avis" },
 ];
 
 /** Avantages listés dans la section QR code. */

@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ShoppingBag } from "lucide-react";
+import { X, ShoppingBag, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { LangToggle } from "@/components/LangToggle";
 import type { NavLink } from "@/types";
 
 interface MobileNavProps {
@@ -62,6 +63,23 @@ export function MobileNav({ open, onClose, links, cartCount }: MobileNavProps) {
                 </motion.a>
               ))}
             </nav>
+
+            <div className="mt-8 space-y-4 border-t border-white/10 pt-6">
+              <a
+                href="/compte"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 text-sm font-medium text-cream/75 transition hover:text-gold"
+              >
+                <User className="h-4 w-4" />
+                Mon compte
+              </a>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-cream/45">
+                  Langue
+                </span>
+                <LangToggle />
+              </div>
+            </div>
 
             <a
               href="/commander"

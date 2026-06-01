@@ -7,6 +7,7 @@ import { LangProvider } from "@/context/LangContext";
 import { CartDrawer } from "@/components/CartDrawer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { AiAssistant } from "@/components/AiAssistant";
 import { siteConfig } from "@/lib/config";
 
 const sans = Inter({
@@ -109,6 +110,7 @@ export default function RootLayout({
             <OrderProvider>
               {children}
               <CartDrawer />
+              <AiAssistant />
             </OrderProvider>
           </CartProvider>
         </LangProvider>

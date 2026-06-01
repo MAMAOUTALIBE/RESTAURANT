@@ -1,3 +1,8 @@
+const whatsappOrderNumber =
+  process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33123456789";
+const telegramOrderUsername =
+  process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "";
+
 /** Configuration centrale du site (SEO, QR code, emails, coordonnées). */
 export const siteConfig = {
   name: "N'KULU — Saveurs Africaines",
@@ -11,6 +16,10 @@ export const siteConfig = {
     phone: "+33 1 23 45 67 89",
     email: "contact@nkulu-saveurs.fr",
     address: "12 rue des Saveurs, 75011 Paris",
+  },
+  messaging: {
+    whatsappOrderNumber,
+    telegramOrderUsername,
   },
   currency: "EUR",
   priceRange: "€€",

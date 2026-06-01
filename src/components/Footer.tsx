@@ -1,6 +1,6 @@
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { navLinks } from "@/data/services";
+import { footerLinks } from "@/data/services";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { siteConfig } from "@/lib/config";
 
@@ -109,7 +109,7 @@ export function Footer() {
               Liens rapides
             </h4>
             <ul className="mt-4 space-y-2.5">
-              {navLinks.map((link) => (
+              {footerLinks.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}

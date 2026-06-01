@@ -17,6 +17,8 @@ africain. Design noir / blanc cassé / orange-or, ambiance africaine moderne.
 | **API REST** | `/api/dishes`, `/api/testimonials`, `/api/orders` (GET/POST) |
 | **Formulaires** | Server Actions + validation Zod (newsletter, contact, commande) |
 | **Commande** | `/commander` → création → `/commande/[ref]` (confirmation + paiement) |
+| **Messagerie** | Commande préremplie WhatsApp/Telegram + notifications restaurant optionnelles |
+| **Assistant** | Assistant local gratuit sans API externe, pour menu/livraison/réservation |
 | **Paiement** | Stripe Checkout si `STRIPE_SECRET_KEY`, sinon simulation |
 | **Webhook Stripe** | `/api/webhooks/stripe` — confirme le paiement (signature vérifiée) |
 | **Auth** | Connexion par **lien magique** vérifié (`VerificationToken`, usage unique, 15 min) |
@@ -37,7 +39,7 @@ africain. Design noir / blanc cassé / orange-or, ambiance africaine moderne.
 
 | Outil | Rôle |
 | --- | --- |
-| **Next.js 14** (App Router) | Framework React + Server Actions + API routes |
+| **Next.js 16** (App Router) | Framework React + Server Actions + API routes |
 | **TypeScript** | Typage strict de tous les composants |
 | **PostgreSQL + Prisma 6** | Base de données relationnelle + ORM type-safe |
 | **Zod** | Validation des entrées (formulaires + API) |

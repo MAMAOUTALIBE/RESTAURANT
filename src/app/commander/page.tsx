@@ -4,12 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ShoppingBag, Pencil } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Pencil, MessageCircle, Send } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
 import { placeOrder, checkPromo, checkDelivery } from "@/app/actions";
 import { OrderStarter } from "@/components/OrderStarter";
 import { formatPrice } from "@/lib/utils";
+import {
+  buildTelegramOrderUrl,
+  buildWhatsAppOrderUrl,
+  formatSocialOrderMessage,
+} from "@/lib/social-order";
 
 const fieldClass =
   "w-full rounded-xl border border-white/10 bg-ink-soft px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none";
@@ -42,6 +47,24 @@ export default function CommanderPage() {
 
   const fee = choice?.fulfillment === "livraison" ? deliveryFee : 0;
   const total = Math.max(0, totalPrice - discount) + fee + tip;
+  const socialOrderMessage = choice
+    ? formatSocialOrderMessage({
+        items,
+        choice,
+        subtotal: totalPrice,
+        deliveryFee: fee,
+        discount,
+        tip,
+        total,
+        promoCode: promo.trim() || undefined,
+      })
+    : "";
+  const whatsappOrderUrl = socialOrderMessage
+    ? buildWhatsAppOrderUrl(socialOrderMessage)
+    : "#";
+  const telegramOrderUrl = socialOrderMessage
+    ? buildTelegramOrderUrl(socialOrderMessage)
+    : "#";
 
   async function applyPromo() {
     if (!promo.trim()) return;
@@ -159,6 +182,34 @@ export default function CommanderPage() {
                   {tip > 0 && <div className="flex justify-between text-cream/80"><span>Pourboire</span><span>{formatPrice(tip)}</span></div>}
                   <div className="flex justify-between border-t border-white/10 pt-2 font-display text-2xl font-bold text-gold">
                     <span className="text-base text-cream">Total</span><span>{formatPrice(total)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-white/10 bg-ink-soft p-5">
+                  <p className="text-sm font-semibold text-cream">Commander par messagerie</p>
+                  <p className="mt-1 text-xs leading-5 text-muted">
+                    Le message reprend le panier, le créneau et le total estimé.
+                    Vous confirmez ensuite vos coordonnées dans l&apos;application.
+                  </p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    <a
+                      href={whatsappOrderUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-green-400/30 bg-green-500/10 px-4 py-3 text-sm font-semibold text-green-200 transition hover:border-green-300 hover:bg-green-500/15"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                      WhatsApp
+                    </a>
+                    <a
+                      href={telegramOrderUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-sky-400/30 bg-sky-500/10 px-4 py-3 text-sm font-semibold text-sky-200 transition hover:border-sky-300 hover:bg-sky-500/15"
+                    >
+                      <Send className="h-4 w-4" />
+                      Telegram
+                    </a>
                   </div>
                 </div>
               </section>

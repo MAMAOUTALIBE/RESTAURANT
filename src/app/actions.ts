@@ -318,6 +318,9 @@ export async function placeOrder(
     scheduledAt,
   });
 
+  const { notifyOrderChannels } = await import("@/lib/order-notifications");
+  await notifyOrderChannels(order);
+
   // Marque le panier suivi comme converti (funnel + relance).
   const cartId = String(formData.get("cartId") ?? "");
   if (cartId) {
