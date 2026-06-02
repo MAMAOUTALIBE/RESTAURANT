@@ -25,8 +25,6 @@ import {
 import { testimonials } from "@/data/testimonials";
 import { siteConfig } from "@/lib/config";
 
-const amber = "#D89A1C";
-
 const footerServices = [
   { label: "Sur place ou à emporter", Icon: Utensils },
   { label: "Livraison Uber Eats", Icon: Truck },
@@ -57,7 +55,7 @@ function GoogleMark() {
   return (
     <span
       aria-hidden
-      className="grid h-14 w-14 place-items-center rounded-full bg-white text-4xl font-bold"
+      className="grid h-11 w-11 place-items-center rounded-full bg-white text-3xl font-bold"
     >
       <span className="bg-gradient-to-r from-blue-500 via-red-500 to-yellow-500 bg-clip-text text-transparent">
         G
@@ -156,50 +154,47 @@ export async function PremiumEngagementSection() {
       className="scroll-mt-24 bg-[#050505] px-4 py-6 text-cream sm:px-6 lg:px-8"
     >
       <div className="mx-auto max-w-[1600px] overflow-hidden rounded-3xl border border-white/[0.08] bg-[#080808] shadow-[0_30px_80px_-60px_rgba(0,0,0,0.95)]">
-        <div className="px-5 py-6 sm:px-8 lg:px-8">
+        <div className="px-5 pb-5 pt-4 sm:px-8 lg:px-8">
           <div className="text-center">
-            <div className="mx-auto mb-2 grid h-10 w-10 place-items-center text-gold">
-              <BrandBowlIcon />
-            </div>
             <div className="flex items-center justify-center gap-4">
               <span className="hidden h-px w-20 bg-gold sm:block" />
-              <h2 className="font-display text-3xl font-bold uppercase tracking-wide text-cream sm:text-5xl">
+              <h2 className="font-display text-2xl font-bold uppercase tracking-wide text-cream sm:text-4xl">
                 Ils parlent de <span className="text-gold">nous</span>
               </h2>
               <span className="hidden h-px w-20 bg-gold sm:block" />
             </div>
-            <p className="mt-2 text-sm text-cream/80 sm:text-base">
+            <p className="mt-1.5 text-sm text-cream/80">
               Vos avis nous motivent chaque jour à vous offrir le meilleur de
               l&apos;Afrique.
             </p>
           </div>
 
-          <div className="mt-6 grid gap-5 xl:grid-cols-[0.86fr_1.38fr_1fr]">
-            <Card className="p-5">
+          <div className="mt-3 grid gap-4 xl:grid-cols-[0.86fr_1.38fr_1fr]">
+            <Card className="p-4">
               <div className="flex items-start gap-3">
-                <Star className="h-8 w-8 text-gold" />
+                <Star className="h-7 w-7 text-gold" />
                 <div>
                   <h3 className="text-lg font-bold uppercase tracking-wide">
                     Laissez un avis
                   </h3>
-                  <p className="mt-1 text-sm text-cream/70">
+                  <p className="mt-0.5 text-sm text-cream/70">
                     Votre retour aide les autres gourmands.
                   </p>
                 </div>
               </div>
-              <div className="mt-4">
+              <div className="mt-3">
                 <PremiumReviewForm />
               </div>
 
-              <div className="mt-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
+              <div className="mt-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3">
                 <div className="flex items-center gap-3">
                   <GoogleMark />
                   <div>
-                    <p className="text-lg font-semibold">
+                    <Stars />
+                    <p className="mt-1 text-lg font-semibold">
                       Note <span className="font-bold text-cream">4,8/5</span>{" "}
                       sur Google
                     </p>
-                    <Stars />
                     <p className="mt-1 text-sm text-cream/70">
                       Basé sur +230 avis clients
                     </p>
@@ -227,26 +222,26 @@ export async function PremiumEngagementSection() {
                 </h3>
               </div>
 
-              <div className="space-y-3">
-                {testimonials.map((item) => (
-                  <Card key={item.id} className="relative p-4">
-                    <Quote className="absolute right-5 top-4 h-9 w-9 text-gold" />
-                    <div className="flex gap-4 pr-12">
+              <div className="space-y-2.5">
+                {testimonials.slice(0, 2).map((item) => (
+                  <Card key={item.id} className="relative p-3.5">
+                    <Quote className="absolute right-4 top-3.5 h-7 w-7 text-gold" />
+                    <div className="flex gap-3.5 pr-10">
                       <Image
                         src={item.avatar}
                         alt={item.name}
                         width={64}
                         height={64}
-                        className="h-14 w-14 rounded-full object-cover ring-2 ring-gold/50"
+                        className="h-12 w-12 rounded-full object-cover ring-2 ring-gold/50"
                       />
                       <div>
                         <p className="font-bold">{item.name}</p>
                         <Stars />
-                        <blockquote className="mt-2 max-w-xl text-sm leading-relaxed text-cream/80">
+                        <blockquote className="mt-1.5 max-w-xl text-sm leading-relaxed text-cream/80">
                           &ldquo;{item.comment}&rdquo;
                         </blockquote>
                         {item.city && (
-                          <p className="mt-2 text-xs uppercase tracking-wider text-cream/55">
+                          <p className="mt-1.5 text-xs uppercase tracking-wider text-cream/55">
                             {item.city}
                           </p>
                         )}
@@ -256,15 +251,15 @@ export async function PremiumEngagementSection() {
                 ))}
               </div>
 
-              <div className="mt-3 text-center">
+              <div className="mt-2.5 text-center">
                 <Link
                   href="#avis-clients"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-gold/70 px-5 py-2.5 text-sm font-semibold text-gold transition hover:bg-gold hover:text-ink"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-gold/70 px-5 py-2 text-sm font-semibold text-gold transition hover:bg-gold hover:text-ink"
                 >
                   Voir plus d&apos;avis
                   <ArrowMini />
                 </Link>
-                <div className="mt-3 flex items-center justify-center gap-2">
+                <div className="mt-2 flex items-center justify-center gap-2">
                   {[0, 1, 2, 3].map((dot) => (
                     <span
                       key={dot}
@@ -277,28 +272,16 @@ export async function PremiumEngagementSection() {
               </div>
             </div>
 
-            <Card className="p-5">
+            <Card className="p-4">
               <div id="contact" className="-mt-24 pt-24" />
-              <div className="flex items-start gap-3">
-                <Send className="h-8 w-8 text-gold" />
-                <div>
-                  <h3 className="text-lg font-bold uppercase tracking-wide">
-                    Contactez-nous
-                  </h3>
-                  <p className="mt-1 text-sm leading-relaxed text-cream/70">
-                    Une question ? Écrivez-nous, nous vous répondons rapidement.
-                  </p>
-                </div>
+              <div className="flex items-center gap-3">
+                <Send className="h-7 w-7 text-gold" />
+                <h3 className="text-lg font-bold uppercase tracking-wide">
+                  Contactez-nous
+                </h3>
               </div>
 
-              <ul className="mt-4 space-y-3 border-b border-gold/20 pb-4">
-                <ContactLine Icon={MapPin} text={siteConfig.contact.address} />
-                <ContactLine Icon={Phone} text={siteConfig.contact.phone} />
-                <ContactLine Icon={Mail} text={siteConfig.contact.email} />
-                <ContactLine Icon={Clock} text="Lun - Dim : 11h00 - 23h00" />
-              </ul>
-
-              <div className="mt-4">
+              <div className="mt-3">
                 <PremiumContactForm />
               </div>
             </Card>
@@ -447,36 +430,6 @@ export async function PremiumEngagementSection() {
         </footer>
       </div>
     </section>
-  );
-}
-
-function BrandBowlIcon() {
-  return (
-    <svg viewBox="0 0 48 48" className="h-10 w-10" fill="none" aria-hidden>
-      <path
-        d="M11 24h26v3c0 7-5 12-13 12S11 34 11 27v-3Z"
-        stroke={amber}
-        strokeWidth="2"
-      />
-      <path d="M16 24c0-5 4-9 8-9s8 4 8 9" stroke={amber} strokeWidth="2" />
-      <path
-        d="M13 30h28M8 24h32M21 10h6M24 5v5"
-        stroke={amber}
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function ContactLine({ Icon, text }: { Icon: LucideIcon; text: string }) {
-  return (
-    <li className="flex items-center gap-3 text-sm text-cream/85">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-gold/50 text-gold">
-        <Icon className="h-4 w-4" />
-      </span>
-      <span>{text}</span>
-    </li>
   );
 }
 

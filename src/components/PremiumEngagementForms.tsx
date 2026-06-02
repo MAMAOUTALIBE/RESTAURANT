@@ -60,7 +60,7 @@ export function PremiumReviewForm() {
   const [rating, setRating] = useState(5);
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form action={formAction} className="space-y-2.5">
       <input
         type="text"
         name="company"
@@ -72,7 +72,7 @@ export function PremiumReviewForm() {
       <input type="hidden" name="rating" value={rating} />
 
       <div>
-        <span className="mb-2 block text-sm text-cream/85">Votre note</span>
+        <span className="mb-1.5 block text-sm text-cream/85">Votre note</span>
         <div className="flex gap-1.5">
           {[1, 2, 3, 4, 5].map((n) => (
             <button
@@ -83,7 +83,7 @@ export function PremiumReviewForm() {
               className="transition hover:scale-110"
             >
               <Star
-                className={`h-6 w-6 ${
+                className={`h-5 w-5 ${
                   n <= rating ? "fill-gold text-gold" : "text-white/20"
                 }`}
               />
@@ -95,7 +95,7 @@ export function PremiumReviewForm() {
       <div>
         <label
           htmlFor="premium-review-name"
-          className="mb-1.5 block text-sm text-cream/85"
+          className="mb-1 block text-sm text-cream/85"
         >
           Nom
         </label>
@@ -114,14 +114,14 @@ export function PremiumReviewForm() {
       <div>
         <label
           htmlFor="premium-review-comment"
-          className="mb-1.5 block text-sm text-cream/85"
+          className="mb-1 block text-sm text-cream/85"
         >
           Votre avis
         </label>
         <textarea
           id="premium-review-comment"
           name="comment"
-          rows={3}
+          rows={2}
           required
           placeholder="Partagez votre expérience..."
           className={fieldClass}
@@ -144,7 +144,7 @@ export function PremiumContactForm() {
   );
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form action={formAction} className="space-y-2.5">
       <input
         type="text"
         name="company"
@@ -157,7 +157,7 @@ export function PremiumContactForm() {
       <div>
         <label
           htmlFor="premium-contact-name"
-          className="mb-1.5 block text-sm text-cream/85"
+          className="mb-1 block text-sm text-cream/85"
         >
           Nom
         </label>
@@ -176,7 +176,7 @@ export function PremiumContactForm() {
       <div>
         <label
           htmlFor="premium-contact-email"
-          className="mb-1.5 block text-sm text-cream/85"
+          className="mb-1 block text-sm text-cream/85"
         >
           Email
         </label>
@@ -196,14 +196,14 @@ export function PremiumContactForm() {
       <div>
         <label
           htmlFor="premium-contact-message"
-          className="mb-1.5 block text-sm text-cream/85"
+          className="mb-1 block text-sm text-cream/85"
         >
           Message
         </label>
         <textarea
           id="premium-contact-message"
           name="message"
-          rows={3}
+          rows={2}
           required
           placeholder="Votre message..."
           className={fieldClass}

@@ -1,11 +1,22 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/config";
+import { getDishes } from "@/lib/dishes";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
+
+  // Une URL par plat disponible → chaque plat indexable par Google.
+  const dishes = await getDishes().catch(() => []);
+  const dishUrls: MetadataRoute.Sitemap = dishes.map((d) => ({
+    url: `${base}/menu/${d.id}`,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
   return [
     { url: base, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/menu`, changeFrequency: "weekly", priority: 0.9 },
+    ...dishUrls,
     { url: `${base}/commander`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/reservation`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/traiteur`, changeFrequency: "monthly", priority: 0.7 },

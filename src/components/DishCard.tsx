@@ -27,7 +27,7 @@ export function DishCard({ dish, href, unavailable }: DishCardProps) {
     <Link
       href={href}
       aria-label={`Choisir ${dish.name}`}
-      className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-ink text-gold shadow-[0_8px_22px_-14px_rgba(8,8,8,0.95)] transition hover:scale-105 hover:bg-forest"
+      className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-gold shadow-[0_8px_22px_-14px_rgba(8,8,8,0.95)] transition hover:scale-105 hover:bg-forest"
     >
       <SlidersHorizontal className="h-5 w-5" />
     </Link>
@@ -42,7 +42,7 @@ export function DishCard({ dish, href, unavailable }: DishCardProps) {
         })
       }
       aria-label={`Ajouter ${dish.name} au panier`}
-      className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-ink text-gold shadow-[0_8px_22px_-14px_rgba(8,8,8,0.95)] transition hover:scale-105 hover:bg-forest active:scale-95"
+      className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-ink text-gold shadow-[0_8px_22px_-14px_rgba(8,8,8,0.95)] transition hover:scale-105 hover:bg-forest active:scale-95"
     >
       <Plus className="h-5 w-5" />
     </button>

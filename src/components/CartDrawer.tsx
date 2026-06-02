@@ -1,10 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import {
+  Lock,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Sparkles,
+  Trash2,
+  X,
+} from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils";
+
+interface Suggestion {
+  dishId: string;
+  name: string;
+  image: string;
+  basePrice: number;
+}
 
 /** Tiroir latéral affichant le contenu du panier. */
 export function CartDrawer() {
@@ -12,11 +28,28 @@ export function CartDrawer() {
     items,
     open,
     setOpen,
+    addItem,
     updateQuantity,
     removeItem,
     clear,
     totalPrice,
   } = useCart();
+
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  // Charge les suggestions (boissons/desserts) à la première ouverture.
+  useEffect(() => {
+    if (!open || suggestions.length > 0) return;
+    fetch("/api/suggestions")
+      .then((r) => r.json())
+      .then((d) => setSuggestions(d.suggestions ?? []))
+      .catch(() => {});
+  }, [open, suggestions.length]);
+
+  // Suggestions encore absentes du panier (max 3).
+  const crossSell = suggestions
+    .filter((s) => !items.some((i) => i.dishId === s.dishId))
+    .slice(0, 3);
 
   return (
     <AnimatePresence>
@@ -141,13 +174,69 @@ export function CartDrawer() {
                   ))}
                 </ul>
 
+                {crossSell.length > 0 && (
+                  <div className="border-t border-white/10 px-5 py-4">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted">
+                      Vous oubliez quelque chose ?
+                    </p>
+                    <ul className="space-y-2">
+                      {crossSell.map((s) => (
+                        <li
+                          key={s.dishId}
+                          className="flex items-center gap-3 rounded-xl border border-white/10 p-2"
+                        >
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg">
+                            <Image
+                              src={s.image}
+                              alt={s.name}
+                              fill
+                              sizes="40px"
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm text-cream">
+                              {s.name}
+                            </p>
+                            <p className="text-xs text-gold">
+                              {formatPrice(s.basePrice)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() =>
+                              addItem({
+                                dishId: s.dishId,
+                                name: s.name,
+                                image: s.image,
+                                basePrice: s.basePrice,
+                              })
+                            }
+                            aria-label={`Ajouter ${s.name} au panier`}
+                            className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-ink transition hover:bg-gold-400 active:scale-95"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="border-t border-white/10 p-5">
-                  <div className="mb-4 flex items-center justify-between">
+                  <div className="mb-3 flex items-center justify-between">
                     <span className="text-muted">Total</span>
                     <span className="font-display text-2xl font-bold text-gold">
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
+                  {/* Fidélité : 1 point par euro (cf. lib/loyalty.ts). */}
+                  {Math.floor(totalPrice) > 0 && (
+                    <p className="mb-3 flex items-center gap-1.5 rounded-lg bg-gold/10 px-3 py-2 text-xs font-medium text-gold">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Vous gagnerez {Math.floor(totalPrice)} point
+                      {Math.floor(totalPrice) > 1 ? "s" : ""} de fidélité
+                    </p>
+                  )}
                   <a
                     href="/commander"
                     onClick={() => setOpen(false)}
@@ -155,6 +244,10 @@ export function CartDrawer() {
                   >
                     Passer la commande
                   </a>
+                  <p className="mt-2 flex items-center justify-center gap-1.5 text-xs text-muted">
+                    <Lock className="h-3 w-3" />
+                    Paiement 100 % sécurisé
+                  </p>
                   <button
                     onClick={clear}
                     className="mt-2 w-full text-center text-sm text-muted transition hover:text-cream"

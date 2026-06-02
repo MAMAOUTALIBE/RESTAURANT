@@ -1,0 +1,36 @@
+import { NextResponse } from "next/server";
+import { getMenuForBrowser } from "@/lib/dishes";
+
+export const dynamic = "force-dynamic";
+
+// Catégories proposées en vente additionnelle dans le panier.
+const SUGGEST_CATEGORIES = ["boissons", "desserts"];
+
+/** GET /api/suggestions — boissons & desserts ajoutables en 1 clic (sans options). */
+export async function GET() {
+  try {
+    const { categories, dishes } = await getMenuForBrowser();
+    const suggestSlugs = new Set(
+      categories
+        .filter((c) => SUGGEST_CATEGORIES.includes(c.slug.toLowerCase()))
+        .map((c) => c.id),
+    );
+
+    const suggestions = dishes
+      .filter(
+        (d) =>
+          d.available && !d.hasOptions && suggestSlugs.has(d.categoryId),
+      )
+      .slice(0, 6)
+      .map((d) => ({
+        dishId: d.id,
+        name: d.name,
+        image: d.image,
+        basePrice: d.price,
+      }));
+
+    return NextResponse.json({ suggestions });
+  } catch {
+    return NextResponse.json({ suggestions: [] });
+  }
+}

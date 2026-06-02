@@ -9,6 +9,8 @@ import {
   Pencil,
   MessageCircle,
   Send,
+  Lock,
+  Sparkles,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
@@ -127,6 +129,10 @@ export default function CommanderPage() {
         <h1 className="mt-6 font-display text-3xl font-bold text-cream sm:text-4xl">
           Finaliser ma commande
         </h1>
+
+        {items.length > 0 && (
+          <StepIndicator current={choice ? 2 : 1} />
+        )}
 
         {items.length === 0 ? (
           <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-ink-soft p-12 text-center">
@@ -251,6 +257,14 @@ export default function CommanderPage() {
                     <span className="text-base text-cream">Total</span>
                     <span>{formatPrice(total)}</span>
                   </div>
+                  {/* Fidélité : 1 point par euro (cf. lib/loyalty.ts). */}
+                  {Math.floor(total) > 0 && (
+                    <p className="flex items-center gap-1.5 text-xs font-medium text-gold">
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Vous gagnerez {Math.floor(total)} point
+                      {Math.floor(total) > 1 ? "s" : ""} de fidélité
+                    </p>
+                  )}
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-ink-soft p-5">
@@ -364,18 +378,21 @@ export default function CommanderPage() {
                       {globalError}
                     </p>
                   )}
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="btn-primary w-full disabled:opacity-60"
-                  >
-                    {submitting
-                      ? "Validation…"
-                      : `Valider — ${formatPrice(total)}`}
-                  </button>
-                  <p className="text-center text-xs text-muted">
-                    Le paiement s&apos;effectue à l&apos;étape suivante.
-                  </p>
+                  <div className="sticky bottom-3 z-10 rounded-2xl bg-ink-soft/95 p-1 shadow-card backdrop-blur lg:static lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="btn-primary w-full disabled:opacity-60"
+                    >
+                      {submitting
+                        ? "Validation…"
+                        : `Valider — ${formatPrice(total)}`}
+                    </button>
+                    <p className="mt-2 flex items-center justify-center gap-1.5 text-center text-xs text-muted">
+                      <Lock className="h-3 w-3" />
+                      Paiement sécurisé à l&apos;étape suivante.
+                    </p>
+                  </div>
                 </form>
               </section>
             </div>
@@ -383,6 +400,45 @@ export default function CommanderPage() {
         )}
       </div>
     </main>
+  );
+}
+
+/** Indicateur d'étapes du checkout (1 = mode/créneau, 2 = coordonnées). */
+function StepIndicator({ current }: { current: 1 | 2 }) {
+  const steps = [
+    { n: 1, label: "Mode & créneau" },
+    { n: 2, label: "Coordonnées & paiement" },
+  ];
+  return (
+    <ol className="mt-6 flex items-center gap-3">
+      {steps.map((s, i) => {
+        const active = current === s.n;
+        const done = current > s.n;
+        return (
+          <li key={s.n} className="flex flex-1 items-center gap-3">
+            <span
+              className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-bold transition ${
+                active
+                  ? "bg-gold text-ink"
+                  : done
+                    ? "bg-gold/30 text-gold"
+                    : "bg-white/10 text-cream/50"
+              }`}
+            >
+              {s.n}
+            </span>
+            <span
+              className={`text-xs font-medium sm:text-sm ${active ? "text-cream" : "text-cream/50"}`}
+            >
+              {s.label}
+            </span>
+            {i === 0 && (
+              <span className="h-px flex-1 bg-white/10" aria-hidden="true" />
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
