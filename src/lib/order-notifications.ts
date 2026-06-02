@@ -18,11 +18,14 @@ function channelMessage(order: Order) {
     `${order.customer.email}`,
     "",
     `Mode : ${order.fulfillment}`,
-    order.scheduledAt ? `Créneau : ${new Date(order.scheduledAt).toLocaleString("fr-FR")}` : null,
+    order.scheduledAt
+      ? `Créneau : ${new Date(order.scheduledAt).toLocaleString("fr-FR")}`
+      : null,
     order.customer.address ? `Adresse : ${order.customer.address}` : null,
     "",
     ...order.items.map(
-      (item) => `${item.quantity} x ${item.name} - ${formatPrice(item.price * item.quantity)}`,
+      (item) =>
+        `${item.quantity} x ${item.name} - ${formatPrice(item.price * item.quantity)}`,
     ),
     "",
     `Total : ${formatPrice(order.total)}`,
@@ -55,15 +58,18 @@ async function notifyTelegram(text: string) {
     return { simulated: true as const };
   }
 
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: text.slice(0, 4096),
-      disable_web_page_preview: true,
-    }),
-  });
+  const response = await fetch(
+    `https://api.telegram.org/bot${token}/sendMessage`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text.slice(0, 4096),
+        disable_web_page_preview: true,
+      }),
+    },
+  );
 
   if (!response.ok) {
     console.error("[telegram] échec d'envoi", await response.text());

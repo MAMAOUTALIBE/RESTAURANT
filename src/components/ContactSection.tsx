@@ -20,7 +20,7 @@ export function ContactSection() {
             Contact
           </p>
           <h2 className="mt-2 font-display text-3xl font-bold text-cream sm:text-4xl">
-            Une question ? Écrivez-nous
+            Contactez-nous
           </h2>
         </Reveal>
 

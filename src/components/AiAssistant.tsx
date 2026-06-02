@@ -1,98 +1,125 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Bot, Send, X } from "lucide-react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { BotMessageSquare, Plus, Send, Sparkles, X } from "lucide-react";
+import { siteConfig } from "@/lib/config";
+import { useCart } from "@/context/CartContext";
+
+type AssistantAction =
+  | {
+      type: "add_to_cart";
+      dishId: string;
+      name: string;
+      image: string;
+      basePrice: number;
+      quantity: number;
+    }
+  | { type: "link"; label: string; href: string };
 
 interface Message {
   role: "assistant" | "user";
   text: string;
+  actions?: AssistantAction[];
 }
 
 const initialMessage: Message = {
   role: "assistant",
-  text: "Bonjour, je peux aider pour le menu, la livraison, une réservation ou une commande.",
+  text: "Bonjour ! Je peux conseiller des plats, les ajouter à votre panier, ou vous aider pour la livraison, une réservation ou le traiteur.",
 };
 
-function normalize(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "");
-}
-
-function answerQuestion(input: string) {
-  const q = normalize(input);
-
-  if (q.includes("whatsapp") || q.includes("telegram")) {
-    return "Ajoutez vos plats au panier, choisissez le créneau, puis utilisez les boutons WhatsApp ou Telegram dans le récapitulatif de commande.";
-  }
-
-  if (q.includes("livraison") || q.includes("adresse") || q.includes("code postal")) {
-    return "La livraison est prévue sur Paris 11, 12 et 20. Le site vérifie le code postal et le minimum de commande avant validation.";
-  }
-
-  if (q.includes("reservation") || q.includes("table") || q.includes("sur place")) {
-    return "Pour manger sur place, utilisez la page Réservation. Vous choisissez la date, l'heure, le nombre de personnes et vos coordonnées.";
-  }
-
-  if (q.includes("traiteur") || q.includes("evenement") || q.includes("devis")) {
-    return "Pour un événement, la page Traiteur permet d'envoyer une demande de devis avec le nombre d'invités, la date et le message.";
-  }
-
-  if (q.includes("allerg") || q.includes("halal") || q.includes("vegetar")) {
-    return "Indiquez vos contraintes dans les notes de commande. Pour les allergènes, appelez le restaurant avant de valider.";
-  }
-
-  if (q.includes("menu") || q.includes("plat") || q.includes("prix") || q.includes("poulet")) {
-    return "Le menu contient les plats disponibles avec prix, options et ajout au panier. Les plats populaires sont accessibles depuis la page Menu.";
-  }
-
-  if (q.includes("paiement") || q.includes("payer") || q.includes("stripe")) {
-    return "La commande se valide d'abord, puis le paiement se fait à l'étape suivante. En production, Stripe peut gérer le paiement réel.";
-  }
-
-  if (q.includes("horaire") || q.includes("ouvert")) {
-    return "Le service est prévu de 11h à 23h. Les créneaux disponibles sont proposés automatiquement pendant la commande.";
-  }
-
-  return "Le plus rapide est de choisir Menu, ajouter vos plats au panier, puis finaliser sur Commander. Pour une demande spéciale, utilisez Contact.";
-}
+const FALLBACK_REPLY =
+  "Désolé, je n'ai pas pu répondre pour le moment. Réessayez, ou contactez-nous via la page Contact.";
 
 export function AiAssistant() {
   const pathname = usePathname();
+  const { addItem } = useCart();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
+  const [loading, setLoading] = useState(false);
+  const [hasOpened, setHasOpened] = useState(false);
+  const [added, setAdded] = useState<Record<string, boolean>>({});
+  const scrollRef = useRef<HTMLDivElement>(null);
   const hidden = useMemo(() => pathname?.startsWith("/admin"), [pathname]);
 
   if (hidden) return null;
 
-  function onSubmit(event: FormEvent<HTMLFormElement>) {
+  function onAddToCart(action: Extract<AssistantAction, { type: "add_to_cart" }>, key: string) {
+    addItem(
+      {
+        dishId: action.dishId,
+        name: action.name,
+        image: action.image,
+        basePrice: action.basePrice,
+      },
+      action.quantity,
+    );
+    setAdded((current) => ({ ...current, [key]: true }));
+  }
+
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const text = value.trim();
-    if (!text) return;
-    setMessages((current) => [
-      ...current,
-      { role: "user", text },
-      { role: "assistant", text: answerQuestion(text) },
-    ]);
+    if (!text || loading) return;
+
+    const history = [...messages, { role: "user" as const, text }];
+    setMessages(history);
     setValue("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          // On envoie l'historique récent (hors message d'accueil) au format LLM.
+          messages: history
+            .slice(1)
+            .map((m) => ({ role: m.role, content: m.text })),
+        }),
+      });
+      const data = await res.json().catch(() => null);
+      const reply: string =
+        (res.ok && typeof data?.reply === "string" && data.reply) ||
+        FALLBACK_REPLY;
+      const actions: AssistantAction[] = Array.isArray(data?.actions)
+        ? data.actions
+        : [];
+      setMessages((current) => [
+        ...current,
+        { role: "assistant", text: reply, actions },
+      ]);
+    } catch {
+      setMessages((current) => [
+        ...current,
+        { role: "assistant", text: FALLBACK_REPLY },
+      ]);
+    } finally {
+      setLoading(false);
+      requestAnimationFrame(() => {
+        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+      });
+    }
   }
 
   return (
-    <div className="fixed bottom-5 left-5 z-40 print:hidden">
+    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end print:hidden">
       {open && (
         <section
-          aria-label="Assistant N'KULU"
+          aria-label={`Assistant ${siteConfig.name}`}
           className="mb-3 w-[min(22rem,calc(100vw-2.5rem))] overflow-hidden rounded-2xl border border-white/10 bg-ink-soft shadow-card"
         >
           <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
             <div className="flex items-center gap-2">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-gold text-ink">
-                <Bot className="h-4 w-4" />
+                <BotMessageSquare className="h-4 w-4" />
               </span>
-              <p className="text-sm font-semibold text-cream">Assistant N&apos;KULU</p>
+              <p className="text-sm font-semibold text-cream">
+                {siteConfig.shortName} · Assistant IA
+              </p>
             </div>
             <button
               type="button"
@@ -104,22 +131,71 @@ export function AiAssistant() {
             </button>
           </div>
 
-          <div className="max-h-80 space-y-3 overflow-y-auto px-4 py-4">
+          <div
+            ref={scrollRef}
+            className="max-h-80 space-y-3 overflow-y-auto px-4 py-4"
+          >
             {messages.map((message, index) => (
-              <p
-                key={`${message.role}-${index}`}
-                className={`max-w-[88%] rounded-2xl px-3 py-2 text-sm leading-6 ${
-                  message.role === "assistant"
-                    ? "bg-white/[0.08] text-cream/85"
-                    : "ml-auto bg-gold text-ink"
-                }`}
-              >
-                {message.text}
-              </p>
+              <div key={`${message.role}-${index}`} className="space-y-2">
+                <p
+                  className={`max-w-[88%] rounded-2xl px-3 py-2 text-sm leading-6 ${
+                    message.role === "assistant"
+                      ? "bg-white/[0.08] text-cream/85"
+                      : "ml-auto bg-gold text-ink"
+                  }`}
+                >
+                  {message.text}
+                </p>
+                {message.actions && message.actions.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {message.actions.map((action, ai) => {
+                      const key = `${index}-${ai}`;
+                      if (action.type === "add_to_cart") {
+                        const done = added[key];
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => !done && onAddToCart(action, key)}
+                            disabled={done}
+                            className="inline-flex items-center gap-1 rounded-full bg-gold px-3 py-1.5 text-xs font-semibold text-ink transition hover:bg-gold-400 disabled:opacity-70"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                            {done
+                              ? `Ajouté · ${action.name}`
+                              : `Ajouter ${action.quantity > 1 ? `${action.quantity}× ` : ""}${action.name} · ${(action.basePrice * action.quantity).toFixed(2)} €`}
+                          </button>
+                        );
+                      }
+                      return (
+                        <Link
+                          key={key}
+                          href={action.href}
+                          className="inline-flex items-center gap-1 rounded-full border border-gold/40 px-3 py-1.5 text-xs font-semibold text-gold transition hover:bg-gold/10"
+                        >
+                          {action.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             ))}
+            {loading && (
+              <p className="max-w-[88%] rounded-2xl bg-white/[0.08] px-3 py-2 text-sm text-cream/60">
+                <span className="inline-flex gap-1">
+                  <span className="animate-bounce">•</span>
+                  <span className="animate-bounce [animation-delay:0.15s]">•</span>
+                  <span className="animate-bounce [animation-delay:0.3s]">•</span>
+                </span>
+              </p>
+            )}
           </div>
 
-          <form onSubmit={onSubmit} className="flex gap-2 border-t border-white/10 p-3">
+          <form
+            onSubmit={onSubmit}
+            className="flex gap-2 border-t border-white/10 p-3"
+          >
             <label htmlFor="assistant-question" className="sr-only">
               Question
             </label>
@@ -128,12 +204,14 @@ export function AiAssistant() {
               value={value}
               onChange={(event) => setValue(event.target.value)}
               placeholder="Posez votre question"
-              className="min-w-0 flex-1 rounded-full border border-white/10 bg-ink px-4 py-2 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none"
+              disabled={loading}
+              className="min-w-0 flex-1 rounded-full border border-white/10 bg-ink px-4 py-2 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none disabled:opacity-60"
             />
             <button
               type="submit"
               aria-label="Envoyer"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-ink transition hover:bg-gold-400"
+              disabled={loading}
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gold text-ink transition hover:bg-gold-400 disabled:opacity-60"
             >
               <Send className="h-4 w-4" />
             </button>
@@ -141,16 +219,41 @@ export function AiAssistant() {
         </section>
       )}
 
-      <button
+      <motion.button
         type="button"
-        onClick={() => setOpen((current) => !current)}
+        onClick={() => {
+          setOpen((current) => !current);
+          setHasOpened(true);
+        }}
         aria-expanded={open}
-        aria-label="Ouvrir l'assistant"
-        className="inline-flex h-12 items-center gap-2 rounded-full border border-white/10 bg-ink-soft px-4 text-sm font-semibold text-cream shadow-card transition hover:border-gold/60 hover:text-gold"
+        aria-label={`Ouvrir l'assistant ${siteConfig.shortName}`}
+        initial={{ opacity: 0, scale: 0.6, y: 24 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.6 }}
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.96 }}
+        className="group relative inline-flex h-14 items-center gap-2.5 rounded-full bg-gold py-2 pl-2 pr-4 text-ink shadow-card transition hover:bg-gold-400"
       >
-        <Bot className="h-5 w-5" />
-        Aide
-      </button>
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink text-gold transition group-hover:scale-105">
+          <BotMessageSquare className="h-5 w-5" />
+        </span>
+        <span className="flex flex-col items-start leading-tight">
+          <span className="flex items-center gap-1 text-sm font-bold text-ink">
+            {siteConfig.shortName}
+            <Sparkles className="h-3 w-3" />
+          </span>
+          <span className="text-[11px] font-medium text-ink/65">Assistant IA</span>
+        </span>
+
+        {!hasOpened && !open && (
+          <span className="absolute -right-1 -top-1 flex h-5 w-5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+            <span className="relative inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white">
+              1
+            </span>
+          </span>
+        )}
+      </motion.button>
     </div>
   );
 }

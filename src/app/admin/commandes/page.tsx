@@ -17,13 +17,13 @@ const STATUSES: OrderStatus[] = [
 ];
 
 const statusStyles: Record<string, string> = {
-  "payée": "bg-green-500/15 text-green-300",
+  payée: "bg-green-500/15 text-green-300",
   "en attente": "bg-gold/15 text-gold",
   "en préparation": "bg-blue-500/15 text-blue-300",
-  "prête": "bg-purple-500/15 text-purple-300",
+  prête: "bg-purple-500/15 text-purple-300",
   "en livraison": "bg-cyan-500/15 text-cyan-300",
-  "livrée": "bg-green-600/20 text-green-300",
-  "annulée": "bg-red-500/15 text-red-300",
+  livrée: "bg-green-600/20 text-green-300",
+  annulée: "bg-red-500/15 text-red-300",
 };
 
 export default async function CommandesPage({
@@ -50,7 +50,9 @@ export default async function CommandesPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-bold text-cream">Commandes</h1>
+        <h1 className="font-display text-3xl font-bold text-cream">
+          Commandes
+        </h1>
         <a
           href="/api/admin/orders.csv"
           className="rounded-full border border-white/10 px-4 py-2 text-sm text-cream transition hover:border-gold/60 hover:text-gold"
@@ -138,8 +140,15 @@ export default async function CommandesPage({
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <form action={adminSetOrderStatus} className="flex items-center gap-2">
-                      <input type="hidden" name="reference" value={o.reference} />
+                    <form
+                      action={adminSetOrderStatus}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="hidden"
+                        name="reference"
+                        value={o.reference}
+                      />
                       <label htmlFor={`s-${o.id}`} className="sr-only">
                         Statut de {o.reference}
                       </label>

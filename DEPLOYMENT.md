@@ -1,4 +1,4 @@
-# Guide de déploiement — N'KULU Saveurs
+# Guide de déploiement — AFRO MK LO BOKO
 
 Déploiement recommandé : **Vercel** (app Next.js) + **base PostgreSQL managée**
 (Neon ou Supabase) + **Stripe** + **Resend**.
@@ -16,29 +16,29 @@ et récupérer la chaîne de connexion (`postgresql://…`).
 
 ## 2. Variables d'environnement (Vercel → Project → Settings → Environment Variables)
 
-| Variable | Obligatoire | Description |
-| --- | --- | --- |
-| `DATABASE_URL` | ✅ | URL PostgreSQL managée (`?sslmode=require`) |
-| `NEXT_PUBLIC_SITE_URL` | ✅ | URL publique finale (ex. `https://nkulu-saveurs.fr`) |
-| `SESSION_SECRET` | ✅ | Secret aléatoire (`openssl rand -hex 32`) |
-| `ADMIN_EMAILS` | ✅ | Emails admin séparés par des virgules |
-| `DEFAULT_RESTAURANT_SLUG` | ⬜ | Slug du restaurant par défaut (ex. `nkulu-paris-11`) |
-| `STRIPE_SECRET_KEY` | ⬜ | Clé secrète Stripe (`sk_live_…`) |
-| `STRIPE_WEBHOOK_SECRET` | ⬜ | Secret du webhook Stripe (`whsec_…`) |
-| `STRIPE_CONNECT_COUNTRY` | ⬜ | Pays des comptes Connect créés depuis l’admin (ex. `FR`) |
-| `RESEND_API_KEY` | ⬜ | Clé API Resend (emails transactionnels) |
-| `EMAIL_FROM` | ⬜ | Expéditeur vérifié (ex. `N'KULU <commandes@nkulu-saveurs.fr>`) |
-| `NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER` | ⬜ | Numéro public pour les commandes WhatsApp (`+33...`) |
-| `NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME` | ⬜ | Username Telegram public du restaurant, sans `@` |
-| `NEXT_PUBLIC_FACEBOOK_URL` | ⬜ | URL de la page Facebook affichée dans le footer |
-| `NEXT_PUBLIC_INSTAGRAM_URL` | ⬜ | URL du compte Instagram affiché dans le footer |
-| `NEXT_PUBLIC_TIKTOK_URL` | ⬜ | URL du compte TikTok affiché dans le footer |
-| `NEXT_PUBLIC_TELEGRAM_URL` | ⬜ | URL Telegram explicite, si différente de l'username |
-| `WHATSAPP_ORDER_TO` | ⬜ | Numéro interne qui reçoit les commandes WhatsApp via Twilio |
-| `TELEGRAM_BOT_TOKEN` | ⬜ | Token du bot Telegram pour notifier le restaurant |
-| `TELEGRAM_ORDER_CHAT_ID` | ⬜ | Chat/groupe Telegram qui reçoit les commandes |
-| `UPSTASH_REDIS_REST_URL` | ⬜ | Rate-limiting distribué (recommandé en prod) |
-| `UPSTASH_REDIS_REST_TOKEN` | ⬜ | Jeton Upstash |
+| Variable                              | Obligatoire | Description                                                    |
+| ------------------------------------- | ----------- | -------------------------------------------------------------- |
+| `DATABASE_URL`                        | ✅          | URL PostgreSQL managée (`?sslmode=require`)                    |
+| `NEXT_PUBLIC_SITE_URL`                | ✅          | URL publique finale (ex. `https://afromkloboko.fr`)            |
+| `SESSION_SECRET`                      | ✅          | Secret aléatoire (`openssl rand -hex 32`)                      |
+| `ADMIN_EMAILS`                        | ✅          | Emails admin séparés par des virgules                          |
+| `DEFAULT_RESTAURANT_SLUG`             | ⬜          | Slug du restaurant par défaut (ex. `afromk-loboko`)            |
+| `STRIPE_SECRET_KEY`                   | ⬜          | Clé secrète Stripe (`sk_live_…`)                               |
+| `STRIPE_WEBHOOK_SECRET`               | ⬜          | Secret du webhook Stripe (`whsec_…`)                           |
+| `STRIPE_CONNECT_COUNTRY`              | ⬜          | Pays des comptes Connect créés depuis l’admin (ex. `FR`)       |
+| `RESEND_API_KEY`                      | ⬜          | Clé API Resend (emails transactionnels)                        |
+| `EMAIL_FROM`                          | ⬜          | Expéditeur vérifié (ex. `AFRO MK <commandes@afromkloboko.fr>`) |
+| `NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER`   | ⬜          | Numéro public pour les commandes WhatsApp (`+33...`)           |
+| `NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME` | ⬜          | Username Telegram public du restaurant, sans `@`               |
+| `NEXT_PUBLIC_FACEBOOK_URL`            | ⬜          | URL de la page Facebook affichée dans le footer                |
+| `NEXT_PUBLIC_INSTAGRAM_URL`           | ⬜          | URL du compte Instagram affiché dans le footer                 |
+| `NEXT_PUBLIC_TIKTOK_URL`              | ⬜          | URL du compte TikTok affiché dans le footer                    |
+| `NEXT_PUBLIC_TELEGRAM_URL`            | ⬜          | URL Telegram explicite, si différente de l'username            |
+| `WHATSAPP_ORDER_TO`                   | ⬜          | Numéro interne qui reçoit les commandes WhatsApp via Twilio    |
+| `TELEGRAM_BOT_TOKEN`                  | ⬜          | Token du bot Telegram pour notifier le restaurant              |
+| `TELEGRAM_ORDER_CHAT_ID`              | ⬜          | Chat/groupe Telegram qui reçoit les commandes                  |
+| `UPSTASH_REDIS_REST_URL`              | ⬜          | Rate-limiting distribué (recommandé en prod)                   |
+| `UPSTASH_REDIS_REST_TOKEN`            | ⬜          | Jeton Upstash                                                  |
 
 ---
 

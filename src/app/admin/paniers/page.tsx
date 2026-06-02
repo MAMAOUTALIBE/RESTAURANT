@@ -10,20 +10,28 @@ const ABANDON_AFTER_MS = 30 * 60 * 1000;
 
 export default async function PaniersPage() {
   const [carts, orders] = await Promise.all([
-    prisma.abandonedCart.findMany({ orderBy: { updatedAt: "desc" }, take: 200 }),
+    prisma.abandonedCart.findMany({
+      orderBy: { updatedAt: "desc" },
+      take: 200,
+    }),
     getAllOrders(),
   ]);
 
   const now = Date.now();
   const totalCarts = carts.length;
   const converted = carts.filter((c) => c.status === "converti").length;
-  const paidOrders = orders.filter((o) => o.status !== "en attente" && o.status !== "annulée").length;
+  const paidOrders = orders.filter(
+    (o) => o.status !== "en attente" && o.status !== "annulée",
+  ).length;
   const abandoned = carts.filter(
-    (c) => c.status === "actif" && now - new Date(c.updatedAt).getTime() > ABANDON_AFTER_MS,
+    (c) =>
+      c.status === "actif" &&
+      now - new Date(c.updatedAt).getTime() > ABANDON_AFTER_MS,
   );
   const lostValue = abandoned.reduce((s, c) => s + c.total, 0);
   const convRate = totalCarts > 0 ? (converted / totalCarts) * 100 : 0;
-  const abandonRate = totalCarts > 0 ? (abandoned.length / totalCarts) * 100 : 0;
+  const abandonRate =
+    totalCarts > 0 ? (abandoned.length / totalCarts) * 100 : 0;
 
   // Funnel : paniers créés → commandes créées → commandes payées.
   const steps = [
@@ -41,7 +49,11 @@ export default async function PaniersPage() {
 
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-4">
-        <Kpi label="Taux de conversion" value={`${convRate.toFixed(0)}%`} highlight />
+        <Kpi
+          label="Taux de conversion"
+          value={`${convRate.toFixed(0)}%`}
+          highlight
+        />
         <Kpi label="Taux d'abandon" value={`${abandonRate.toFixed(0)}%`} />
         <Kpi label="Paniers abandonnés" value={String(abandoned.length)} />
         <Kpi label="Valeur perdue" value={formatPrice(lostValue)} />
@@ -59,7 +71,9 @@ export default async function PaniersPage() {
               <div className="h-6 flex-1 overflow-hidden rounded-full bg-white/5">
                 <div
                   className="flex h-full items-center justify-end rounded-full bg-gold px-2 text-xs font-bold text-ink"
-                  style={{ width: `${Math.max(8, (s.value / maxStep) * 100)}%` }}
+                  style={{
+                    width: `${Math.max(8, (s.value / maxStep) * 100)}%`,
+                  }}
                 >
                   {s.value}
                 </div>
@@ -81,9 +95,16 @@ export default async function PaniersPage() {
         ) : (
           <ul className="mt-4 space-y-3">
             {abandoned.map((c) => (
-              <li key={c.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-ink-soft p-4 text-sm">
-                <span className="text-cream">{c.email ?? "(email inconnu)"}</span>
-                <span className="text-muted">{c.itemCount} article·s · {formatPrice(c.total)}</span>
+              <li
+                key={c.id}
+                className="flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-ink-soft p-4 text-sm"
+              >
+                <span className="text-cream">
+                  {c.email ?? "(email inconnu)"}
+                </span>
+                <span className="text-muted">
+                  {c.itemCount} article·s · {formatPrice(c.total)}
+                </span>
                 <span className="text-xs text-muted">
                   {new Date(c.updatedAt).toLocaleString("fr-FR")}
                 </span>
@@ -105,7 +126,8 @@ export default async function PaniersPage() {
         )}
         {carts.some((c) => c.status === "relancé") && (
           <p className="mt-3 text-xs text-muted">
-            {carts.filter((c) => c.status === "relancé").length} panier·s déjà relancé·s.
+            {carts.filter((c) => c.status === "relancé").length} panier·s déjà
+            relancé·s.
           </p>
         )}
       </section>
@@ -113,11 +135,25 @@ export default async function PaniersPage() {
   );
 }
 
-function Kpi({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function Kpi({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}) {
   return (
-    <div className={`rounded-2xl border p-5 ${highlight ? "border-gold/40 bg-gold/5" : "border-white/10 bg-ink-soft"}`}>
+    <div
+      className={`rounded-2xl border p-5 ${highlight ? "border-gold/40 bg-gold/5" : "border-white/10 bg-ink-soft"}`}
+    >
       <p className="text-sm text-muted">{label}</p>
-      <p className={`mt-1 font-display text-2xl font-bold ${highlight ? "text-gold" : "text-cream"}`}>{value}</p>
+      <p
+        className={`mt-1 font-display text-2xl font-bold ${highlight ? "text-gold" : "text-cream"}`}
+      >
+        {value}
+      </p>
     </div>
   );
 }

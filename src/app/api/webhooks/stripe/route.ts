@@ -22,7 +22,10 @@ export async function POST(request: Request) {
 
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
-    return NextResponse.json({ error: "Signature manquante." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Signature manquante." },
+      { status: 400 },
+    );
   }
 
   const rawBody = await request.text();
@@ -40,7 +43,8 @@ export async function POST(request: Request) {
 
   switch (event.type) {
     case "checkout.session.completed": {
-      const session = event.data.object as import("stripe").Stripe.Checkout.Session;
+      const session = event.data
+        .object as import("stripe").Stripe.Checkout.Session;
       const reference = session.client_reference_id;
       if (reference) {
         await updateOrderStatus(reference, "payée");
@@ -48,7 +52,8 @@ export async function POST(request: Request) {
       break;
     }
     case "checkout.session.expired": {
-      const session = event.data.object as import("stripe").Stripe.Checkout.Session;
+      const session = event.data
+        .object as import("stripe").Stripe.Checkout.Session;
       if (session.client_reference_id) {
         await updateOrderStatus(session.client_reference_id, "annulée");
       }

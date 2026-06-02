@@ -2,7 +2,14 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, BellOff, Bell, Eye, Clock, Volume2 } from "lucide-react";
+import {
+  AlertTriangle,
+  BellOff,
+  Bell,
+  Eye,
+  Clock,
+  Volume2,
+} from "lucide-react";
 import { advanceOrderStatus } from "@/app/actions";
 import { formatPrice } from "@/lib/utils";
 import {
@@ -30,8 +37,8 @@ const COLUMNS: { status: string; label: string; cta: string }[] = [
   { status: "prête", label: "Prêtes", cta: "Livrée" },
 ];
 
-const ACK_KEY = "nkulu-service-ack";
-const MODE_KEY = "nkulu-service-mode";
+const ACK_KEY = "afromk-service-ack";
+const MODE_KEY = "afromk-service-mode";
 
 type AlertMode = "voix" | "bip" | "muet";
 
@@ -52,7 +59,8 @@ function beep() {
   try {
     const Ctx =
       window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      (window as unknown as { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext;
     const ctx = new Ctx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -119,7 +127,8 @@ export function ServiceBoard({
   }
   function cycleMode() {
     setMode((m) => {
-      const next: AlertMode = m === "voix" ? "bip" : m === "bip" ? "muet" : "voix";
+      const next: AlertMode =
+        m === "voix" ? "bip" : m === "bip" ? "muet" : "voix";
       try {
         window.localStorage.setItem(MODE_KEY, next);
       } catch {
@@ -135,7 +144,12 @@ export function ServiceBoard({
       orders.map((o) => ({
         order: o,
         alert: computeServiceAlert(
-          { status: o.status, dueAtMs: o.dueAtMs, enteredAtMs: o.enteredAtMs, nowMs: now },
+          {
+            status: o.status,
+            dueAtMs: o.dueAtMs,
+            enteredAtMs: o.enteredAtMs,
+            nowMs: now,
+          },
           thresholds,
         ),
         acknowledged: ack.has(`${o.reference}:${o.status}`),
@@ -144,9 +158,13 @@ export function ServiceBoard({
   );
 
   const lateCount = evaluated.filter((e) => e.alert.level === "late").length;
-  const stagnantCount = evaluated.filter((e) => e.alert.level === "stagnant").length;
+  const stagnantCount = evaluated.filter(
+    (e) => e.alert.level === "stagnant",
+  ).length;
   const unackList = evaluated.filter(
-    (e) => (e.alert.level === "late" || e.alert.level === "stagnant") && !e.acknowledged,
+    (e) =>
+      (e.alert.level === "late" || e.alert.level === "stagnant") &&
+      !e.acknowledged,
   );
   const unack = unackList.length;
 
@@ -204,7 +222,8 @@ export function ServiceBoard({
             ) : (
               <BellOff className="h-4 w-4" />
             )}
-            Alerte : {mode === "voix" ? "Voix" : mode === "bip" ? "Bip" : "Muet"}
+            Alerte :{" "}
+            {mode === "voix" ? "Voix" : mode === "bip" ? "Bip" : "Muet"}
           </button>
           <span className="text-sm text-muted">
             {evaluated.length} active(s) · maj 20 s
@@ -252,7 +271,9 @@ export function ServiceBoard({
           return (
             <div key={col.status} className="flex flex-col">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="font-display text-lg font-semibold text-cream">{col.label}</h2>
+                <h2 className="font-display text-lg font-semibold text-cream">
+                  {col.label}
+                </h2>
                 <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-cream">
                   {list.length}
                 </span>
@@ -299,7 +320,10 @@ function Card({
   onAck: () => void;
 }) {
   const alarm = level === "late" || level === "stagnant";
-  const minutes = Math.max(0, Math.floor((Date.now() - order.enteredAtMs) / 60000));
+  const minutes = Math.max(
+    0,
+    Math.floor((Date.now() - order.enteredAtMs) / 60000),
+  );
 
   const border =
     level === "late"
@@ -320,7 +344,10 @@ function Card({
       className={`${active ? "alert-rotating" : ""} ${active && level === "late" ? "alert-glow" : ""}`}
       style={
         active
-          ? ({ "--alert-color": alertColor, "--alert-speed": alertSpeed } as React.CSSProperties)
+          ? ({
+              "--alert-color": alertColor,
+              "--alert-speed": alertSpeed,
+            } as React.CSSProperties)
           : undefined
       }
     >
@@ -329,11 +356,15 @@ function Card({
       >
         <div className="flex items-center justify-between">
           <span className="font-mono text-sm text-gold">{order.reference}</span>
-          <span className={`text-xs ${level === "late" ? "text-red-300" : "text-muted"}`}>
+          <span
+            className={`text-xs ${level === "late" ? "text-red-300" : "text-muted"}`}
+          >
             {minutes} min
           </span>
         </div>
-        <p className="mt-1 text-sm font-medium text-cream">{order.customerName}</p>
+        <p className="mt-1 text-sm font-medium text-cream">
+          {order.customerName}
+        </p>
         <ul className="mt-2 space-y-0.5 text-sm text-cream/80">
           {order.items.map((i, idx) => (
             <li key={idx}>
@@ -345,7 +376,9 @@ function Card({
         {alarm && (
           <div
             className={`mt-2 flex items-center justify-between rounded-lg px-2 py-1 text-xs ${
-              level === "late" ? "bg-red-500/15 text-red-200" : "bg-orange-500/15 text-orange-200"
+              level === "late"
+                ? "bg-red-500/15 text-red-200"
+                : "bg-orange-500/15 text-orange-200"
             }`}
           >
             <span className="inline-flex items-center gap-1">
@@ -364,7 +397,9 @@ function Card({
         )}
 
         <div className="mt-3 flex items-center justify-between">
-          <span className="font-display font-bold text-cream">{formatPrice(order.total)}</span>
+          <span className="font-display font-bold text-cream">
+            {formatPrice(order.total)}
+          </span>
           <form action={advanceOrderStatus}>
             <input type="hidden" name="reference" value={order.reference} />
             <input type="hidden" name="current" value={order.status} />

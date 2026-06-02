@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ShoppingBag, Pencil, MessageCircle, Send } from "lucide-react";
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Pencil,
+  MessageCircle,
+  Send,
+} from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
 import { placeOrder, checkPromo, checkDelivery } from "@/app/actions";
@@ -23,14 +28,16 @@ const TIPS = [0, 1, 2, 5];
 export default function CommanderPage() {
   const { items, totalPrice, clear, cartId } = useCart();
   const { choice, clearChoice } = useOrderChoice();
-  const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
 
   const [promo, setPromo] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [promoMsg, setPromoMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [promoMsg, setPromoMsg] = useState<{
+    ok: boolean;
+    text: string;
+  } | null>(null);
   const [tip, setTip] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
 
@@ -98,7 +105,8 @@ export default function CommanderPage() {
     const result = await placeOrder(null, formData);
     if (result.ok && result.reference) {
       clear();
-      router.push(`/commande/${result.reference}`);
+      clearChoice();
+      window.location.assign(`/commande/${result.reference}`);
       return;
     }
     setErrors(result.errors ?? {});
@@ -109,7 +117,10 @@ export default function CommanderPage() {
   return (
     <main className="min-h-screen bg-ink pb-20 pt-28">
       <div className="container-page max-w-5xl">
-        <Link href="/menu" className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-gold">
+        <Link
+          href="/menu"
+          className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-gold"
+        >
           <ArrowLeft className="h-4 w-4" />
           Retour au menu
         </Link>
@@ -121,7 +132,9 @@ export default function CommanderPage() {
           <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-ink-soft p-12 text-center">
             <ShoppingBag className="h-12 w-12 text-muted" />
             <p className="text-muted">Votre panier est vide.</p>
-            <Link href="/menu" className="btn-primary">Voir le menu</Link>
+            <Link href="/menu" className="btn-primary">
+              Voir le menu
+            </Link>
           </div>
         ) : !choice ? (
           /* ÉTAPE 1 — mode + calendrier (entrée de commande) */
@@ -147,20 +160,39 @@ export default function CommanderPage() {
             <div className="mt-8 grid gap-10 lg:grid-cols-2">
               {/* Récap */}
               <section aria-label="Récapitulatif">
-                <h2 className="font-display text-xl font-semibold text-cream">Récapitulatif</h2>
+                <h2 className="font-display text-xl font-semibold text-cream">
+                  Récapitulatif
+                </h2>
                 <ul className="mt-4 divide-y divide-white/10 rounded-2xl border border-white/10 bg-ink-soft p-5">
                   {items.map((item) => (
-                    <li key={item.lineId} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+                    <li
+                      key={item.lineId}
+                      className="flex items-center gap-4 py-3 first:pt-0 last:pb-0"
+                    >
                       <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
-                        <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
+                        <Image
+                          src={item.image}
+                          alt={item.name}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-cream">{item.name}</p>
                         {item.options.length > 0 && (
-                          <p className="text-xs text-muted">{item.options.map((o) => o.label).join(", ")}</p>
+                          <p className="text-xs text-muted">
+                            {item.options.map((o) => o.label).join(", ")}
+                          </p>
                         )}
-                        {item.note && <p className="text-xs italic text-muted">« {item.note} »</p>}
-                        <p className="text-sm text-muted">{item.quantity} × {formatPrice(item.unitPrice)}</p>
+                        {item.note && (
+                          <p className="text-xs italic text-muted">
+                            « {item.note} »
+                          </p>
+                        )}
+                        <p className="text-sm text-muted">
+                          {item.quantity} × {formatPrice(item.unitPrice)}
+                        </p>
                       </div>
                       <span className="font-display font-bold text-cream">
                         {formatPrice(item.unitPrice * item.quantity)}
@@ -170,26 +202,65 @@ export default function CommanderPage() {
                 </ul>
 
                 <div className="mt-4 flex gap-2">
-                  <input value={promo} onChange={(e) => setPromo(e.target.value.toUpperCase())} placeholder="Code promo" className={fieldClass} />
-                  <button type="button" onClick={applyPromo} className="shrink-0 rounded-xl border border-gold/40 px-4 text-sm font-semibold text-gold transition hover:bg-gold/10">Appliquer</button>
+                  <input
+                    value={promo}
+                    onChange={(e) => setPromo(e.target.value.toUpperCase())}
+                    placeholder="Code promo"
+                    className={fieldClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={applyPromo}
+                    className="shrink-0 rounded-xl border border-gold/40 px-4 text-sm font-semibold text-gold transition hover:bg-gold/10"
+                  >
+                    Appliquer
+                  </button>
                 </div>
-                {promoMsg && <p className={`mt-1 text-xs ${promoMsg.ok ? "text-green-400" : "text-red-400"}`}>{promoMsg.text}</p>}
+                {promoMsg && (
+                  <p
+                    className={`mt-1 text-xs ${promoMsg.ok ? "text-green-400" : "text-red-400"}`}
+                  >
+                    {promoMsg.text}
+                  </p>
+                )}
 
                 <div className="mt-4 space-y-2 rounded-2xl border border-gold/30 bg-gold/5 px-5 py-4 text-sm">
-                  <div className="flex justify-between text-cream/80"><span>Sous-total</span><span>{formatPrice(totalPrice)}</span></div>
-                  {discount > 0 && <div className="flex justify-between text-green-400"><span>Remise{promo ? ` (${promo})` : ""}</span><span>− {formatPrice(discount)}</span></div>}
-                  {fee > 0 && <div className="flex justify-between text-cream/80"><span>Livraison</span><span>{formatPrice(fee)}</span></div>}
-                  {tip > 0 && <div className="flex justify-between text-cream/80"><span>Pourboire</span><span>{formatPrice(tip)}</span></div>}
+                  <div className="flex justify-between text-cream/80">
+                    <span>Sous-total</span>
+                    <span>{formatPrice(totalPrice)}</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-green-400">
+                      <span>Remise{promo ? ` (${promo})` : ""}</span>
+                      <span>− {formatPrice(discount)}</span>
+                    </div>
+                  )}
+                  {fee > 0 && (
+                    <div className="flex justify-between text-cream/80">
+                      <span>Livraison</span>
+                      <span>{formatPrice(fee)}</span>
+                    </div>
+                  )}
+                  {tip > 0 && (
+                    <div className="flex justify-between text-cream/80">
+                      <span>Pourboire</span>
+                      <span>{formatPrice(tip)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between border-t border-white/10 pt-2 font-display text-2xl font-bold text-gold">
-                    <span className="text-base text-cream">Total</span><span>{formatPrice(total)}</span>
+                    <span className="text-base text-cream">Total</span>
+                    <span>{formatPrice(total)}</span>
                   </div>
                 </div>
 
                 <div className="mt-4 rounded-2xl border border-white/10 bg-ink-soft p-5">
-                  <p className="text-sm font-semibold text-cream">Commander par messagerie</p>
+                  <p className="text-sm font-semibold text-cream">
+                    Commander par messagerie
+                  </p>
                   <p className="mt-1 text-xs leading-5 text-muted">
                     Le message reprend le panier, le créneau et le total estimé.
-                    Vous confirmez ensuite vos coordonnées dans l&apos;application.
+                    Vous confirmez ensuite vos coordonnées dans
+                    l&apos;application.
                   </p>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <a
@@ -216,7 +287,9 @@ export default function CommanderPage() {
 
               {/* Coordonnées */}
               <section aria-label="Vos coordonnées">
-                <h2 className="font-display text-xl font-semibold text-cream">Vos coordonnées</h2>
+                <h2 className="font-display text-xl font-semibold text-cream">
+                  Vos coordonnées
+                </h2>
                 <form action={action} className="mt-4 space-y-4">
                   <Field id="name" label="Nom complet" error={errors.name} />
                   <Field
@@ -242,30 +315,67 @@ export default function CommanderPage() {
                       }
                     }}
                   />
-                  <Field id="phone" label="Téléphone" type="tel" error={errors.phone} />
+                  <Field
+                    id="phone"
+                    label="Téléphone"
+                    type="tel"
+                    error={errors.phone}
+                  />
                   {choice.fulfillment === "livraison" && (
-                    <Field id="address" label="Adresse de livraison" error={errors.address} />
+                    <Field
+                      id="address"
+                      label="Adresse de livraison"
+                      error={errors.address}
+                    />
                   )}
                   <div>
-                    <span className="mb-1.5 block text-sm text-cream/80">Pourboire</span>
+                    <span className="mb-1.5 block text-sm text-cream/80">
+                      Pourboire
+                    </span>
                     <div className="flex gap-2">
                       {TIPS.map((t) => (
-                        <button key={t} type="button" onClick={() => setTip(t)}
-                          className={`flex-1 rounded-xl border px-3 py-2 text-sm transition ${tip === t ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"}`}>
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setTip(t)}
+                          className={`flex-1 rounded-xl border px-3 py-2 text-sm transition ${tip === t ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"}`}
+                        >
                           {t === 0 ? "Aucun" : `${t} €`}
                         </button>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <label htmlFor="notes" className="mb-1.5 block text-sm text-cream/80">Notes (optionnel)</label>
-                    <textarea id="notes" name="notes" rows={2} className={fieldClass} />
+                    <label
+                      htmlFor="notes"
+                      className="mb-1.5 block text-sm text-cream/80"
+                    >
+                      Notes (optionnel)
+                    </label>
+                    <textarea
+                      id="notes"
+                      name="notes"
+                      rows={2}
+                      className={fieldClass}
+                    />
                   </div>
-                  {globalError && <p role="alert" className="text-sm text-red-400">{globalError}</p>}
-                  <button type="submit" disabled={submitting} className="btn-primary w-full disabled:opacity-60">
-                    {submitting ? "Validation…" : `Valider — ${formatPrice(total)}`}
+                  {globalError && (
+                    <p role="alert" className="text-sm text-red-400">
+                      {globalError}
+                    </p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-primary w-full disabled:opacity-60"
+                  >
+                    {submitting
+                      ? "Validation…"
+                      : `Valider — ${formatPrice(total)}`}
                   </button>
-                  <p className="text-center text-xs text-muted">Le paiement s&apos;effectue à l&apos;étape suivante.</p>
+                  <p className="text-center text-xs text-muted">
+                    Le paiement s&apos;effectue à l&apos;étape suivante.
+                  </p>
                 </form>
               </section>
             </div>
@@ -291,7 +401,9 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm text-cream/80">{label}</label>
+      <label htmlFor={id} className="mb-1.5 block text-sm text-cream/80">
+        {label}
+      </label>
       <input
         id={id}
         name={id}

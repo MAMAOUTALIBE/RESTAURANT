@@ -16,7 +16,10 @@ export function ReorderButton({ reference }: { reference: string }) {
     setLoading(true);
     const lines = await getReorderItems(reference);
     for (const l of lines) {
-      const optionsTotal = (l.options ?? []).reduce((s, o) => s + o.priceDelta, 0);
+      const optionsTotal = (l.options ?? []).reduce(
+        (s, o) => s + o.priceDelta,
+        0,
+      );
       addItem(
         {
           dishId: l.id,

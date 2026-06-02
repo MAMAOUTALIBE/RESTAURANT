@@ -22,7 +22,9 @@ export async function startCheckout(order: Order): Promise<CheckoutResult> {
   if (!secret) {
     return { simulated: true };
   }
-  const transferData = await getRestaurantConnectTransferData(order.restaurantId);
+  const transferData = await getRestaurantConnectTransferData(
+    order.restaurantId,
+  );
 
   // Import dynamique : Stripe n'est chargé que si une clé est présente.
   const { default: Stripe } = await import("stripe");

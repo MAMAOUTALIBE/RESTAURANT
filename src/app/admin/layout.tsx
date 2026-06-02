@@ -6,6 +6,7 @@ import { logout } from "@/app/actions";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { OrderNotifier } from "@/components/admin/OrderNotifier";
 import { CommandPalette } from "@/components/admin/CommandPalette";
+import { siteConfig } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +22,12 @@ export default async function AdminLayout({
   return (
     <div className="min-h-screen bg-ink lg:flex">
       {/* Sidebar */}
-      <aside className="border-b border-white/10 bg-ink-soft print:hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r">
+      <aside className="border-b border-white/10 bg-ink-soft lg:flex lg:w-64 lg:shrink-0 lg:flex-col lg:border-b-0 lg:border-r print:hidden">
         <div className="flex items-center gap-2 px-5 pb-1 pt-5">
           <ShieldCheck className="h-6 w-6 text-gold" />
-          <span className="font-display text-lg font-bold text-cream">CRM N&apos;KULU</span>
+          <span className="font-display text-lg font-bold text-cream">
+            CRM {siteConfig.shortName}
+          </span>
         </div>
         <AdminSidebar />
       </aside>

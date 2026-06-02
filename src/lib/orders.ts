@@ -16,6 +16,7 @@ import { formatPrice } from "@/lib/utils";
 import { sendEmail } from "@/lib/email";
 import { sendSms } from "@/lib/sms";
 import { getDefaultRestaurant } from "@/lib/restaurants";
+import { siteConfig } from "@/lib/config";
 
 interface CreateOrderInput {
   customer: Order["customer"];
@@ -28,12 +29,129 @@ interface CreateOrderInput {
 }
 
 type OrderRow = Prisma.OrderGetPayload<{ include: { items: true } }>;
+type DishWithOptions = Prisma.DishGetPayload<{
+  include: {
+    optionGroups: {
+      include: { options: true };
+    };
+  };
+}>;
 
 export class OrderCreationError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "OrderCreationError";
   }
+}
+
+function roundCurrency(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+function normalizeQuantity(quantity: number): number {
+  if (!Number.isFinite(quantity) || quantity < 1) {
+    throw new OrderCreationError("Quantité invalide.");
+  }
+  return Math.floor(quantity);
+}
+
+function normalizeNote(note?: string): string | undefined {
+  const trimmed = note?.trim();
+  return trimmed ? trimmed.slice(0, 280) : undefined;
+}
+
+function normalizeLineOptions(
+  dish: DishWithOptions,
+  requested: CartLineOption[] = [],
+): CartLineOption[] | undefined {
+  const selectedByGroup = new Map<string, CartLineOption[]>();
+
+  for (const option of requested) {
+    const group = dish.optionGroups.find((g) => g.id === option.groupId);
+    if (!group) {
+      throw new OrderCreationError(
+        `Option invalide pour ${dish.name}. Rechargez le menu et réessayez.`,
+      );
+    }
+
+    const dbOption = group.options.find((o) => o.id === option.optionId);
+    if (!dbOption) {
+      throw new OrderCreationError(
+        `Option indisponible pour ${dish.name}. Rechargez le menu et réessayez.`,
+      );
+    }
+
+    const normalized: CartLineOption = {
+      groupId: group.id,
+      optionId: dbOption.id,
+      label: dbOption.name,
+      priceDelta: roundCurrency(dbOption.priceDelta),
+    };
+    selectedByGroup.set(group.id, [
+      ...(selectedByGroup.get(group.id) ?? []),
+      normalized,
+    ]);
+  }
+
+  for (const group of dish.optionGroups) {
+    const selected = selectedByGroup.get(group.id) ?? [];
+    if (group.required && selected.length === 0) {
+      throw new OrderCreationError(
+        `Choisissez : ${group.name} pour ${dish.name}.`,
+      );
+    }
+    if (group.type === "single" && selected.length > 1) {
+      throw new OrderCreationError(
+        `Une seule option possible pour ${group.name}.`,
+      );
+    }
+  }
+
+  const normalized = Array.from(selectedByGroup.values()).flat();
+  return normalized.length > 0 ? normalized : undefined;
+}
+
+async function normalizeOrderItems(items: OrderLine[]): Promise<OrderLine[]> {
+  const slugs = [...new Set(items.map((i) => i.id))];
+  const dishes = await prisma.dish.findMany({
+    where: { slug: { in: slugs } },
+    include: {
+      optionGroups: {
+        orderBy: { sortOrder: "asc" },
+        include: { options: { orderBy: { sortOrder: "asc" } } },
+      },
+    },
+  });
+  const bySlug = new Map(dishes.map((dish) => [dish.slug, dish]));
+
+  return items.map((item) => {
+    const dish = bySlug.get(item.id);
+    if (!dish) {
+      throw new OrderCreationError(
+        `Plat introuvable : ${item.name || item.id}.`,
+      );
+    }
+    if (!dish.available) {
+      throw new OrderCreationError(
+        `${dish.name} est actuellement indisponible.`,
+      );
+    }
+
+    const options = normalizeLineOptions(dish, item.options ?? []);
+    const optionsTotal = (options ?? []).reduce(
+      (sum, option) => sum + option.priceDelta,
+      0,
+    );
+
+    return {
+      id: dish.slug,
+      name: dish.name,
+      price: roundCurrency(dish.price + optionsTotal),
+      quantity: normalizeQuantity(item.quantity),
+      options,
+      note: normalizeNote(item.note),
+    };
+  });
 }
 
 /** Convertit une ligne Prisma en type métier `Order`. */
@@ -82,7 +200,10 @@ export async function createOrder({
   scheduledAt,
 }: CreateOrderInput): Promise<Order> {
   const restaurant = await getDefaultRestaurant();
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const normalizedItems = await normalizeOrderItems(items);
+  const subtotal = roundCurrency(
+    normalizedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+  );
 
   let discount = 0;
   let appliedCode: string | undefined;
@@ -110,7 +231,7 @@ export async function createOrder({
 
   // Temps de préparation = max des temps des plats (préparés en parallèle).
   const dishes = await prisma.dish.findMany({
-    where: { slug: { in: items.map((i) => i.id) } },
+    where: { slug: { in: normalizedItems.map((i) => i.id) } },
     select: { prepMinutes: true },
   });
   const prepTimeMin = dishes.length
@@ -138,12 +259,14 @@ export async function createOrder({
       total,
       events: { create: { status: "en attente", actor: "client" } },
       items: {
-        create: items.map((i) => ({
+        create: normalizedItems.map((i) => ({
           dishId: i.id,
           name: i.name,
           price: i.price,
           quantity: i.quantity,
-          options: i.options ? (i.options as unknown as Prisma.InputJsonValue) : undefined,
+          options: i.options
+            ? (i.options as unknown as Prisma.InputJsonValue)
+            : undefined,
           note: i.note,
         })),
       },
@@ -169,7 +292,7 @@ export async function createOrder({
   // Automation : confirmation par SMS.
   await sendSms({
     to: customer.phone,
-    body: `N'KULU : votre commande ${ref} (${formatPrice(total)}) est bien reçue. Merci ${customer.name} !`,
+    body: `${siteConfig.shortName} : votre commande ${ref} (${formatPrice(total)}) est bien reçue. Merci ${customer.name} !`,
   });
 
   return toOrder(row);
@@ -231,10 +354,13 @@ export async function updateOrderStatus(
           : `Votre commande ${reference} a été livrée. Bon appétit !`;
       await sendEmail({
         to: row.customerEmail,
-        subject: `N'KULU — commande ${reference}`,
+        subject: `${siteConfig.shortName} — commande ${reference}`,
         html: `<p>${msg}</p>`,
       });
-      await sendSms({ to: row.customerPhone, body: `N'KULU : ${msg}` });
+      await sendSms({
+        to: row.customerPhone,
+        body: `${siteConfig.shortName} : ${msg}`,
+      });
     }
     return toOrder(row);
   } catch {

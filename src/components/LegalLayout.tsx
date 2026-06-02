@@ -24,8 +24,10 @@ export function LegalLayout({
         <h1 className="mt-6 font-display text-3xl font-bold text-cream sm:text-4xl">
           {title}
         </h1>
-        <p className="mt-2 text-sm text-muted">Dernière mise à jour : {updatedAt}</p>
-        <div className="mt-8 space-y-6 leading-relaxed text-cream/85 [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-cream [&_a]:text-gold [&_a]:underline">
+        <p className="mt-2 text-sm text-muted">
+          Dernière mise à jour : {updatedAt}
+        </p>
+        <div className="mt-8 space-y-6 leading-relaxed text-cream/85 [&_a]:text-gold [&_a]:underline [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-cream">
           {children}
         </div>
       </div>

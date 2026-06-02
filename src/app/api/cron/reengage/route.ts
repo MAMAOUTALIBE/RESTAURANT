@@ -4,6 +4,7 @@ import { needsReengagement } from "@/lib/segmentation";
 import { sendEmail } from "@/lib/email";
 import { sendSms } from "@/lib/sms";
 import { prisma } from "@/lib/prisma";
+import { siteConfig } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -30,9 +31,9 @@ export async function GET(request: Request) {
   for (const c of targets) {
     await sendEmail({
       to: c.email,
-      subject: "Vous nous manquez chez N'KULU 🍲",
+      subject: `Vous nous manquez chez ${siteConfig.shortName} 🍲`,
       html: `<h1>Ça fait un moment ${c.name ?? ""} !</h1>
-        <p>Revenez savourer nos plats : profitez de <strong>-10%</strong> avec le code <strong>AFRO10</strong>.</p>`,
+        <p>Revenez savourer nos plats : profitez de <strong>-10%</strong> avec le code <strong>AFROMK10</strong>.</p>`,
     });
     const phone = await prisma.customer.findUnique({
       where: { email: c.email },
@@ -41,7 +42,7 @@ export async function GET(request: Request) {
     if (phone?.phone) {
       await sendSms({
         to: phone.phone,
-        body: "N'KULU : vous nous manquez ! -10% avec le code AFRO10 sur votre prochaine commande.",
+        body: `${siteConfig.shortName} : vous nous manquez ! -10% avec le code AFROMK10 sur votre prochaine commande.`,
       });
     }
   }

@@ -15,7 +15,7 @@ export const navLinks: NavLink[] = [
   { label: "Commander", href: "/commander" },
   { label: "Réservation", href: "/reservation" },
   { label: "Traiteur", href: "/traiteur" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
 ];
 
 /** Liens plus complets pour les zones secondaires comme le footer. */
@@ -23,7 +23,7 @@ export const footerLinks: NavLink[] = [
   { label: "Accueil", href: "/" },
   { label: "À propos", href: "/#a-propos" },
   ...navLinks,
-  { label: "Avis", href: "/#avis" },
+  { label: "Avis", href: "/#avis-clients" },
 ];
 
 /** Avantages listés dans la section QR code. */

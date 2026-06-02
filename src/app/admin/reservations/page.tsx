@@ -6,9 +6,9 @@ export const dynamic = "force-dynamic";
 
 const STATUSES = ["en attente", "confirmée", "annulée"];
 const statusStyles: Record<string, string> = {
-  "confirmée": "bg-green-500/15 text-green-300",
+  confirmée: "bg-green-500/15 text-green-300",
   "en attente": "bg-gold/15 text-gold",
-  "annulée": "bg-red-500/15 text-red-300",
+  annulée: "bg-red-500/15 text-red-300",
 };
 
 export default async function AdminReservationsPage({
@@ -33,7 +33,9 @@ export default async function AdminReservationsPage({
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-bold text-cream">Réservations</h1>
+        <h1 className="font-display text-3xl font-bold text-cream">
+          Réservations
+        </h1>
         <form action="/admin/reservations" className="flex gap-2">
           <select
             name="statut"
@@ -42,10 +44,14 @@ export default async function AdminReservationsPage({
           >
             <option value="">Tous les statuts</option>
             {STATUSES.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>
+                {s}
+              </option>
             ))}
           </select>
-          <button type="submit" className="btn-primary px-4">Filtrer</button>
+          <button type="submit" className="btn-primary px-4">
+            Filtrer
+          </button>
         </form>
       </div>
 
@@ -103,7 +109,9 @@ export default async function AdminReservationsPage({
                         className="rounded-lg border border-white/10 bg-ink px-2 py-1.5 text-xs text-cream focus:border-gold/60 focus:outline-none"
                       >
                         {STATUSES.map((s) => (
-                          <option key={s} value={s}>{s}</option>
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
                         ))}
                       </select>
                       <button

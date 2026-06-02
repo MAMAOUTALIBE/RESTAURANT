@@ -37,7 +37,9 @@ export const orderSchema = z.object({
   address: z.string().optional(),
   notes: z.string().optional(),
   promoCode: z.string().optional(),
-  fulfillment: z.enum(["livraison", "emporter", "surplace"]).default("emporter"),
+  fulfillment: z
+    .enum(["livraison", "emporter", "surplace"])
+    .default("emporter"),
   postalCode: z.string().optional(),
   scheduledAt: z.string().optional(),
   tip: z.coerce.number().min(0).default(0),
@@ -61,7 +63,11 @@ export const cateringSchema = z.object({
   email: z.string().email("Adresse email invalide."),
   phone: z.string().min(6, "Numéro de téléphone invalide."),
   eventDate: z.string().optional(),
-  guests: z.coerce.number().int().min(1, "Nombre de convives requis.").max(2000),
+  guests: z.coerce
+    .number()
+    .int()
+    .min(1, "Nombre de convives requis.")
+    .max(2000),
   message: z.string().min(10, "Décrivez votre projet (10 caractères min)."),
 });
 

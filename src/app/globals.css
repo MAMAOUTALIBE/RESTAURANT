@@ -74,12 +74,22 @@ body {
   }
 }
 @keyframes nk-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.45; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }
 @keyframes nk-glow {
-  0%, 100% { box-shadow: 0 0 0 0 var(--alert-color, #ef4444); }
-  50% { box-shadow: 0 0 22px 2px var(--alert-color, #ef4444); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--alert-color, #ef4444);
+  }
+  50% {
+    box-shadow: 0 0 22px 2px var(--alert-color, #ef4444);
+  }
 }
 /* Lumière tournante autour d'une carte (couleur = var --alert-color). */
 .alert-rotating {

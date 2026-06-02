@@ -1,24 +1,24 @@
 const whatsappOrderNumber =
-  process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33123456789";
+  process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33758426563";
 const telegramOrderUsername =
-  process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "";
+  process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "afromk_loboko";
 const telegramUrl = telegramOrderUsername
   ? `https://t.me/${telegramOrderUsername.replace(/^@/, "")}`
   : "";
 
 /** Configuration centrale du site (SEO, QR code, emails, coordonnées). */
 export const siteConfig = {
-  name: "N'KULU — Saveurs Africaines",
-  shortName: "N'KULU",
+  name: "AFRO MK LO BOKO",
+  shortName: "AFRO MK",
   description:
-    "Cuisine africaine authentique : recettes traditionnelles préparées avec amour, ingrédients frais et épices d'exception. Commandez en ligne.",
+    "La saveur de l'Afrique dans votre assiette : recettes africaines généreuses, ingrédients frais et commande en ligne.",
   /** URL publique (override en prod via NEXT_PUBLIC_SITE_URL). */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "fr_FR",
   contact: {
-    phone: "+33 1 23 45 67 89",
-    email: "contact@nkulu-saveurs.fr",
-    address: "12 rue des Saveurs, 75011 Paris",
+    phone: "07 58 42 65 63",
+    email: "contact@afromkloboko.fr",
+    address: "5 Rue Jules Vallès, 91260 Juvisy-sur-Orge",
   },
   messaging: {
     whatsappOrderNumber,

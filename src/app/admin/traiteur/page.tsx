@@ -8,7 +8,7 @@ const STATUSES = ["nouveau", "devis envoyé", "gagné", "perdu"];
 const statusStyles: Record<string, string> = {
   nouveau: "bg-gold/15 text-gold",
   "devis envoyé": "bg-blue-500/15 text-blue-300",
-  "gagné": "bg-green-500/15 text-green-300",
+  gagné: "bg-green-500/15 text-green-300",
   perdu: "bg-red-500/15 text-red-300",
 };
 
@@ -37,7 +37,9 @@ export default async function AdminTraiteurPage() {
             key={c.status}
             className="rounded-2xl border border-white/10 bg-ink-soft p-4"
           >
-            <p className="text-xs uppercase tracking-wide text-muted">{c.status}</p>
+            <p className="text-xs uppercase tracking-wide text-muted">
+              {c.status}
+            </p>
             <p className="mt-1 font-display text-2xl font-bold text-cream">
               {c.count}
             </p>
@@ -52,7 +54,10 @@ export default async function AdminTraiteurPage() {
       ) : (
         <ul className="space-y-3">
           {requests.map((c) => (
-            <li key={c.id} className="rounded-2xl border border-white/10 bg-ink-soft p-5">
+            <li
+              key={c.id}
+              className="rounded-2xl border border-white/10 bg-ink-soft p-5"
+            >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <Link
                   href={`/admin/clients/${encodeURIComponent(c.email)}`}
@@ -73,10 +78,17 @@ export default async function AdminTraiteurPage() {
               </div>
               <p className="mt-2 text-sm text-cream/80">{c.message}</p>
               <div className="mt-3 flex items-center justify-between gap-3">
-                <span className="text-xs text-muted">{c.email} · {c.phone}</span>
-                <form action={adminSetCateringStatus} className="flex items-center gap-2">
+                <span className="text-xs text-muted">
+                  {c.email} · {c.phone}
+                </span>
+                <form
+                  action={adminSetCateringStatus}
+                  className="flex items-center gap-2"
+                >
                   <input type="hidden" name="id" value={c.id} />
-                  <label htmlFor={`cs-${c.id}`} className="sr-only">Statut</label>
+                  <label htmlFor={`cs-${c.id}`} className="sr-only">
+                    Statut
+                  </label>
                   <select
                     id={`cs-${c.id}`}
                     name="status"
@@ -84,7 +96,9 @@ export default async function AdminTraiteurPage() {
                     className="rounded-lg border border-white/10 bg-ink px-2 py-1.5 text-xs text-cream focus:border-gold/60 focus:outline-none"
                   >
                     {STATUSES.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
                     ))}
                   </select>
                   <button

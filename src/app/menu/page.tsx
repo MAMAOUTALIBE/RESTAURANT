@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Le Menu",
   description:
-    "Découvrez toute la carte N'KULU : entrées, plats africains, desserts et boissons.",
+    "Découvrez toute la carte AFRO MK LO BOKO : entrées, plats africains, desserts et boissons.",
 };
 
 export default async function MenuPage() {

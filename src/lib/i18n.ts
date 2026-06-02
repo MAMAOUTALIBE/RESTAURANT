@@ -9,7 +9,9 @@ export const dict: Record<Locale, Record<string, string>> = {
     "nav./commander": "Commander",
     "nav./reservation": "Réservation",
     "nav./traiteur": "Traiteur",
+    "nav./contact": "Contact",
     "nav.#avis": "Avis",
+    "nav./#avis-clients": "Avis",
     "nav.#contact": "Contact",
     "nav./#contact": "Contact",
     "cta.order": "Commander",
@@ -24,7 +26,9 @@ export const dict: Record<Locale, Record<string, string>> = {
     "nav./commander": "Order",
     "nav./reservation": "Booking",
     "nav./traiteur": "Catering",
+    "nav./contact": "Contact",
     "nav.#avis": "Reviews",
+    "nav./#avis-clients": "Reviews",
     "nav.#contact": "Contact",
     "nav./#contact": "Contact",
     "cta.order": "Order",
@@ -34,6 +38,10 @@ export const dict: Record<Locale, Record<string, string>> = {
   },
 };
 
-export function translate(locale: Locale, key: string, fallback?: string): string {
+export function translate(
+  locale: Locale,
+  key: string,
+  fallback?: string,
+): string {
   return dict[locale]?.[key] ?? fallback ?? key;
 }

@@ -1,12 +1,17 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { sendContactMessage, type ActionState } from "@/app/actions";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary disabled:opacity-60">
+    <button
+      type="submit"
+      disabled={pending}
+      className="btn-primary disabled:opacity-60"
+    >
       {pending ? "Envoi…" : "Envoyer le message"}
     </button>
   );
@@ -17,7 +22,7 @@ const fieldClass =
 
 /** Formulaire de contact relié à la Server Action. */
 export function ContactForm() {
-  const [state, formAction] = useFormState<ActionState | null, FormData>(
+  const [state, formAction] = useActionState<ActionState | null, FormData>(
     sendContactMessage,
     null,
   );
@@ -45,25 +50,46 @@ export function ContactForm() {
         className="absolute left-[-9999px] h-0 w-0 opacity-0"
       />
       <div>
-        <label htmlFor="contact-name" className="mb-1.5 block text-sm text-cream/80">
+        <label
+          htmlFor="contact-name"
+          className="mb-1.5 block text-sm text-cream/80"
+        >
           Nom
         </label>
-        <input id="contact-name" name="name" type="text" required className={fieldClass} />
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          required
+          className={fieldClass}
+        />
         {state?.errors?.name && (
           <p className="mt-1 text-xs text-red-400">{state.errors.name}</p>
         )}
       </div>
       <div>
-        <label htmlFor="contact-email" className="mb-1.5 block text-sm text-cream/80">
+        <label
+          htmlFor="contact-email"
+          className="mb-1.5 block text-sm text-cream/80"
+        >
           Email
         </label>
-        <input id="contact-email" name="email" type="email" required className={fieldClass} />
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          required
+          className={fieldClass}
+        />
         {state?.errors?.email && (
           <p className="mt-1 text-xs text-red-400">{state.errors.email}</p>
         )}
       </div>
       <div>
-        <label htmlFor="contact-message" className="mb-1.5 block text-sm text-cream/80">
+        <label
+          htmlFor="contact-message"
+          className="mb-1.5 block text-sm text-cream/80"
+        >
           Message
         </label>
         <textarea

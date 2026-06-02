@@ -8,7 +8,12 @@ const min = (n: number) => n * 60000;
 describe("computeServiceAlert", () => {
   it("ok quand l'échéance est loin et le statut récent", () => {
     const r = computeServiceAlert(
-      { status: "payée", dueAtMs: now + min(30), enteredAtMs: now - min(1), nowMs: now },
+      {
+        status: "payée",
+        dueAtMs: now + min(30),
+        enteredAtMs: now - min(1),
+        nowMs: now,
+      },
       TH,
     );
     expect(r.level).toBe("ok");
@@ -16,7 +21,12 @@ describe("computeServiceAlert", () => {
 
   it("imminent à moins de 5 min de l'échéance", () => {
     const r = computeServiceAlert(
-      { status: "payée", dueAtMs: now + min(3), enteredAtMs: now - min(1), nowMs: now },
+      {
+        status: "payée",
+        dueAtMs: now + min(3),
+        enteredAtMs: now - min(1),
+        nowMs: now,
+      },
       TH,
     );
     expect(r.level).toBe("imminent");
@@ -24,7 +34,12 @@ describe("computeServiceAlert", () => {
 
   it("late quand l'échéance est dépassée et pas prêt", () => {
     const r = computeServiceAlert(
-      { status: "en préparation", dueAtMs: now - min(2), enteredAtMs: now - min(1), nowMs: now },
+      {
+        status: "en préparation",
+        dueAtMs: now - min(2),
+        enteredAtMs: now - min(1),
+        nowMs: now,
+      },
       TH,
     );
     expect(r.level).toBe("late");
@@ -33,7 +48,12 @@ describe("computeServiceAlert", () => {
 
   it("stagnant si trop longtemps en préparation (>10 min)", () => {
     const r = computeServiceAlert(
-      { status: "en préparation", dueAtMs: now + min(60), enteredAtMs: now - min(12), nowMs: now },
+      {
+        status: "en préparation",
+        dueAtMs: now + min(60),
+        enteredAtMs: now - min(12),
+        nowMs: now,
+      },
       TH,
     );
     expect(r.level).toBe("stagnant");
@@ -42,7 +62,12 @@ describe("computeServiceAlert", () => {
 
   it("stagnant si une commande prête traîne (>5 min)", () => {
     const r = computeServiceAlert(
-      { status: "prête", dueAtMs: now - min(1), enteredAtMs: now - min(6), nowMs: now },
+      {
+        status: "prête",
+        dueAtMs: now - min(1),
+        enteredAtMs: now - min(6),
+        nowMs: now,
+      },
       TH,
     );
     expect(r.level).toBe("stagnant");

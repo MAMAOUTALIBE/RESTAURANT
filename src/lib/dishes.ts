@@ -19,7 +19,8 @@ function toDish(row: DishRow): Dish {
 export async function getDishes(): Promise<Dish[]> {
   const rows = await prisma.dish.findMany({
     where: { available: true },
-    orderBy: { sortOrder: "asc" },
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    distinct: ["slug"],
   });
   return rows.map(toDish);
 }
@@ -27,9 +28,13 @@ export async function getDishes(): Promise<Dish[]> {
 /** Données back-office du menu : catégories + plats (avec catégorie & options). */
 export async function getAdminMenuData() {
   const [categories, dishes] = await Promise.all([
-    prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),
+    prisma.category.findMany({
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      distinct: ["slug"],
+    }),
     prisma.dish.findMany({
-      orderBy: [{ sortOrder: "asc" }],
+      orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      distinct: ["slug"],
       include: {
         category: true,
         optionGroups: {
@@ -56,10 +61,12 @@ export interface MenuCategory {
 /** Menu public structuré par catégories (plats disponibles ou épuisés). */
 export async function getMenu(): Promise<MenuCategory[]> {
   const categories = await prisma.category.findMany({
-    orderBy: { sortOrder: "asc" },
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    distinct: ["slug"],
     include: {
       dishes: {
-        orderBy: { sortOrder: "asc" },
+        orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+        distinct: ["slug"],
         include: { _count: { select: { optionGroups: true } } },
       },
     },
@@ -80,15 +87,25 @@ export async function getMenu(): Promise<MenuCategory[]> {
 
 /** Données du menu pour le browser interactif : catégories + plats à plat. */
 export async function getMenuForBrowser() {
-  const [categories, rows] = await Promise.all([
-    prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),
-    prisma.dish.findMany({
-      orderBy: { sortOrder: "asc" },
-      include: { _count: { select: { optionGroups: true } } },
-    }),
-  ]);
+  const categories = await prisma.category.findMany({
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    distinct: ["slug"],
+  });
+  const categoryIds = categories.map((c) => c.id);
+
+  const rows = await prisma.dish.findMany({
+    where: { categoryId: { in: categoryIds } },
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    distinct: ["slug"],
+    include: { _count: { select: { optionGroups: true } } },
+  });
+
   return {
-    categories: categories.map((c) => ({ id: c.id, slug: c.slug, name: c.name })),
+    categories: categories.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      name: c.name,
+    })),
     dishes: rows
       .filter((d) => d.categoryId)
       .map((d) => ({
@@ -102,8 +119,9 @@ export async function getMenuForBrowser() {
 
 /** Fiche plat complète avec ses groupes d'options (pour la page détail). */
 export async function getDishWithOptions(slug: string) {
-  return prisma.dish.findUnique({
+  return prisma.dish.findFirst({
     where: { slug },
+    orderBy: { id: "asc" },
     include: {
       category: true,
       optionGroups: {

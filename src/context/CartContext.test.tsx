@@ -36,13 +36,17 @@ describe("CartContext", () => {
     act(() =>
       result.current.addItem({
         ...mafe,
-        options: [{ groupId: "g", optionId: "o1", label: "Riz", priceDelta: 0 }],
+        options: [
+          { groupId: "g", optionId: "o1", label: "Riz", priceDelta: 0 },
+        ],
       }),
     );
     act(() =>
       result.current.addItem({
         ...mafe,
-        options: [{ groupId: "g", optionId: "o2", label: "Frites", priceDelta: 1 }],
+        options: [
+          { groupId: "g", optionId: "o2", label: "Frites", priceDelta: 1 },
+        ],
       }),
     );
     expect(result.current.items).toHaveLength(2);
@@ -55,7 +59,9 @@ describe("CartContext", () => {
     act(() =>
       result.current.addItem({
         ...mafe,
-        options: [{ groupId: "g", optionId: "o3", label: "Avocat", priceDelta: 2 }],
+        options: [
+          { groupId: "g", optionId: "o3", label: "Avocat", priceDelta: 2 },
+        ],
       }),
     );
     expect(result.current.items[0].unitPrice).toBe(17);
@@ -72,7 +78,7 @@ describe("CartContext", () => {
   it("persiste le panier dans localStorage", () => {
     const { result } = renderHook(() => useCart(), { wrapper });
     act(() => result.current.addItem(mafe));
-    const stored = JSON.parse(localStorage.getItem("nkulu-cart") ?? "[]");
+    const stored = JSON.parse(localStorage.getItem("afromk-cart") ?? "[]");
     expect(stored).toHaveLength(1);
     expect(stored[0].dishId).toBe("mafe");
   });

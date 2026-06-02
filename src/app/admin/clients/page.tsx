@@ -32,7 +32,9 @@ export default async function ClientsPage({
         >
           <option value="">Tous les segments</option>
           {SEGMENTS.map((s) => (
-            <option key={s} value={s}>{s}</option>
+            <option key={s} value={s}>
+              {s}
+            </option>
           ))}
         </select>
         <button type="submit" className="btn-primary px-5">
@@ -72,7 +74,9 @@ export default async function ClientsPage({
                     <div className="text-xs text-muted">{c.email}</div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${segmentStyles[c.segment]}`}>
+                    <span
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${segmentStyles[c.segment]}`}
+                    >
                       {c.segment}
                     </span>
                   </td>

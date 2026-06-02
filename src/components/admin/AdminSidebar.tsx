@@ -23,7 +23,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/admin", label: "Tableau de bord", Icon: LayoutDashboard, exact: true },
+  {
+    href: "/admin",
+    label: "Tableau de bord",
+    Icon: LayoutDashboard,
+    exact: true,
+  },
   { href: "/admin/service", label: "Service", Icon: MonitorPlay },
   { href: "/admin/commandes", label: "Commandes", Icon: ShoppingBag },
   { href: "/admin/livraisons", label: "Livraisons", Icon: Bike },

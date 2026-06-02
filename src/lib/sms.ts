@@ -20,7 +20,9 @@ export async function sendSms({ to, body, whatsapp }: SmsInput) {
     : process.env.TWILIO_SMS_FROM;
 
   if (!sid || !token || !from) {
-    console.info(`[sms:simulation${whatsapp ? ":whatsapp" : ""}] → ${to} | ${body}`);
+    console.info(
+      `[sms:simulation${whatsapp ? ":whatsapp" : ""}] → ${to} | ${body}`,
+    );
     return { simulated: true as const };
   }
 

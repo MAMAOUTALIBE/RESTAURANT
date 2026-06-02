@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { ReviewForm } from "@/components/ReviewForm";
 import { getApprovedReviews } from "@/lib/reviews";
+import { siteConfig } from "@/lib/config";
 
 /** Section avis : note moyenne, avis approuvés et formulaire de dépôt. */
 export async function ReviewsSection() {
@@ -17,7 +18,7 @@ export async function ReviewsSection() {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Restaurant",
-              name: "N'KULU — Saveurs Africaines",
+              name: siteConfig.name,
               aggregateRating: {
                 "@type": "AggregateRating",
                 ratingValue: average.toFixed(1),
@@ -34,7 +35,7 @@ export async function ReviewsSection() {
               Avis clients
             </p>
             <h2 className="mt-2 font-display text-3xl font-bold text-cream sm:text-4xl">
-              Ils ont goûté, ils en parlent
+              Ils parlent de nous
             </h2>
             {count > 0 && (
               <div className="mt-3 flex items-center gap-2">
@@ -62,11 +63,18 @@ export async function ReviewsSection() {
                   <figure className="rounded-2xl border border-white/10 bg-ink-soft p-5">
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((n) => (
-                        <Star key={n} className={`h-4 w-4 ${n <= r.rating ? "fill-gold text-gold" : "text-white/20"}`} />
+                        <Star
+                          key={n}
+                          className={`h-4 w-4 ${n <= r.rating ? "fill-gold text-gold" : "text-white/20"}`}
+                        />
                       ))}
                     </div>
-                    <blockquote className="mt-2 text-sm text-cream/85">« {r.comment} »</blockquote>
-                    <figcaption className="mt-2 text-xs text-muted">— {r.name}</figcaption>
+                    <blockquote className="mt-2 text-sm text-cream/85">
+                      « {r.comment} »
+                    </blockquote>
+                    <figcaption className="mt-2 text-xs text-muted">
+                      — {r.name}
+                    </figcaption>
                   </figure>
                 </Reveal>
               ))

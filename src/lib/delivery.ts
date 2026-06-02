@@ -17,7 +17,12 @@ export async function quoteDelivery(
     where: { postalCode: postalCode.trim() },
   });
   if (!zone) {
-    return { available: false, fee: 0, minOrder: 0, reason: "Zone non desservie." };
+    return {
+      available: false,
+      fee: 0,
+      minOrder: 0,
+      reason: "Zone non desservie.",
+    };
   }
   if (subtotal < zone.minOrder) {
     return {

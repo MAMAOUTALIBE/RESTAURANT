@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { requestCatering, type ActionState } from "@/app/actions";
 
 const field =
@@ -9,21 +10,28 @@ const field =
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary w-full disabled:opacity-60">
+    <button
+      type="submit"
+      disabled={pending}
+      className="btn-primary w-full disabled:opacity-60"
+    >
       {pending ? "Envoi…" : "Demander un devis"}
     </button>
   );
 }
 
 export function CateringForm() {
-  const [state, formAction] = useFormState<ActionState | null, FormData>(
+  const [state, formAction] = useActionState<ActionState | null, FormData>(
     requestCatering,
     null,
   );
 
   if (state?.ok) {
     return (
-      <div role="status" className="rounded-2xl border border-green-500/30 bg-green-500/10 p-6 text-center text-green-300">
+      <div
+        role="status"
+        className="rounded-2xl border border-green-500/30 bg-green-500/10 p-6 text-center text-green-300"
+      >
         {state.message}
       </div>
     );
@@ -31,27 +39,67 @@ export function CateringForm() {
 
   return (
     <form action={formAction} className="space-y-4">
-      <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 opacity-0" />
+      <input
+        type="text"
+        name="company"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute left-[-9999px] h-0 w-0 opacity-0"
+      />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field id="name" label="Nom / organisation" error={state?.errors?.name} />
-        <Field id="phone" label="Téléphone" type="tel" error={state?.errors?.phone} />
+        <Field
+          id="name"
+          label="Nom / organisation"
+          error={state?.errors?.name}
+        />
+        <Field
+          id="phone"
+          label="Téléphone"
+          type="tel"
+          error={state?.errors?.phone}
+        />
       </div>
-      <Field id="email" label="Email" type="email" error={state?.errors?.email} />
+      <Field
+        id="email"
+        label="Email"
+        type="email"
+        error={state?.errors?.email}
+      />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field id="eventDate" label="Date de l'événement (optionnel)" type="date" required={false} error={state?.errors?.eventDate} />
-        <Field id="guests" label="Nombre de convives" type="number" error={state?.errors?.guests} />
+        <Field
+          id="eventDate"
+          label="Date de l'événement (optionnel)"
+          type="date"
+          required={false}
+          error={state?.errors?.eventDate}
+        />
+        <Field
+          id="guests"
+          label="Nombre de convives"
+          type="number"
+          error={state?.errors?.guests}
+        />
       </div>
       <div>
         <label htmlFor="message" className="mb-1.5 block text-sm text-cream/80">
           Votre projet
         </label>
-        <textarea id="message" name="message" rows={4} required className={field} />
+        <textarea
+          id="message"
+          name="message"
+          rows={4}
+          required
+          className={field}
+        />
         {state?.errors?.message && (
           <p className="mt-1 text-xs text-red-400">{state.errors.message}</p>
         )}
       </div>
       {state && !state.ok && !state.errors && (
-        <p role="alert" className="text-sm text-red-400">{state.message}</p>
+        <p role="alert" className="text-sm text-red-400">
+          {state.message}
+        </p>
       )}
       <SubmitButton />
     </form>

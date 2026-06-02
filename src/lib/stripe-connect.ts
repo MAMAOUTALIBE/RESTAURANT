@@ -23,7 +23,10 @@ async function getStripeClient() {
 function hasPendingRequirements(account: Stripe.Account): boolean {
   const requirements = account.requirements;
   if (!requirements) return false;
-  const due = [...(requirements.currently_due ?? []), ...(requirements.past_due ?? [])];
+  const due = [
+    ...(requirements.currently_due ?? []),
+    ...(requirements.past_due ?? []),
+  ];
   return due.length > 0;
 }
 
@@ -32,7 +35,10 @@ function mapAccountFlags(account: Stripe.Account) {
   const stripeChargesEnabled = Boolean(account.charges_enabled);
   const stripePayoutsEnabled = Boolean(account.payouts_enabled);
   const stripeOnboardingComplete =
-    stripeDetailsSubmitted && stripeChargesEnabled && stripePayoutsEnabled && !hasPendingRequirements(account);
+    stripeDetailsSubmitted &&
+    stripeChargesEnabled &&
+    stripePayoutsEnabled &&
+    !hasPendingRequirements(account);
 
   return {
     stripeDetailsSubmitted,

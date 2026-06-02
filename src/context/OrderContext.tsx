@@ -10,7 +10,7 @@ import {
 } from "react";
 import type { Fulfillment } from "@/types";
 
-const STORAGE_KEY = "nkulu-order-ctx";
+const STORAGE_KEY = "afromk-order-ctx";
 
 export interface OrderChoice {
   fulfillment: Fulfillment;

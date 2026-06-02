@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const STORAGE_KEY = "nkulu-cookie-consent";
+const STORAGE_KEY = "afromk-cookie-consent";
 
 /** Bandeau de consentement cookies (RGPD), persisté en localStorage. */
 export function CookieConsent() {
@@ -40,7 +40,8 @@ export function CookieConsent() {
         >
           <p className="text-sm leading-relaxed text-cream/85">
             Nous utilisons un cookie strictement nécessaire au fonctionnement du
-            site. Avec votre accord, nous pourrons aussi mesurer l&apos;audience.{" "}
+            site. Avec votre accord, nous pourrons aussi mesurer
+            l&apos;audience.{" "}
             <a href="/confidentialite" className="text-gold underline">
               En savoir plus
             </a>

@@ -11,7 +11,9 @@ function cellColor(value: number, max: number): string {
 /** Grille jours × heures colorée par volume de commandes. */
 export function Heatmap({ data }: { data: HeatmapData }) {
   if (data.total === 0) {
-    return <p className="mt-4 text-sm text-muted">Pas encore assez de commandes.</p>;
+    return (
+      <p className="mt-4 text-sm text-muted">Pas encore assez de commandes.</p>
+    );
   }
   return (
     <div className="mt-4 overflow-x-auto">

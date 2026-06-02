@@ -28,7 +28,9 @@ export function MenuBrowser({
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("all");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [sort, setSort] = useState<"default" | "price-asc" | "price-desc">("default");
+  const [sort, setSort] = useState<"default" | "price-asc" | "price-desc">(
+    "default",
+  );
 
   const filtered = useMemo(() => {
     let list = dishes.filter((d) => {
@@ -43,8 +45,10 @@ export function MenuBrowser({
       }
       return true;
     });
-    if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
+    if (sort === "price-asc")
+      list = [...list].sort((a, b) => a.price - b.price);
+    if (sort === "price-desc")
+      list = [...list].sort((a, b) => b.price - a.price);
     return list;
   }, [dishes, q, cat, onlyAvailable, sort]);
 
@@ -52,7 +56,10 @@ export function MenuBrowser({
   const grouped = useMemo(() => {
     if (sort !== "default") return null;
     return categories
-      .map((c) => ({ cat: c, items: filtered.filter((d) => d.categoryId === c.id) }))
+      .map((c) => ({
+        cat: c,
+        items: filtered.filter((d) => d.categoryId === c.id),
+      }))
       .filter((g) => g.items.length > 0);
   }, [categories, filtered, sort]);
 
@@ -80,13 +87,20 @@ export function MenuBrowser({
             <option value="price-desc">Prix décroissant</option>
           </select>
           <label className="flex items-center gap-2 text-sm text-ink/75">
-            <input type="checkbox" checked={onlyAvailable} onChange={(e) => setOnlyAvailable(e.target.checked)} className="accent-gold-600" />
+            <input
+              type="checkbox"
+              checked={onlyAvailable}
+              onChange={(e) => setOnlyAvailable(e.target.checked)}
+              className="accent-gold-600"
+            />
             Disponibles
           </label>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
-          <Chip active={cat === "all"} onClick={() => setCat("all")}>Tout</Chip>
+          <Chip active={cat === "all"} onClick={() => setCat("all")}>
+            Tout
+          </Chip>
           {categories.map((c) => (
             <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
               {c.name}
@@ -96,25 +110,41 @@ export function MenuBrowser({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="py-12 text-center text-ink/50">Aucun plat ne correspond.</p>
+        <p className="py-12 text-center text-ink/50">
+          Aucun plat ne correspond.
+        </p>
       ) : grouped ? (
         grouped.map((g) => (
-          <section key={g.cat.id} id={g.cat.slug} className="mb-12 scroll-mt-44">
-            <h2 className="font-display text-2xl font-bold sm:text-3xl">{g.cat.name}</h2>
-            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <section
+            key={g.cat.id}
+            id={g.cat.slug}
+            className="mb-12 scroll-mt-44"
+          >
+            <h2 className="font-display text-2xl font-bold sm:text-3xl">
+              {g.cat.name}
+            </h2>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
               {g.items.map((dish, i) => (
                 <Reveal key={dish.id} delay={0.04 * i}>
-                  <DishCard dish={dish} unavailable={!dish.available} href={dish.hasOptions ? `/menu/${dish.id}` : undefined} />
+                  <DishCard
+                    dish={dish}
+                    unavailable={!dish.available}
+                    href={dish.hasOptions ? `/menu/${dish.id}` : undefined}
+                  />
                 </Reveal>
               ))}
             </div>
           </section>
         ))
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {filtered.map((dish, i) => (
             <Reveal key={dish.id} delay={0.03 * i}>
-              <DishCard dish={dish} unavailable={!dish.available} href={dish.hasOptions ? `/menu/${dish.id}` : undefined} />
+              <DishCard
+                dish={dish}
+                unavailable={!dish.available}
+                href={dish.hasOptions ? `/menu/${dish.id}` : undefined}
+              />
             </Reveal>
           ))}
         </div>
@@ -136,7 +166,9 @@ function Chip({
     <button
       onClick={onClick}
       className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-        active ? "bg-ink text-cream" : "border border-ink/15 text-ink/75 hover:border-gold-600 hover:text-gold-600"
+        active
+          ? "bg-ink text-cream"
+          : "border border-ink/15 text-ink/75 hover:border-gold-600 hover:text-gold-600"
       }`}
     >
       {children}

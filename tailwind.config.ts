@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Palette N'KULU Saveurs Africaines
+        // Palette AFRO MK LO BOKO
         ink: {
           DEFAULT: "#080808", // Noir profond
           soft: "#111111", // Noir secondaire
@@ -56,7 +56,7 @@ const config: Config = {
       backgroundImage: {
         "hero-radial":
           "radial-gradient(1200px 600px at 70% 10%, rgba(245,158,11,0.18), transparent 60%)",
-        "kente":
+        kente:
           "repeating-linear-gradient(45deg, rgba(245,158,11,0.08) 0 10px, transparent 10px 20px)",
       },
     },

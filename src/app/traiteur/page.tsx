@@ -6,12 +6,12 @@ import { CateringForm } from "@/components/CateringForm";
 export const metadata: Metadata = {
   title: "Service traiteur",
   description:
-    "Mariages, entreprises, événements : N'KULU Saveurs Africaines régale vos invités. Demandez un devis.",
+    "Mariages, entreprises, événements : AFRO MK LO BOKO régale vos invités. Demandez un devis.",
 };
 
 const atouts = [
   "Buffets et plateaux pour tous événements",
-  "Cuisine africaine authentique et généreuse",
+  "Cuisine africaine généreuse et raffinée",
   "Devis personnalisé sous 48 h",
   "De 10 à plusieurs centaines de convives",
 ];

@@ -2,11 +2,15 @@ import "server-only";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 
-const COOKIE = "nkulu-session";
+const COOKIE = "afromk-session";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 jours
 
 function secret() {
-  return process.env.SESSION_SECRET ?? "dev-insecure-secret-change-me";
+  const value = process.env.SESSION_SECRET;
+  if (process.env.NODE_ENV === "production" && !value) {
+    throw new Error("SESSION_SECRET est requis en production.");
+  }
+  return value ?? "dev-insecure-secret-change-me";
 }
 
 /** Signe une valeur (HMAC) pour empêcher la falsification du cookie. */

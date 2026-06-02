@@ -10,8 +10,8 @@ import {
 } from "react";
 import type { AddToCartInput, CartItem } from "@/types";
 
-const STORAGE_KEY = "nkulu-cart";
-const CART_ID_KEY = "nkulu-cart-id";
+const STORAGE_KEY = "afromk-cart";
+const CART_ID_KEY = "afromk-cart-id";
 
 /** Construit une clé de ligne stable à partir du plat, des options et de la note. */
 function buildLineId(input: AddToCartInput): string {
@@ -160,7 +160,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       totalPrice,
       cartId,
     }),
-    [items, open, addItem, removeItem, updateQuantity, clear, totalCount, totalPrice, cartId],
+    [
+      items,
+      open,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clear,
+      totalCount,
+      totalPrice,
+      cartId,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -170,7 +180,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart(): CartContextValue {
   const ctx = useContext(CartContext);
   if (!ctx) {
-    throw new Error("useCart doit être utilisé à l'intérieur de <CartProvider>");
+    throw new Error(
+      "useCart doit être utilisé à l'intérieur de <CartProvider>",
+    );
   }
   return ctx;
 }

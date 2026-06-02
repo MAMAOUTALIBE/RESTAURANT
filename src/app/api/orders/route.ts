@@ -17,8 +17,17 @@ export async function POST(request: Request) {
     );
   }
   const {
-    name, email, phone, address, notes, promoCode,
-    fulfillment, postalCode, tip, scheduledAt, items,
+    name,
+    email,
+    phone,
+    address,
+    notes,
+    promoCode,
+    fulfillment,
+    postalCode,
+    tip,
+    scheduledAt,
+    items,
   } = parsed.data;
   let order;
   try {

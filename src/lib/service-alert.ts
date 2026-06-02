@@ -40,11 +40,17 @@ export function computeServiceAlert(
   const minsInStatus = Math.floor((nowMs - enteredAtMs) / 60000);
 
   const active = ACTIVE.has(status);
-  const stageThreshold = status === "en préparation" ? th.prepMaxMin : th.stageMaxMin;
+  const stageThreshold =
+    status === "en préparation" ? th.prepMaxMin : th.stageMaxMin;
 
   // En retard : échéance dépassée et pas encore prêt.
   if (active && nowMs > dueAtMs) {
-    return { level: "late", minsLate, minsInStatus, reason: `En retard de ${minsLate} min` };
+    return {
+      level: "late",
+      minsLate,
+      minsInStatus,
+      reason: `En retard de ${minsLate} min`,
+    };
   }
   // Stagnation : trop longtemps dans la colonne courante.
   if (minsInStatus > stageThreshold) {
@@ -57,7 +63,12 @@ export function computeServiceAlert(
   }
   // Imminent : échéance proche.
   if (active && dueAtMs - nowMs <= th.imminentMin * 60000) {
-    return { level: "imminent", minsLate, minsInStatus, reason: "Échéance imminente" };
+    return {
+      level: "imminent",
+      minsLate,
+      minsInStatus,
+      reason: "Échéance imminente",
+    };
   }
   return { level: "ok", minsLate, minsInStatus, reason: "" };
 }

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getOrderByReference } from "@/lib/orders";
 import { PrintTrigger } from "@/components/admin/PrintTrigger";
+import { siteConfig } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export default async function TicketPage({
     <main className="mx-auto max-w-sm bg-white p-6 font-mono text-sm text-black">
       <PrintTrigger />
       <div className="text-center">
-        <h1 className="text-lg font-bold">N&apos;KULU — CUISINE</h1>
+        <h1 className="text-lg font-bold">{siteConfig.shortName} — CUISINE</h1>
         <p className="text-base font-bold">{mode}</p>
         <p>{order.reference}</p>
         <p>{new Date(order.createdAt).toLocaleString("fr-FR")}</p>
@@ -45,7 +46,9 @@ export default async function TicketPage({
               {i.quantity}× {i.name}
             </p>
             {i.options && i.options.length > 0 && (
-              <p className="pl-3">+ {i.options.map((o) => o.label).join(", ")}</p>
+              <p className="pl-3">
+                + {i.options.map((o) => o.label).join(", ")}
+              </p>
             )}
             {i.note && <p className="pl-3 italic">⚠ {i.note}</p>}
           </li>

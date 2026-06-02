@@ -25,7 +25,11 @@ export async function GET(request: Request) {
   const [orders, customers, dishes] = await Promise.all([
     prisma.order.findMany({
       where: {
-        OR: [{ reference: like }, { customerName: like }, { customerEmail: like }],
+        OR: [
+          { reference: like },
+          { customerName: like },
+          { customerEmail: like },
+        ],
       },
       take: 5,
       orderBy: { createdAt: "desc" },

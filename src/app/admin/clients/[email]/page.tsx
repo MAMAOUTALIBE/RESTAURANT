@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowLeft, Mail, Phone, ShoppingBag, CalendarCheck, ChefHat } from "lucide-react";
+import {
+  ArrowLeft,
+  Mail,
+  Phone,
+  ShoppingBag,
+  CalendarCheck,
+  ChefHat,
+} from "lucide-react";
 import { getCustomerDetail } from "@/lib/customers";
 import { adminUpdateCustomer } from "@/app/actions";
 import { formatPrice } from "@/lib/utils";
@@ -8,9 +15,9 @@ import { tierForPoints, tierStyles } from "@/lib/loyalty";
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
-  "payée": "bg-green-500/15 text-green-300",
+  payée: "bg-green-500/15 text-green-300",
   "en attente": "bg-gold/15 text-gold",
-  "annulée": "bg-red-500/15 text-red-300",
+  annulée: "bg-red-500/15 text-red-300",
 };
 
 export default async function ClientDetailPage({
@@ -47,22 +54,25 @@ export default async function ClientDetailPage({
                 <Phone className="h-4 w-4" /> {d.customer.phone}
               </span>
             )}
-            <span>
-              Newsletter : {d.newsletter ? "✅ inscrit" : "—"}
-            </span>
+            <span>Newsletter : {d.newsletter ? "✅ inscrit" : "—"}</span>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {(() => {
               const pts = d.customer?.loyaltyPoints ?? 0;
               const tier = tierForPoints(pts);
               return (
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tierStyles[tier]}`}>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${tierStyles[tier]}`}
+                >
                   ⭐ {pts} pts · {tier}
                 </span>
               );
             })()}
             {d.customer?.tags.map((t) => (
-              <span key={t} className="rounded-full bg-gold/15 px-2.5 py-0.5 text-xs text-gold">
+              <span
+                key={t}
+                className="rounded-full bg-gold/15 px-2.5 py-0.5 text-xs text-gold"
+              >
                 {t}
               </span>
             ))}
@@ -72,19 +82,36 @@ export default async function ClientDetailPage({
 
       {/* Indicateurs */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <Stat Icon={ShoppingBag} label="Commandes" value={String(d.orders.length)} />
-        <Stat Icon={CalendarCheck} label="Valeur client (LTV)" value={formatPrice(d.ltv)} />
-        <Stat Icon={ChefHat} label="Panier moyen" value={formatPrice(d.averageBasket)} />
+        <Stat
+          Icon={ShoppingBag}
+          label="Commandes"
+          value={String(d.orders.length)}
+        />
+        <Stat
+          Icon={CalendarCheck}
+          label="Valeur client (LTV)"
+          value={formatPrice(d.ltv)}
+        />
+        <Stat
+          Icon={ChefHat}
+          label="Panier moyen"
+          value={formatPrice(d.averageBasket)}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Notes & tags (édition) */}
         <div className="rounded-2xl border border-white/10 bg-ink-soft p-6">
-          <h2 className="font-display text-lg font-semibold text-cream">Notes internes</h2>
+          <h2 className="font-display text-lg font-semibold text-cream">
+            Notes internes
+          </h2>
           <form action={adminUpdateCustomer} className="mt-4 space-y-3">
             <input type="hidden" name="email" value={d.email} />
             <div>
-              <label htmlFor="notes" className="mb-1.5 block text-sm text-cream/80">
+              <label
+                htmlFor="notes"
+                className="mb-1.5 block text-sm text-cream/80"
+              >
                 Notes (allergies, préférences…)
               </label>
               <textarea
@@ -96,7 +123,10 @@ export default async function ClientDetailPage({
               />
             </div>
             <div>
-              <label htmlFor="tags" className="mb-1.5 block text-sm text-cream/80">
+              <label
+                htmlFor="tags"
+                className="mb-1.5 block text-sm text-cream/80"
+              >
                 Tags (séparés par des virgules)
               </label>
               <input
@@ -161,7 +191,8 @@ export default async function ClientDetailPage({
               <ul className="mt-2 space-y-1 text-sm text-muted">
                 {d.reservations.map((r) => (
                   <li key={r.id}>
-                    {r.reference} — {r.date} à {r.time} · {r.guests} pers. ({r.status})
+                    {r.reference} — {r.date} à {r.time} · {r.guests} pers. (
+                    {r.status})
                   </li>
                 ))}
               </ul>

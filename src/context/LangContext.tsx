@@ -10,7 +10,7 @@ import {
 } from "react";
 import { translate, type Locale } from "@/lib/i18n";
 
-const STORAGE_KEY = "nkulu-locale";
+const STORAGE_KEY = "afromk-locale";
 
 interface LangContextValue {
   locale: Locale;
@@ -47,7 +47,10 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     [locale],
   );
 
-  const value = useMemo(() => ({ locale, setLocale, t }), [locale, setLocale, t]);
+  const value = useMemo(
+    () => ({ locale, setLocale, t }),
+    [locale, setLocale, t],
+  );
   return <LangCtx.Provider value={value}>{children}</LangCtx.Provider>;
 }
 

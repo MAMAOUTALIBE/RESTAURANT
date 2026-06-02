@@ -4,6 +4,57 @@ import { prisma } from "@/lib/prisma";
 import { getOrdersByEmail } from "@/lib/orders";
 import type { Order } from "@/types";
 import { computeSegment, daysSince, type Segment } from "@/lib/segmentation";
+import { getDefaultRestaurant } from "@/lib/restaurants";
+
+type CustomerWriteMode = "prisma" | "legacy-composite";
+let customerWriteMode: CustomerWriteMode | null = null;
+
+async function resolveCustomerWriteMode(): Promise<CustomerWriteMode> {
+  if (customerWriteMode) return customerWriteMode;
+  try {
+    const indexes = await prisma.$queryRaw<Array<{ indexname: string }>>`
+      SELECT indexname
+      FROM pg_indexes
+      WHERE schemaname = current_schema()
+        AND tablename = 'Customer'
+    `;
+    customerWriteMode = indexes.some(
+      (row) => row.indexname === "Customer_restaurantId_email_key",
+    )
+      ? "legacy-composite"
+      : "prisma";
+  } catch {
+    customerWriteMode = "prisma";
+  }
+  return customerWriteMode;
+}
+
+async function upsertCustomerLegacyComposite(
+  email: string,
+  data: { name?: string; phone?: string },
+): Promise<void> {
+  const restaurant = await getDefaultRestaurant();
+  if (!restaurant) return;
+
+  await prisma.$executeRawUnsafe(
+    `
+      INSERT INTO "Customer"
+        ("id","restaurantId","email","name","phone","notes","tags","loyaltyPoints","createdAt","updatedAt")
+      VALUES
+        ($1,$2,$3,$4,$5,'',ARRAY[]::text[],0,NOW(),NOW())
+      ON CONFLICT ("restaurantId","email")
+      DO UPDATE SET
+        "name" = COALESCE(EXCLUDED."name","Customer"."name"),
+        "phone" = COALESCE(EXCLUDED."phone","Customer"."phone"),
+        "updatedAt" = NOW()
+    `,
+    crypto.randomUUID(),
+    restaurant.id,
+    email,
+    data.name ?? null,
+    data.phone ?? null,
+  );
+}
 
 /**
  * Crée ou met à jour la fiche client (consolidation par email).
@@ -14,6 +65,12 @@ export async function upsertCustomer(
   data: { name?: string; phone?: string },
 ): Promise<void> {
   const normalized = email.toLowerCase();
+  const mode = await resolveCustomerWriteMode();
+  if (mode === "legacy-composite") {
+    await upsertCustomerLegacyComposite(normalized, data);
+    return;
+  }
+
   await prisma.customer.upsert({
     where: { email: normalized },
     // On ne met à jour nom/téléphone que s'ils sont fournis.
@@ -88,7 +145,14 @@ export interface CustomerDetail {
   customer: Customer | null;
   email: string;
   orders: Order[];
-  reservations: { id: string; reference: string; date: string; time: string; guests: number; status: string }[];
+  reservations: {
+    id: string;
+    reference: string;
+    date: string;
+    time: string;
+    guests: number;
+    status: string;
+  }[];
   cateringCount: number;
   newsletter: boolean;
   ltv: number;
@@ -96,7 +160,9 @@ export interface CustomerDetail {
 }
 
 /** Fiche client 360° : agrège commandes, réservations, traiteur, newsletter. */
-export async function getCustomerDetail(email: string): Promise<CustomerDetail> {
+export async function getCustomerDetail(
+  email: string,
+): Promise<CustomerDetail> {
   const normalized = email.toLowerCase();
   const [customer, orders, reservations, cateringCount, newsletter] =
     await Promise.all([

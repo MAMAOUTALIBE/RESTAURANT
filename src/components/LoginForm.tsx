@@ -1,12 +1,17 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { login, type ActionState } from "@/app/actions";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button type="submit" disabled={pending} className="btn-primary w-full disabled:opacity-60">
+    <button
+      type="submit"
+      disabled={pending}
+      className="btn-primary w-full disabled:opacity-60"
+    >
       {pending ? "Envoi…" : "Recevoir mon lien de connexion"}
     </button>
   );
@@ -14,7 +19,7 @@ function SubmitButton() {
 
 /** Formulaire de connexion par lien magique (email vérifié). */
 export function LoginForm({ initialError }: { initialError?: boolean }) {
-  const [state, formAction] = useFormState<ActionState | null, FormData>(
+  const [state, formAction] = useActionState<ActionState | null, FormData>(
     login,
     null,
   );

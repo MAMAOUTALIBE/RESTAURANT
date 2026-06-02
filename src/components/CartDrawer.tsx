@@ -8,8 +8,15 @@ import { formatPrice } from "@/lib/utils";
 
 /** Tiroir latéral affichant le contenu du panier. */
 export function CartDrawer() {
-  const { items, open, setOpen, updateQuantity, removeItem, clear, totalPrice } =
-    useCart();
+  const {
+    items,
+    open,
+    setOpen,
+    updateQuantity,
+    removeItem,
+    clear,
+    totalPrice,
+  } = useCart();
 
   return (
     <AnimatePresence>
@@ -51,7 +58,10 @@ export function CartDrawer() {
               <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
                 <ShoppingBag className="h-12 w-12 text-muted" />
                 <p className="text-muted">Votre panier est vide.</p>
-                <button onClick={() => setOpen(false)} className="btn-primary mt-2">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="btn-primary mt-2"
+                >
                   Découvrir nos plats
                 </button>
               </div>
@@ -59,7 +69,10 @@ export function CartDrawer() {
               <>
                 <ul className="flex-1 divide-y divide-white/10 overflow-y-auto p-5">
                   {items.map((item) => (
-                    <li key={item.lineId} className="flex gap-4 py-4 first:pt-0">
+                    <li
+                      key={item.lineId}
+                      className="flex gap-4 py-4 first:pt-0"
+                    >
                       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl">
                         <Image
                           src={item.image}
@@ -71,7 +84,9 @@ export function CartDrawer() {
                       </div>
                       <div className="flex flex-1 flex-col">
                         <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-medium text-cream">{item.name}</h3>
+                          <h3 className="font-medium text-cream">
+                            {item.name}
+                          </h3>
                           <button
                             onClick={() => removeItem(item.lineId)}
                             aria-label={`Retirer ${item.name} du panier`}
@@ -86,7 +101,9 @@ export function CartDrawer() {
                           </p>
                         )}
                         {item.note && (
-                          <p className="text-xs italic text-muted">« {item.note} »</p>
+                          <p className="text-xs italic text-muted">
+                            « {item.note} »
+                          </p>
                         )}
                         <span className="text-sm text-gold">
                           {formatPrice(item.unitPrice)}
@@ -131,7 +148,11 @@ export function CartDrawer() {
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
-                  <a href="/commander" onClick={() => setOpen(false)} className="btn-primary w-full">
+                  <a
+                    href="/commander"
+                    onClick={() => setOpen(false)}
+                    className="btn-primary w-full"
+                  >
                     Passer la commande
                   </a>
                   <button

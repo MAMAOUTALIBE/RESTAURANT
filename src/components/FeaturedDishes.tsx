@@ -1,63 +1,51 @@
 import Link from "next/link";
-import { ArrowRight, Flame, Leaf, Utensils } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { DishCard } from "@/components/DishCard";
-import { Reveal } from "@/components/ui/Reveal";
-import { getDishes } from "@/lib/dishes";
-
-const highlights = [
-  { Icon: Flame, label: "Épices maîtrisées" },
-  { Icon: Leaf, label: "Produits frais" },
-  { Icon: Utensils, label: "Recettes maison" },
-];
+import { getMenuForBrowser } from "@/lib/dishes";
 
 /** Grille des plats phares (« Les incontournables »). */
 export async function FeaturedDishes() {
-  const dishes = await getDishes();
+  const { dishes } = await getMenuForBrowser();
+  const featured = dishes.filter((dish) => dish.available).slice(0, 4);
   return (
-    <section id="menu" className="section bg-[#F8F3EA] text-ink">
+    <section
+      id="menu"
+      className="bg-[#F8F3EA] pb-16 pt-6 text-ink sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10"
+    >
       <div className="container-page">
-        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-          <Reveal className="max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-600">
-              Les incontournables
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-bold leading-tight text-ink sm:text-4xl lg:text-5xl">
-              Une carte courte, généreuse, bien exécutée.
-            </h2>
-            <p className="text-ink/68 mt-4 max-w-xl text-sm leading-7 sm:text-base">
-              Des classiques africains reconnaissables, servis avec une
-              présentation plus nette et des options simples pour commander
-              vite.
-            </p>
-          </Reveal>
-
-          <Reveal delay={0.1} className="lg:justify-self-end">
-            <div className="mb-5 grid gap-2 sm:grid-cols-3 lg:mb-6">
-              {highlights.map(({ Icon, label }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-2 border-l border-ink/15 pl-3 text-sm font-semibold text-ink/75"
-                >
-                  <Icon className="h-4 w-4 text-forest" />
-                  {label}
-                </div>
-              ))}
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between xl:gap-6">
+            <div className="min-w-0 flex-1">
+              <h2 className="font-display text-2xl font-bold leading-tight text-ink sm:text-3xl lg:text-4xl">
+                Une carte courte, généreuse, bien exécutée.
+              </h2>
             </div>
-            <Link
-              href="/menu"
-              className="inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-semibold text-ink transition hover:border-gold-600 hover:text-gold-600"
-            >
-              Voir tout le menu
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Reveal>
+            <div className="xl:shrink-0">
+              <Link
+                href="/menu"
+                className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-2.5 text-sm font-semibold text-ink shadow-[0_12px_26px_-16px_rgba(239,164,29,0.95)] transition hover:-translate-y-0.5 hover:bg-gold-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70"
+              >
+                Voir tout le menu
+                <ArrowRight className="h-4 w-4 motion-safe:animate-pulse" />
+              </Link>
+            </div>
+          </div>
+          <div className="max-w-4xl">
+            <p className="text-ink/68 text-sm leading-7 sm:text-base">
+              Des classiques africains, une présentation soignée et une commande
+              rapide.
+            </p>
+          </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {dishes.map((dish, i) => (
-            <Reveal key={dish.id} delay={0.05 * i}>
-              <DishCard dish={dish} />
-            </Reveal>
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {featured.map((dish) => (
+            <div key={dish.id}>
+              <DishCard
+                dish={dish}
+                href={dish.hasOptions ? `/menu/${dish.id}` : undefined}
+              />
+            </div>
           ))}
         </div>
       </div>

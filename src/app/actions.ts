@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import {
   createOrder,
   getOrderByReference,
+  OrderCreationError,
   updateOrderStatus,
 } from "@/lib/orders";
 import { startCheckout } from "@/lib/payment";
@@ -56,7 +57,8 @@ export async function subscribeNewsletter(
   formData: FormData,
 ): Promise<ActionState> {
   if (isBot(formData)) return { ok: true, message: "Merci !" };
-  if (!(await rateLimit(`newsletter:${await clientIp()}`, 5, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`newsletter:${await clientIp()}`, 5, 60_000)))
+    return TOO_MANY;
 
   const parsed = newsletterSchema.safeParse({
     email: formData.get("email"),
@@ -81,10 +83,10 @@ export async function subscribeNewsletter(
   // Automation : email de bienvenue.
   await sendEmail({
     to: email,
-    subject: "Bienvenue chez N'KULU 🍲",
+    subject: `Bienvenue chez ${siteConfig.shortName} 🍲`,
     html: `<h1>Bienvenue !</h1>
-      <p>Merci de rejoindre la communauté N'KULU Saveurs Africaines.</p>
-      <p>Profitez de <strong>-10%</strong> sur votre première commande avec le code <strong>AFRO10</strong>.</p>`,
+      <p>Merci de rejoindre la communauté ${siteConfig.name}.</p>
+      <p>Profitez de <strong>-10%</strong> sur votre première commande avec le code <strong>AFROMK10</strong>.</p>`,
   });
 
   return { ok: true, message: "Merci ! Votre inscription est confirmée." };
@@ -96,7 +98,8 @@ export async function sendContactMessage(
   formData: FormData,
 ): Promise<ActionState> {
   if (isBot(formData)) return { ok: true, message: "Message envoyé !" };
-  if (!(await rateLimit(`contact:${await clientIp()}`, 5, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`contact:${await clientIp()}`, 5, 60_000)))
+    return TOO_MANY;
 
   const parsed = contactSchema.safeParse({
     name: formData.get("name"),
@@ -128,7 +131,8 @@ export async function submitReview(
   formData: FormData,
 ): Promise<ActionState> {
   if (isBot(formData)) return { ok: true, message: "Merci pour votre avis !" };
-  if (!(await rateLimit(`review:${await clientIp()}`, 3, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`review:${await clientIp()}`, 3, 60_000)))
+    return TOO_MANY;
 
   const parsed = reviewSchema.safeParse({
     name: formData.get("name"),
@@ -136,7 +140,11 @@ export async function submitReview(
     comment: formData.get("comment"),
   });
   if (!parsed.success) {
-    return { ok: false, message: "Vérifiez votre saisie.", errors: fieldErrors(parsed.error) };
+    return {
+      ok: false,
+      message: "Vérifiez votre saisie.",
+      errors: fieldErrors(parsed.error),
+    };
   }
   await prisma.review.create({ data: parsed.data });
   return {
@@ -173,7 +181,8 @@ export async function createReservation(
   formData: FormData,
 ): Promise<ActionState> {
   if (isBot(formData)) return { ok: true, message: "Demande envoyée !" };
-  if (!(await rateLimit(`reservation:${await clientIp()}`, 5, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`reservation:${await clientIp()}`, 5, 60_000)))
+    return TOO_MANY;
 
   const parsed = reservationSchema.safeParse({
     name: formData.get("name"),
@@ -222,7 +231,8 @@ export async function requestCatering(
   formData: FormData,
 ): Promise<ActionState> {
   if (isBot(formData)) return { ok: true, message: "Demande envoyée !" };
-  if (!(await rateLimit(`catering:${await clientIp()}`, 5, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`catering:${await clientIp()}`, 5, 60_000)))
+    return TOO_MANY;
 
   const parsed = cateringSchema.safeParse({
     name: formData.get("name"),
@@ -299,8 +309,17 @@ export async function placeOrder(
   }
 
   const {
-    name, email, phone, address, notes, promoCode,
-    fulfillment, postalCode, scheduledAt, tip, items: lines,
+    name,
+    email,
+    phone,
+    address,
+    notes,
+    promoCode,
+    fulfillment,
+    postalCode,
+    scheduledAt,
+    tip,
+    items: lines,
   } = parsed.data;
 
   // Vérifie la livraison (zone + minimum) avant de créer.
@@ -313,15 +332,23 @@ export async function placeOrder(
     }
   }
 
-  const order = await createOrder({
-    customer: { name, email, phone, address, notes },
-    items: lines,
-    promoCode,
-    fulfillment,
-    postalCode,
-    tip,
-    scheduledAt,
-  });
+  let order;
+  try {
+    order = await createOrder({
+      customer: { name, email, phone, address, notes },
+      items: lines,
+      promoCode,
+      fulfillment,
+      postalCode,
+      tip,
+      scheduledAt,
+    });
+  } catch (error) {
+    if (error instanceof OrderCreationError) {
+      return { ok: false, message: error.message };
+    }
+    throw error;
+  }
 
   const { notifyOrderChannels } = await import("@/lib/order-notifications");
   await notifyOrderChannels(order);
@@ -363,7 +390,8 @@ export async function checkDelivery(
 ): Promise<{ ok: boolean; message: string; fee: number }> {
   const { quoteDelivery } = await import("@/lib/delivery");
   const q = await quoteDelivery(postalCode, subtotal);
-  if (!q.available) return { ok: false, message: q.reason ?? "Zone non desservie.", fee: 0 };
+  if (!q.available)
+    return { ok: false, message: q.reason ?? "Zone non desservie.", fee: 0 };
   return { ok: true, message: `Livraison ${q.fee.toFixed(2)} €`, fee: q.fee };
 }
 
@@ -375,7 +403,12 @@ export async function getReorderItems(reference: string): Promise<
     price: number;
     quantity: number;
     image: string;
-    options?: { groupId: string; optionId: string; label: string; priceDelta: number }[];
+    options?: {
+      groupId: string;
+      optionId: string;
+      label: string;
+      priceDelta: number;
+    }[];
     note?: string;
   }[]
 > {
@@ -425,7 +458,8 @@ export async function login(
   _prev: ActionState | null,
   formData: FormData,
 ): Promise<ActionState> {
-  if (!(await rateLimit(`login:${await clientIp()}`, 3, 60_000))) return TOO_MANY;
+  if (!(await rateLimit(`login:${await clientIp()}`, 3, 60_000)))
+    return TOO_MANY;
 
   const parsed = newsletterSchema.safeParse({ email: formData.get("email") });
   if (!parsed.success) {
@@ -453,9 +487,8 @@ export async function redeemLoyalty(): Promise<void> {
   const email = await getSessionEmail();
   if (!email) redirect("/compte");
 
-  const { POINTS_PER_REDEMPTION, REDEMPTION_VALUE_EUR } = await import(
-    "@/lib/loyalty"
-  );
+  const { POINTS_PER_REDEMPTION, REDEMPTION_VALUE_EUR } =
+    await import("@/lib/loyalty");
   const customer = await prisma.customer.findUnique({ where: { email } });
   if (!customer || customer.loyaltyPoints < POINTS_PER_REDEMPTION) {
     redirect("/compte?fid=insuffisant");
@@ -512,13 +545,16 @@ export async function adminSetOrderStatus(formData: FormData): Promise<void> {
 }
 
 /** Étape suivante du workflow opérationnel d'une commande. */
-function nextStatus(current: string, delivery: boolean): OrderStatus | undefined {
+function nextStatus(
+  current: string,
+  delivery: boolean,
+): OrderStatus | undefined {
   const flow: Record<string, OrderStatus> = {
     "en attente": "payée",
-    "payée": "en préparation",
+    payée: "en préparation",
     "en préparation": "prête",
     // En livraison, « prête » → « en livraison » → « livrée ». Sinon directement « livrée ».
-    "prête": delivery ? "en livraison" : "livrée",
+    prête: delivery ? "en livraison" : "livrée",
     "en livraison": "livrée",
   };
   return flow[current];
@@ -532,7 +568,10 @@ export async function advanceOrderStatus(formData: FormData): Promise<void> {
   const reference = String(formData.get("reference") ?? "");
   const current = String(formData.get("current") ?? "");
   const order = reference
-    ? await prisma.order.findUnique({ where: { reference }, select: { fulfillment: true } })
+    ? await prisma.order.findUnique({
+        where: { reference },
+        select: { fulfillment: true },
+      })
     : null;
   const next = nextStatus(current, order?.fulfillment === "livraison");
   if (reference && next) {
@@ -610,7 +649,9 @@ export async function adminUpdateCustomer(formData: FormData): Promise<void> {
 /** Back-office : crée un code promo. */
 export async function adminCreatePromo(formData: FormData): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
-  const code = String(formData.get("code") ?? "").trim().toUpperCase();
+  const code = String(formData.get("code") ?? "")
+    .trim()
+    .toUpperCase();
   const type = String(formData.get("type") ?? "percent");
   const value = Number(formData.get("value") ?? 0);
   const usageLimitRaw = String(formData.get("usageLimit") ?? "").trim();
@@ -723,7 +764,13 @@ export async function adminCreateDish(formData: FormData): Promise<void> {
   const categoryId = String(formData.get("categoryId") ?? "") || null;
   const prepMinutes = Number(formData.get("prepMinutes") ?? 15) || 15;
   await prisma.dish.create({
-    data: { slug, ...parsed.data, tag: parsed.data.tag ?? null, categoryId, prepMinutes },
+    data: {
+      slug,
+      ...parsed.data,
+      tag: parsed.data.tag ?? null,
+      categoryId,
+      prepMinutes,
+    },
   });
   revalidatePath("/admin/menu");
   redirect("/admin/menu");
@@ -748,7 +795,12 @@ export async function adminUpdateDish(formData: FormData): Promise<void> {
   const prepMinutes = Number(formData.get("prepMinutes") ?? 15) || 15;
   await prisma.dish.update({
     where: { id },
-    data: { ...parsed.data, tag: parsed.data.tag ?? null, categoryId, prepMinutes },
+    data: {
+      ...parsed.data,
+      tag: parsed.data.tag ?? null,
+      categoryId,
+      prepMinutes,
+    },
   });
   revalidatePath("/admin/menu");
   redirect("/admin/menu");
@@ -769,7 +821,12 @@ export async function adminUpdateHours(formData: FormData): Promise<void> {
     await prisma.openingHour.upsert({
       where: { dayOfWeek },
       update: { closed, openMinutes: toMin(open), closeMinutes: toMin(close) },
-      create: { dayOfWeek, closed, openMinutes: toMin(open), closeMinutes: toMin(close) },
+      create: {
+        dayOfWeek,
+        closed,
+        openMinutes: toMin(open),
+        closeMinutes: toMin(close),
+      },
     });
     revalidatePath("/admin/parametres");
   }
@@ -777,7 +834,9 @@ export async function adminUpdateHours(formData: FormData): Promise<void> {
 }
 
 /** Back-office : règle l'intervalle / délai / capacité des créneaux. */
-export async function adminUpdateOrderingSettings(formData: FormData): Promise<void> {
+export async function adminUpdateOrderingSettings(
+  formData: FormData,
+): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
   const data = {
     slotIntervalMin: Number(formData.get("slotIntervalMin") ?? 15),
@@ -823,7 +882,9 @@ export async function adminUpdateRestaurantStripeAccount(
 ): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
   const id = String(formData.get("id") ?? "");
-  const stripeAccountIdRaw = String(formData.get("stripeAccountId") ?? "").trim();
+  const stripeAccountIdRaw = String(
+    formData.get("stripeAccountId") ?? "",
+  ).trim();
   const stripeAccountId = stripeAccountIdRaw || null;
   if (!id) redirect("/admin/parametres?stripeError=missing-restaurant");
 
@@ -873,7 +934,9 @@ export async function adminOpenRestaurantStripeOnboarding(
 }
 
 /** Back-office : synchronise l'état Stripe Connect d'un restaurant. */
-export async function adminSyncRestaurantStripeStatus(formData: FormData): Promise<void> {
+export async function adminSyncRestaurantStripeStatus(
+  formData: FormData,
+): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
   if (!isStripeConnectConfigured()) {
     redirect("/admin/parametres?stripeError=missing-secret");
@@ -943,17 +1006,22 @@ export async function adminAssignDriver(formData: FormData): Promise<void> {
 export async function adminRelaunchCart(formData: FormData): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
   const id = String(formData.get("id") ?? "");
-  const cart = id ? await prisma.abandonedCart.findUnique({ where: { id } }) : null;
+  const cart = id
+    ? await prisma.abandonedCart.findUnique({ where: { id } })
+    : null;
   if (cart?.email) {
     await sendEmail({
       to: cart.email,
-      subject: "Votre panier vous attend chez N'KULU 🍲",
+      subject: `Votre panier vous attend chez ${siteConfig.shortName} 🍲`,
       html: `<h1>Vous avez oublié quelque chose ?</h1>
         <p>Votre panier (${cart.itemCount} article·s) est toujours là.</p>
-        <p>Finalisez votre commande avec <strong>-10%</strong> grâce au code <strong>AFRO10</strong>.</p>
+        <p>Finalisez votre commande avec <strong>-10%</strong> grâce au code <strong>AFROMK10</strong>.</p>
         <p><a href="${siteConfig.url}/commander">Reprendre ma commande</a></p>`,
     });
-    await prisma.abandonedCart.update({ where: { id }, data: { status: "relancé" } });
+    await prisma.abandonedCart.update({
+      where: { id },
+      data: { status: "relancé" },
+    });
     revalidatePath("/admin/paniers");
   }
   redirect("/admin/paniers");
@@ -966,7 +1034,9 @@ export async function adminCreateCategory(formData: FormData): Promise<void> {
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   if (name) {
     await prisma.category
-      .create({ data: { name, slug: slugify(name) || `cat-${Date.now()}`, sortOrder } })
+      .create({
+        data: { name, slug: slugify(name) || `cat-${Date.now()}`, sortOrder },
+      })
       .catch(() => {});
     revalidatePath("/admin/menu");
   }
@@ -1001,7 +1071,9 @@ export async function adminAddOption(formData: FormData): Promise<void> {
 }
 
 /** Back-office : supprime un groupe d'options. */
-export async function adminDeleteOptionGroup(formData: FormData): Promise<void> {
+export async function adminDeleteOptionGroup(
+  formData: FormData,
+): Promise<void> {
   if (!isAdminEmail(await getSessionEmail())) redirect("/compte");
   const id = String(formData.get("id") ?? "");
   if (id) {

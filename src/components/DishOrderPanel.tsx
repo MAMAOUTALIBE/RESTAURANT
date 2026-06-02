@@ -56,10 +56,16 @@ export function DishOrderPanel({
   const chosen: CartLineOption[] = groups.flatMap((g) =>
     (selected[g.id] ?? []).map((oid) => {
       const o = g.options.find((x) => x.id === oid)!;
-      return { groupId: g.id, optionId: o.id, label: o.name, priceDelta: o.priceDelta };
+      return {
+        groupId: g.id,
+        optionId: o.id,
+        label: o.name,
+        priceDelta: o.priceDelta,
+      };
     }),
   );
-  const unitPrice = dish.basePrice + chosen.reduce((s, o) => s + o.priceDelta, 0);
+  const unitPrice =
+    dish.basePrice + chosen.reduce((s, o) => s + o.priceDelta, 0);
 
   function add() {
     // Vérifie les groupes obligatoires.
@@ -88,7 +94,11 @@ export function DishOrderPanel({
           <legend className="font-display text-lg font-semibold text-cream">
             {g.name}{" "}
             <span className="text-sm font-normal text-muted">
-              {g.required ? "(obligatoire)" : g.type === "multi" ? "(plusieurs)" : "(au choix)"}
+              {g.required
+                ? "(obligatoire)"
+                : g.type === "multi"
+                  ? "(plusieurs)"
+                  : "(au choix)"}
             </span>
           </legend>
           <div className="mt-3 space-y-2">
@@ -108,7 +118,9 @@ export function DishOrderPanel({
                   <span className="flex items-center gap-2">
                     <span
                       className={`grid h-5 w-5 place-items-center rounded-full border ${
-                        isSel ? "border-gold bg-gold text-ink" : "border-white/20"
+                        isSel
+                          ? "border-gold bg-gold text-ink"
+                          : "border-white/20"
                       }`}
                     >
                       {isSel && <Check className="h-3 w-3" />}
@@ -116,7 +128,9 @@ export function DishOrderPanel({
                     {o.name}
                   </span>
                   {o.priceDelta > 0 && (
-                    <span className="text-gold">+ {formatPrice(o.priceDelta)}</span>
+                    <span className="text-gold">
+                      + {formatPrice(o.priceDelta)}
+                    </span>
                   )}
                 </button>
               );

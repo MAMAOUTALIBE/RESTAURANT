@@ -54,12 +54,28 @@ export async function getSlotsForDate(dateStr: string): Promise<Slot[]> {
 
   const earliest = Date.now() + lead * 60 * 1000;
   const slots: Slot[] = [];
-  for (let min = hours.openMinutes; min <= hours.closeMinutes; min += interval) {
-    const slotDate = new Date(y, m - 1, d, Math.floor(min / 60), min % 60, 0, 0);
+  for (
+    let min = hours.openMinutes;
+    min <= hours.closeMinutes;
+    min += interval
+  ) {
+    const slotDate = new Date(
+      y,
+      m - 1,
+      d,
+      Math.floor(min / 60),
+      min % 60,
+      0,
+      0,
+    );
     const iso = slotDate.toISOString();
     const used = countByIso.get(iso) ?? 0;
     const available = slotDate.getTime() >= earliest && used < capacity;
-    slots.push({ time: `${pad(Math.floor(min / 60))}:${pad(min % 60)}`, iso, available });
+    slots.push({
+      time: `${pad(Math.floor(min / 60))}:${pad(min % 60)}`,
+      iso,
+      available,
+    });
   }
   return slots;
 }

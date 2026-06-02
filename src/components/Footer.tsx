@@ -68,7 +68,11 @@ function IconTelegram() {
 
 const socials = [
   { label: "Facebook", Icon: IconFacebook, href: siteConfig.socials.facebook },
-  { label: "Instagram", Icon: IconInstagram, href: siteConfig.socials.instagram },
+  {
+    label: "Instagram",
+    Icon: IconInstagram,
+    href: siteConfig.socials.instagram,
+  },
   { label: "TikTok", Icon: IconTikTok, href: siteConfig.socials.tiktok },
   { label: "WhatsApp", Icon: IconWhatsApp, href: siteConfig.socials.whatsapp },
   { label: "Telegram", Icon: IconTelegram, href: siteConfig.socials.telegram },
@@ -93,8 +97,7 @@ export function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              L&apos;authenticité de la cuisine africaine dans un cadre
-              chaleureux.
+              La saveur de l&apos;Afrique dans votre assiette.
             </p>
             <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold">
               Suivez-nous
@@ -106,7 +109,7 @@ export function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`Suivre N'KULU sur ${label}`}
+                  aria-label={`Suivre ${siteConfig.name} sur ${label}`}
                   title={label}
                   className="grid h-10 w-10 place-items-center rounded-full border border-white/10 text-cream/80 transition hover:border-gold/60 hover:bg-gold hover:text-ink"
                 >
@@ -187,7 +190,7 @@ export function Footer() {
         {/* Bas de footer */}
         <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
           <p className="text-xs text-muted">
-            © 2026 N&apos;KULU Saveurs Africaines. Tous droits réservés.
+            © 2026 {siteConfig.name}. Tous droits réservés.
           </p>
           <div className="flex flex-wrap items-center gap-2">
             {payments.map((p) => (

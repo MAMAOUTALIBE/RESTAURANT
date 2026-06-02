@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "reference requise" }, { status: 400 });
   }
   const order = await getOrderByReference(reference);
-  if (!order) return NextResponse.json({ error: "introuvable" }, { status: 404 });
+  if (!order)
+    return NextResponse.json({ error: "introuvable" }, { status: 404 });
   return NextResponse.json({ status: order.status });
 }

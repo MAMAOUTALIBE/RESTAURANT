@@ -2,13 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
+import { siteConfig } from "@/lib/config";
 
 const LABEL: Record<string, string> = {
-  "payée": "Commande confirmée",
+  payée: "Commande confirmée",
   "en préparation": "Votre commande est en préparation",
-  "prête": "Votre commande est prête !",
+  prête: "Votre commande est prête !",
   "en livraison": "Votre commande est en route",
-  "livrée": "Commande livrée. Bon appétit !",
+  livrée: "Commande livrée. Bon appétit !",
 };
 
 /** Notifie le client (notification locale) à chaque changement de statut. */
@@ -40,7 +41,7 @@ export function OrderStatusNotifier({
         if (status && status !== last.current) {
           last.current = status;
           if (LABEL[status] && Notification.permission === "granted") {
-            new Notification("N'KULU", { body: LABEL[status] });
+            new Notification(siteConfig.shortName, { body: LABEL[status] });
           }
         }
       } catch {

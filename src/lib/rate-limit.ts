@@ -30,7 +30,7 @@ function limiterFor(limit: number, windowMs: number): Ratelimit | null {
   const limiter = new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(limit, `${windowMs} ms`),
-    prefix: "nkulu:rate-limit",
+    prefix: "afromk:rate-limit",
     analytics: true,
   });
   upstashLimiters.set(key, limiter);

@@ -48,9 +48,12 @@ export function CommandPalette() {
     }
     const id = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/admin/search?q=${encodeURIComponent(q)}`, {
-          cache: "no-store",
-        });
+        const res = await fetch(
+          `/api/admin/search?q=${encodeURIComponent(q)}`,
+          {
+            cache: "no-store",
+          },
+        );
         if (res.ok) setResults((await res.json()).results ?? []);
       } catch {
         /* ignore */
@@ -72,7 +75,9 @@ export function CommandPalette() {
       >
         <Search className="h-3.5 w-3.5" />
         Rechercher
-        <kbd className="rounded border border-white/15 px-1 text-[10px]">⌘K</kbd>
+        <kbd className="rounded border border-white/15 px-1 text-[10px]">
+          ⌘K
+        </kbd>
       </button>
 
       {open && (
@@ -96,7 +101,9 @@ export function CommandPalette() {
             </div>
             <ul className="max-h-80 overflow-y-auto p-2">
               {q.trim().length >= 2 && results.length === 0 && (
-                <li className="px-3 py-3 text-sm text-muted">Aucun résultat.</li>
+                <li className="px-3 py-3 text-sm text-muted">
+                  Aucun résultat.
+                </li>
               )}
               {results.map((r, i) => (
                 <li key={i}>
@@ -105,7 +112,9 @@ export function CommandPalette() {
                     className="flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition hover:bg-white/5"
                   >
                     <span>
-                      <span className="block text-sm text-cream">{r.label}</span>
+                      <span className="block text-sm text-cream">
+                        {r.label}
+                      </span>
                       <span className="block text-xs text-muted">{r.sub}</span>
                     </span>
                     <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-muted">

@@ -18,9 +18,9 @@ import {
 export const dynamic = "force-dynamic";
 
 const statusStyles: Record<string, string> = {
-  "payée": "bg-green-500/15 text-green-300",
+  payée: "bg-green-500/15 text-green-300",
   "en attente": "bg-gold/15 text-gold",
-  "annulée": "bg-red-500/15 text-red-300",
+  annulée: "bg-red-500/15 text-red-300",
 };
 
 export default async function ComptePage({
@@ -79,13 +79,13 @@ export default async function ComptePage({
               </Link>
             )}
             <form action={logout} className="flex-1 sm:flex-none">
-            <button
-              type="submit"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-cream transition hover:border-gold/60 hover:text-gold"
-            >
-              <LogOut className="h-4 w-4" />
-              Déconnexion
-            </button>
+              <button
+                type="submit"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-cream transition hover:border-gold/60 hover:text-gold"
+              >
+                <LogOut className="h-4 w-4" />
+                Déconnexion
+              </button>
             </form>
           </div>
         </div>
@@ -101,7 +101,9 @@ export default async function ComptePage({
                 <p className="text-sm text-muted">Vos points fidélité</p>
                 <p className="font-display text-2xl font-bold text-cream">
                   {points} pts
-                  <span className={`ml-2 rounded-full px-2.5 py-0.5 align-middle text-xs font-semibold ${tierStyles[tier]}`}>
+                  <span
+                    className={`ml-2 rounded-full px-2.5 py-0.5 align-middle text-xs font-semibold ${tierStyles[tier]}`}
+                  >
                     {tier}
                   </span>
                 </p>
@@ -124,7 +126,10 @@ export default async function ComptePage({
           )}
           {fid && fid !== "insuffisant" && (
             <p className="mt-3 text-sm text-green-400">
-              🎉 Code généré : <span className="font-mono font-bold">{fid}</span> ({REDEMPTION_VALUE_EUR} € de remise). Utilisez-le à votre prochaine commande !
+              🎉 Code généré :{" "}
+              <span className="font-mono font-bold">{fid}</span> (
+              {REDEMPTION_VALUE_EUR} € de remise). Utilisez-le à votre prochaine
+              commande !
             </p>
           )}
           <p className="mt-2 text-xs text-muted">

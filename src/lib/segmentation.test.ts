@@ -1,22 +1,38 @@
 import { describe, it, expect } from "vitest";
-import { computeSegment, needsReengagement, daysSince } from "@/lib/segmentation";
+import {
+  computeSegment,
+  needsReengagement,
+  daysSince,
+} from "@/lib/segmentation";
 
 describe("computeSegment", () => {
   it("classe un client sans commande en Prospect", () => {
     expect(
-      computeSegment({ ordersCount: 0, totalSpent: 0, daysSinceLastOrder: null }),
+      computeSegment({
+        ordersCount: 0,
+        totalSpent: 0,
+        daysSinceLastOrder: null,
+      }),
     ).toBe("Prospect");
   });
 
   it("classe un gros client récent en VIP", () => {
     expect(
-      computeSegment({ ordersCount: 5, totalSpent: 200, daysSinceLastOrder: 5 }),
+      computeSegment({
+        ordersCount: 5,
+        totalSpent: 200,
+        daysSinceLastOrder: 5,
+      }),
     ).toBe("VIP");
   });
 
   it("classe un client régulier mais peu dépensier en Fidèle", () => {
     expect(
-      computeSegment({ ordersCount: 4, totalSpent: 40, daysSinceLastOrder: 10 }),
+      computeSegment({
+        ordersCount: 4,
+        totalSpent: 40,
+        daysSinceLastOrder: 10,
+      }),
     ).toBe("Fidèle");
   });
 
@@ -28,13 +44,21 @@ describe("computeSegment", () => {
 
   it("classe l'inactivité 30-90j en À risque", () => {
     expect(
-      computeSegment({ ordersCount: 2, totalSpent: 30, daysSinceLastOrder: 45 }),
+      computeSegment({
+        ordersCount: 2,
+        totalSpent: 30,
+        daysSinceLastOrder: 45,
+      }),
     ).toBe("À risque");
   });
 
   it("classe l'inactivité > 90j en Perdu", () => {
     expect(
-      computeSegment({ ordersCount: 3, totalSpent: 60, daysSinceLastOrder: 120 }),
+      computeSegment({
+        ordersCount: 3,
+        totalSpent: 60,
+        daysSinceLastOrder: 120,
+      }),
     ).toBe("Perdu");
   });
 });

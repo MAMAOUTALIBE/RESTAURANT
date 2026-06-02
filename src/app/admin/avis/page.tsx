@@ -13,7 +13,9 @@ export default async function AdminAvisPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="font-display text-3xl font-bold text-cream">Avis clients</h1>
+      <h1 className="font-display text-3xl font-bold text-cream">
+        Avis clients
+      </h1>
       <p className="text-sm text-muted">
         {reviews.length} avis · {pending} en attente de validation
       </p>
@@ -28,7 +30,9 @@ export default async function AdminAvisPage() {
             <li
               key={r.id}
               className={`rounded-2xl border p-5 ${
-                r.approved ? "border-white/10 bg-ink-soft/60" : "border-gold/30 bg-ink-soft"
+                r.approved
+                  ? "border-white/10 bg-ink-soft/60"
+                  : "border-gold/30 bg-ink-soft"
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -36,11 +40,16 @@ export default async function AdminAvisPage() {
                   <span className="font-medium text-cream">{r.name}</span>
                   <span className="flex">
                     {[1, 2, 3, 4, 5].map((n) => (
-                      <Star key={n} className={`h-3.5 w-3.5 ${n <= r.rating ? "fill-gold text-gold" : "text-white/20"}`} />
+                      <Star
+                        key={n}
+                        className={`h-3.5 w-3.5 ${n <= r.rating ? "fill-gold text-gold" : "text-white/20"}`}
+                      />
                     ))}
                   </span>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs ${r.approved ? "bg-green-500/15 text-green-300" : "bg-gold/15 text-gold"}`}>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs ${r.approved ? "bg-green-500/15 text-green-300" : "bg-gold/15 text-gold"}`}
+                >
                   {r.approved ? "publié" : "en attente"}
                 </span>
               </div>
@@ -56,7 +65,9 @@ export default async function AdminAvisPage() {
                 )}
                 <form action={adminDeleteReview}>
                   <input type="hidden" name="id" value={r.id} />
-                  <button className="text-xs text-red-400 hover:text-red-300">Supprimer</button>
+                  <button className="text-xs text-red-400 hover:text-red-300">
+                    Supprimer
+                  </button>
                 </form>
               </div>
             </li>

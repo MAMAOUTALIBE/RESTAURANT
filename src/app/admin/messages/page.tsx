@@ -34,7 +34,10 @@ export default async function AdminMessagesPage() {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="font-medium text-cream">{m.name}</span>
-                <a href={`mailto:${m.email}`} className="text-sm text-gold hover:underline">
+                <a
+                  href={`mailto:${m.email}`}
+                  className="text-sm text-gold hover:underline"
+                >
                   {m.email}
                 </a>
                 <span className="text-xs text-muted">
@@ -44,7 +47,11 @@ export default async function AdminMessagesPage() {
               <p className="mt-2 text-sm text-cream/85">{m.message}</p>
               <form action={adminToggleContactHandled} className="mt-3">
                 <input type="hidden" name="id" value={m.id} />
-                <input type="hidden" name="handled" value={(!m.handled).toString()} />
+                <input
+                  type="hidden"
+                  name="handled"
+                  value={(!m.handled).toString()}
+                />
                 <button
                   type="submit"
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${

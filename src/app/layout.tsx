@@ -23,14 +23,15 @@ const display = Playfair_Display({
   weight: ["500", "600", "700", "800"],
 });
 
+const heroImage = "/images/hero-premium-poulet-dg.png";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "N'KULU — Saveurs Africaines | Cuisine africaine authentique",
-    template: "%s | N'KULU Saveurs Africaines",
+    default: `${siteConfig.name} | Restaurant africain premium`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "N'KULU Saveurs Africaines : recettes traditionnelles préparées avec amour, ingrédients frais et épices d'exception. Commandez en ligne ou scannez le QR code.",
+  description: `${siteConfig.name} : recettes africaines préparées avec amour, ingrédients frais et épices d'exception. Commandez en ligne ou scannez le QR code.`,
   keywords: [
     "restaurant africain",
     "cuisine africaine",
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/" },
   openGraph: {
-    title: "N'KULU — Saveurs Africaines",
+    title: siteConfig.name,
     description: "L'Afrique dans chaque bouchée.",
     type: "website",
     locale: siteConfig.locale,
@@ -50,7 +51,7 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     images: [
       {
-        url: "/images/poulet-dg.jpg",
+        url: heroImage,
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -59,9 +60,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "N'KULU — Saveurs Africaines",
+    title: siteConfig.name,
     description: "L'Afrique dans chaque bouchée.",
-    images: ["/images/poulet-dg.jpg"],
+    images: [heroImage],
   },
   robots: {
     index: true,
@@ -89,17 +90,17 @@ export default function RootLayout({
       streetAddress: siteConfig.contact.address,
       addressCountry: "FR",
     },
-    image: [
-      `${siteConfig.url}/images/hero-1.jpg`,
-      `${siteConfig.url}/images/hero-2.jpg`,
-      `${siteConfig.url}/images/hero-3.jpg`,
-    ],
-    menu: `${siteConfig.url}/#menu`,
+    image: [`${siteConfig.url}${heroImage}`],
+    menu: `${siteConfig.url}/menu`,
     acceptsReservations: true,
   };
 
   return (
-    <html lang="fr" className={`${sans.variable} ${display.variable}`}>
+    <html
+      lang="fr"
+      data-scroll-behavior="smooth"
+      className={`${sans.variable} ${display.variable}`}
+    >
       <body className="bg-ink font-sans text-cream antialiased">
         <script
           type="application/ld+json"

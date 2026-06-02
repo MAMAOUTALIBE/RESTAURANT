@@ -39,7 +39,15 @@ export function forecastRevenue(dailyTotals: number[]): Forecast {
 
 export const HEATMAP_DAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 // getDay(): 0=dimanche … 6=samedi → index d'affichage (Lun en premier).
-const DOW_TO_ROW: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
+const DOW_TO_ROW: Record<number, number> = {
+  1: 0,
+  2: 1,
+  3: 2,
+  4: 3,
+  5: 4,
+  6: 5,
+  0: 6,
+};
 
 export interface Heatmap {
   hours: number[];

@@ -7,32 +7,43 @@ interface LogoProps {
   tone?: "light" | "dark";
 }
 
-/** Logo N'KULU : masque africain stylisé + wordmark. */
+/** Logo AFRO MK LO BOKO : cloche stylisée + wordmark. */
 export function Logo({ className, tone = "light" }: LogoProps) {
   return (
     <Link
       href="/"
-      className={cn("group flex items-center gap-3", className)}
-      aria-label="N'KULU Saveurs Africaines — Accueil"
+      className={cn("group flex items-center gap-3.5", className)}
+      aria-label="AFRO MK LO BOKO — Accueil"
     >
-      <span className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-gold to-gold-600 shadow-glow">
+      <span
+        className={cn(
+          "grid h-12 w-12 place-items-center rounded-2xl border shadow-[0_18px_42px_-30px_rgba(216,154,28,0.95)] transition group-hover:border-gold",
+          tone === "light"
+            ? "border-gold/45 bg-[#0D0D0D]/70 text-gold"
+            : "border-gold/60 bg-white text-gold-600",
+        )}
+      >
         <svg
-          viewBox="0 0 24 24"
-          className="h-6 w-6 text-ink"
+          viewBox="0 0 48 48"
+          className="h-9 w-9"
           fill="none"
           aria-hidden="true"
         >
           <path
-            d="M12 2c-3 0-5 2.5-5 6 0 1.5.5 2.5.5 4 0 2-1.5 3-1.5 5 0 3 2.5 5 6 5s6-2 6-5c0-2-1.5-3-1.5-5 0-1.5.5-2.5.5-4 0-3.5-2-6-5-6Z"
-            fill="currentColor"
-            opacity="0.9"
+            d="M11 25h26v3c0 7-5 12-13 12S11 35 11 28v-3Z"
+            stroke="currentColor"
+            strokeWidth="2.4"
+            strokeLinejoin="round"
           />
-          <circle cx="9.5" cy="10" r="1" fill="#080808" />
-          <circle cx="14.5" cy="10" r="1" fill="#080808" />
           <path
-            d="M10 15c.7.6 3.3.6 4 0"
-            stroke="#080808"
-            strokeWidth="1.2"
+            d="M16 25c0-5 4-9 8-9s8 4 8 9"
+            stroke="currentColor"
+            strokeWidth="2.4"
+          />
+          <path
+            d="M13 31h28M8 25h32M21 11h6M24 6v5"
+            stroke="currentColor"
+            strokeWidth="2.4"
             strokeLinecap="round"
           />
         </svg>
@@ -40,14 +51,14 @@ export function Logo({ className, tone = "light" }: LogoProps) {
       <span className="leading-none">
         <span
           className={cn(
-            "block font-display text-xl font-bold tracking-wide",
+            "block font-display text-2xl font-bold tracking-tight",
             tone === "light" ? "text-cream" : "text-ink",
           )}
         >
-          N&apos;KULU
+          AFRO MK
         </span>
-        <span className="block text-[10px] font-semibold uppercase tracking-[0.3em] text-gold">
-          Saveurs Africaines
+        <span className="block text-sm font-bold uppercase tracking-[0.32em] text-gold">
+          LO BOKO
         </span>
       </span>
     </Link>

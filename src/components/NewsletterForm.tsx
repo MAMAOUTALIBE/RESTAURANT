@@ -1,6 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { Send } from "lucide-react";
 import { subscribeNewsletter, type ActionState } from "@/app/actions";
 
@@ -14,16 +15,14 @@ function SubmitButton() {
       className="btn-primary px-4 disabled:opacity-60"
     >
       <Send className="h-4 w-4" />
-      <span className="hidden sm:inline">
-        {pending ? "…" : "S'inscrire"}
-      </span>
+      <span className="hidden sm:inline">{pending ? "…" : "S'inscrire"}</span>
     </button>
   );
 }
 
 /** Formulaire d'inscription newsletter relié à la Server Action. */
 export function NewsletterForm() {
-  const [state, formAction] = useFormState<ActionState | null, FormData>(
+  const [state, formAction] = useActionState<ActionState | null, FormData>(
     subscribeNewsletter,
     null,
   );

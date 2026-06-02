@@ -19,7 +19,10 @@ export default async function RapportsPage({
   const since = now - days * 86_400_000;
   const prevSince = since - days * 86_400_000;
 
-  const [orders, customers] = await Promise.all([getAllOrders(), listCustomers()]);
+  const [orders, customers] = await Promise.all([
+    getAllOrders(),
+    listCustomers(),
+  ]);
   const paid = orders.filter((o) => o.status !== "annulée");
 
   const inRange = (o: (typeof paid)[number], from: number, to: number) => {
@@ -66,9 +69,7 @@ export default async function RapportsPage({
       : 0;
 
   // Heatmap heures de pointe : heure de service (créneau choisi sinon création).
-  const heatmap = buildHeatmap(
-    paid.map((o) => o.scheduledAt ?? o.createdAt),
-  );
+  const heatmap = buildHeatmap(paid.map((o) => o.scheduledAt ?? o.createdAt));
 
   // Prévision de CA : totaux quotidiens des 14 derniers jours (du + ancien au + récent).
   const dailyTotals: number[] = [];
@@ -92,7 +93,8 @@ export default async function RapportsPage({
       acc.brut += o.subtotal;
       acc.remises += o.discount;
       acc.net += o.total;
-      if (o.status === "payée" || o.status === "livrée") acc.encaisse += o.total;
+      if (o.status === "payée" || o.status === "livrée")
+        acc.encaisse += o.total;
       return acc;
     },
     { brut: 0, remises: 0, net: 0, encaisse: 0 },
@@ -112,7 +114,9 @@ export default async function RapportsPage({
             <option value="30">30 jours</option>
             <option value="90">90 jours</option>
           </select>
-          <button type="submit" className="btn-primary px-4">Appliquer</button>
+          <button type="submit" className="btn-primary px-4">
+            Appliquer
+          </button>
         </form>
       </div>
 
@@ -123,8 +127,11 @@ export default async function RapportsPage({
           <p className="mt-1 font-display text-2xl font-bold text-cream">
             {formatPrice(caCurrent)}
           </p>
-          <p className={`mt-1 text-xs ${variation >= 0 ? "text-green-400" : "text-red-400"}`}>
-            {variation >= 0 ? "▲" : "▼"} {Math.abs(variation).toFixed(0)}% vs période précédente
+          <p
+            className={`mt-1 text-xs ${variation >= 0 ? "text-green-400" : "text-red-400"}`}
+          >
+            {variation >= 0 ? "▲" : "▼"} {Math.abs(variation).toFixed(0)}% vs
+            période précédente
           </p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-ink-soft p-5">
@@ -151,13 +158,20 @@ export default async function RapportsPage({
           Basée sur la moyenne mobile des 7 derniers jours.
         </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-4">
-          <Fin label="Moyenne / jour" value={formatPrice(forecast.dailyAverage)} />
+          <Fin
+            label="Moyenne / jour"
+            value={formatPrice(forecast.dailyAverage)}
+          />
           <Fin
             label="Tendance (7j)"
             value={`${forecast.trendPct >= 0 ? "▲" : "▼"} ${Math.abs(forecast.trendPct).toFixed(0)}%`}
           />
           <Fin label="Projection 7 jours" value={formatPrice(forecast.next7)} />
-          <Fin label="Projection 30 jours" value={formatPrice(forecast.next30)} highlight />
+          <Fin
+            label="Projection 30 jours"
+            value={formatPrice(forecast.next30)}
+            highlight
+          />
         </div>
       </section>
 
@@ -169,7 +183,11 @@ export default async function RapportsPage({
           </h2>
           {heatmap.busiest && (
             <span className="text-sm text-muted">
-              Pic : <span className="text-gold">{heatmap.busiest.day} {heatmap.busiest.hour}h</span> ({heatmap.busiest.count})
+              Pic :{" "}
+              <span className="text-gold">
+                {heatmap.busiest.day} {heatmap.busiest.hour}h
+              </span>{" "}
+              ({heatmap.busiest.count})
             </span>
           )}
         </div>
@@ -204,15 +222,22 @@ export default async function RapportsPage({
             CA par plat ({days} j)
           </h2>
           {dishRanking.length === 0 ? (
-            <p className="mt-4 text-sm text-muted">Aucune vente sur la période.</p>
+            <p className="mt-4 text-sm text-muted">
+              Aucune vente sur la période.
+            </p>
           ) : (
             <ul className="mt-4 space-y-2">
               {dishRanking.map((d) => (
-                <li key={d.name} className="flex items-center justify-between text-sm">
+                <li
+                  key={d.name}
+                  className="flex items-center justify-between text-sm"
+                >
                   <span className="text-cream/90">
                     {d.name} <span className="text-muted">×{d.qty}</span>
                   </span>
-                  <span className="font-semibold text-gold">{formatPrice(d.ca)}</span>
+                  <span className="font-semibold text-gold">
+                    {formatPrice(d.ca)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -229,7 +254,10 @@ export default async function RapportsPage({
           ) : (
             <ul className="mt-4 space-y-2">
               {topClients.map((c) => (
-                <li key={c.email} className="flex items-center justify-between text-sm">
+                <li
+                  key={c.email}
+                  className="flex items-center justify-between text-sm"
+                >
                   <span className="text-cream/90">{c.name || c.email}</span>
                   <span className="font-semibold text-gold">
                     {formatPrice(c.totalSpent)}
@@ -260,7 +288,9 @@ function Fin({
       }`}
     >
       <p className="text-xs text-muted">{label}</p>
-      <p className={`mt-1 font-display text-xl font-bold ${highlight ? "text-gold" : "text-cream"}`}>
+      <p
+        className={`mt-1 font-display text-xl font-bold ${highlight ? "text-gold" : "text-cream"}`}
+      >
         {value}
       </p>
     </div>

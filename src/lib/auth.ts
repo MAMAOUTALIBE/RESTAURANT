@@ -38,7 +38,7 @@ export async function createMagicLink(email: string): Promise<string> {
 
   const result = await sendEmail({
     to: normalized,
-    subject: "Votre lien de connexion N'KULU",
+    subject: `Votre lien de connexion ${siteConfig.shortName}`,
     html: `<h1>Connexion à votre espace client</h1>
       <p>Cliquez sur le lien ci-dessous pour vous connecter (valable ${TOKEN_TTL_MIN} minutes) :</p>
       <p><a href="${url}">Se connecter</a></p>

@@ -42,14 +42,16 @@ export function formatSocialOrderMessage({
   promoCode,
 }: SocialOrderInput) {
   const lines = [
-    `Bonjour N'KULU, je souhaite commander :`,
+    `Bonjour ${siteConfig.name}, je souhaite commander :`,
     "",
     ...items.flatMap((item) => {
       const details = [
         `- ${item.quantity} x ${item.name} (${formatPrice(item.unitPrice)} / unité)`,
       ];
       if (item.options.length > 0) {
-        details.push(`  Options : ${item.options.map((o) => o.label).join(", ")}`);
+        details.push(
+          `  Options : ${item.options.map((o) => o.label).join(", ")}`,
+        );
       }
       if (item.note) details.push(`  Note : ${item.note}`);
       return details;
@@ -62,7 +64,9 @@ export function formatSocialOrderMessage({
   if (choice.postalCode) lines.push(`Code postal : ${choice.postalCode}`);
   lines.push(`Sous-total : ${formatPrice(subtotal)}`);
   if (discount > 0) {
-    lines.push(`Remise${promoCode ? ` (${promoCode})` : ""} : -${formatPrice(discount)}`);
+    lines.push(
+      `Remise${promoCode ? ` (${promoCode})` : ""} : -${formatPrice(discount)}`,
+    );
   }
   if (deliveryFee > 0) lines.push(`Livraison : ${formatPrice(deliveryFee)}`);
   if (tip > 0) lines.push(`Pourboire : ${formatPrice(tip)}`);
@@ -74,15 +78,16 @@ export function formatSocialOrderMessage({
 }
 
 export function buildWhatsAppOrderUrl(message: string) {
-  const phone = cleanPhone(siteConfig.messaging.whatsappOrderNumber).replace(/^\+/, "");
+  const phone = cleanPhone(siteConfig.messaging.whatsappOrderNumber).replace(
+    /^\+/,
+    "",
+  );
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 }
 
 export function buildTelegramOrderUrl(message: string) {
   const username = siteConfig.messaging.telegramOrderUsername.replace(/^@/, "");
   const url = `${siteConfig.url}/commander`;
-  const text = username
-    ? `${message}\n\nÀ envoyer à @${username}.`
-    : message;
+  const text = username ? `${message}\n\nÀ envoyer à @${username}.` : message;
   return `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
 }

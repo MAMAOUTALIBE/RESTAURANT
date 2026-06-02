@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { ServiceBoard, type ServiceOrder } from "@/components/admin/ServiceBoard";
+import {
+  ServiceBoard,
+  type ServiceOrder,
+} from "@/components/admin/ServiceBoard";
 
 export const dynamic = "force-dynamic";
 

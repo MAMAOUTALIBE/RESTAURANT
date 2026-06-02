@@ -31,7 +31,8 @@ export default async function DashboardPage() {
   // Alerte cuisine : commandes en retard (échéance dépassée, pas encore prêtes).
   const nowMs = Date.now();
   const lateOrders = orders.filter((o) => {
-    if (!["en attente", "payée", "en préparation"].includes(o.status)) return false;
+    if (!["en attente", "payée", "en préparation"].includes(o.status))
+      return false;
     const due = o.scheduledAt
       ? new Date(o.scheduledAt).getTime()
       : new Date(o.createdAt).getTime() + o.prepTimeMin * 60000;
@@ -64,7 +65,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="font-display text-3xl font-bold text-cream">Tableau de bord</h1>
+      <h1 className="font-display text-3xl font-bold text-cream">
+        Tableau de bord
+      </h1>
 
       {/* Alerte cuisine : commandes en retard */}
       {lateOrders > 0 && (
@@ -74,7 +77,8 @@ export default async function DashboardPage() {
         >
           <AlertTriangle className="h-5 w-5 shrink-0" />
           <span className="font-semibold">
-            {lateOrders} commande{lateOrders > 1 ? "s" : ""} en retard en cuisine
+            {lateOrders} commande{lateOrders > 1 ? "s" : ""} en retard en
+            cuisine
           </span>
           <span className="ml-auto text-sm underline">Voir le service →</span>
         </Link>
@@ -83,9 +87,19 @@ export default async function DashboardPage() {
       {/* KPIs */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi Icon={Euro} label="CA encaissé" value={formatPrice(ca)} />
-        <Kpi Icon={ShoppingBag} label="Commandes" value={String(orders.length)} sub={`${pending} en attente`} />
+        <Kpi
+          Icon={ShoppingBag}
+          label="Commandes"
+          value={String(orders.length)}
+          sub={`${pending} en attente`}
+        />
         <Kpi Icon={Clock} label="Panier moyen" value={formatPrice(avgBasket)} />
-        <Kpi Icon={Users} label="Clients" value={String(customersCount)} sub={`${reservationsCount} réservations`} />
+        <Kpi
+          Icon={Users}
+          label="Clients"
+          value={String(customersCount)}
+          sub={`${reservationsCount} réservations`}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -96,7 +110,10 @@ export default async function DashboardPage() {
           </h2>
           <div className="mt-6 flex h-40 items-end gap-1.5">
             {days.map((d) => (
-              <div key={d.label} className="flex flex-1 flex-col items-center gap-1">
+              <div
+                key={d.label}
+                className="flex flex-1 flex-col items-center gap-1"
+              >
                 <div
                   className="w-full rounded-t bg-gold/80 transition-all"
                   style={{ height: `${(d.total / maxDay) * 100}%` }}
@@ -110,13 +127,18 @@ export default async function DashboardPage() {
 
         {/* Top plats */}
         <div className="rounded-2xl border border-white/10 bg-ink-soft p-6">
-          <h2 className="font-display text-lg font-semibold text-cream">Top plats</h2>
+          <h2 className="font-display text-lg font-semibold text-cream">
+            Top plats
+          </h2>
           {topDishes.length === 0 ? (
             <p className="mt-4 text-sm text-muted">Pas encore de données.</p>
           ) : (
             <ul className="mt-4 space-y-3">
               {topDishes.map(([name, qty]) => (
-                <li key={name} className="flex items-center justify-between text-sm">
+                <li
+                  key={name}
+                  className="flex items-center justify-between text-sm"
+                >
                   <span className="text-cream/90">{name}</span>
                   <span className="font-semibold text-gold">{qty}</span>
                 </li>
@@ -133,7 +155,10 @@ export default async function DashboardPage() {
             <h2 className="font-display text-lg font-semibold text-cream">
               Segments clients
             </h2>
-            <Link href="/admin/clients" className="text-sm text-gold hover:underline">
+            <Link
+              href="/admin/clients"
+              className="text-sm text-gold hover:underline"
+            >
               Voir les clients →
             </Link>
           </div>
@@ -156,15 +181,12 @@ export default async function DashboardPage() {
 
         <div className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
           <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-orange-300">
-            <AlertTriangle className="h-5 w-5" />
-            À relancer
+            <AlertTriangle className="h-5 w-5" />À relancer
           </h2>
           <p className="mt-2 font-display text-3xl font-bold text-cream">
             {toReengage.length}
           </p>
-          <p className="mt-1 text-xs text-muted">
-            clients à risque ou perdus
-          </p>
+          <p className="mt-1 text-xs text-muted">clients à risque ou perdus</p>
           {toReengage.length > 0 && (
             <Link
               href="/admin/marketing?audience=relance"
@@ -182,7 +204,10 @@ export default async function DashboardPage() {
           <h2 className="font-display text-lg font-semibold text-cream">
             Dernières commandes
           </h2>
-          <Link href="/admin/commandes" className="text-sm text-gold hover:underline">
+          <Link
+            href="/admin/commandes"
+            className="text-sm text-gold hover:underline"
+          >
             Tout voir →
           </Link>
         </div>
@@ -191,7 +216,10 @@ export default async function DashboardPage() {
         ) : (
           <ul className="mt-4 divide-y divide-white/10">
             {orders.slice(0, 5).map((o) => (
-              <li key={o.id} className="flex items-center justify-between py-3 text-sm">
+              <li
+                key={o.id}
+                className="flex items-center justify-between py-3 text-sm"
+              >
                 <span className="font-mono text-gold">{o.reference}</span>
                 <Link
                   href={`/admin/clients/${encodeURIComponent(o.customer.email)}`}

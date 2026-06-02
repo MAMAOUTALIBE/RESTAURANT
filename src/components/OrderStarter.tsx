@@ -26,7 +26,11 @@ function dayLabel(d: Date) {
   const isTomorrow = d.toDateString() === tomorrow.toDateString();
   if (isToday) return "Aujourd'hui";
   if (isTomorrow) return "Demain";
-  return d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" });
+  return d.toLocaleDateString("fr-FR", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 }
 
 /** Étape d'entrée de commande : mode + (livraison→CP) + calendrier date/heure. */
@@ -38,9 +42,14 @@ export function OrderStarter({
   onConfirmed?: () => void;
 }) {
   const { choice, setChoice } = useOrderChoice();
-  const [mode, setMode] = useState<Fulfillment>(choice?.fulfillment ?? "emporter");
+  const [mode, setMode] = useState<Fulfillment>(
+    choice?.fulfillment ?? "emporter",
+  );
   const [postal, setPostal] = useState(choice?.postalCode ?? "");
-  const [deliveryMsg, setDeliveryMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [deliveryMsg, setDeliveryMsg] = useState<{
+    ok: boolean;
+    text: string;
+  } | null>(null);
 
   // 7 prochains jours.
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -48,10 +57,14 @@ export function OrderStarter({
     d.setDate(d.getDate() + i);
     return d;
   });
-  const [dateStr, setDateStr] = useState(() => days[0].toISOString().slice(0, 10));
+  const [dateStr, setDateStr] = useState(() =>
+    days[0].toISOString().slice(0, 10),
+  );
   const [slots, setSlots] = useState<SlotDTO[]>([]);
   const [asap, setAsap] = useState(choice?.scheduledAt == null);
-  const [slotIso, setSlotIso] = useState<string | null>(choice?.scheduledAt ?? null);
+  const [slotIso, setSlotIso] = useState<string | null>(
+    choice?.scheduledAt ?? null,
+  );
 
   useEffect(() => {
     fetch(`/api/slots?date=${dateStr}`, { cache: "no-store" })
@@ -88,13 +101,16 @@ export function OrderStarter({
   }
 
   const canConfirm =
-    (asap || slotIso) && (mode !== "livraison" || (postal.trim().length >= 4 && deliveryMsg?.ok));
+    (asap || slotIso) &&
+    (mode !== "livraison" || (postal.trim().length >= 4 && deliveryMsg?.ok));
 
   return (
     <div className="space-y-6">
       {/* Mode */}
       <div>
-        <h3 className="font-display text-lg font-semibold text-cream">Comment ça se passe ?</h3>
+        <h3 className="font-display text-lg font-semibold text-cream">
+          Comment ça se passe ?
+        </h3>
         <div className="mt-3 grid grid-cols-3 gap-2">
           {MODES.map(({ value, label, Icon }) => (
             <button
@@ -102,7 +118,9 @@ export function OrderStarter({
               type="button"
               onClick={() => setMode(value)}
               className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-4 text-sm transition ${
-                mode === value ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"
+                mode === value
+                  ? "border-gold bg-gold/10 text-cream"
+                  : "border-white/10 text-cream/70 hover:border-white/30"
               }`}
             >
               <Icon className="h-6 w-6" />
@@ -114,24 +132,53 @@ export function OrderStarter({
 
       {mode === "livraison" && (
         <div className="rounded-xl border border-white/10 bg-ink-soft p-4">
-          <label htmlFor="cp" className="mb-1.5 block text-sm text-cream/80">Code postal de livraison</label>
+          <label htmlFor="cp" className="mb-1.5 block text-sm text-cream/80">
+            Code postal de livraison
+          </label>
           <div className="flex gap-2">
-            <input id="cp" value={postal} onChange={(e) => { setPostal(e.target.value); setDeliveryMsg(null); }} placeholder="75011"
-              className="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none" />
-            <button type="button" onClick={verifyDelivery} className="shrink-0 rounded-xl border border-gold/40 px-4 text-sm font-semibold text-gold transition hover:bg-gold/10">Vérifier</button>
+            <input
+              id="cp"
+              value={postal}
+              onChange={(e) => {
+                setPostal(e.target.value);
+                setDeliveryMsg(null);
+              }}
+              placeholder="91260"
+              className="w-full rounded-xl border border-white/10 bg-ink px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={verifyDelivery}
+              className="shrink-0 rounded-xl border border-gold/40 px-4 text-sm font-semibold text-gold transition hover:bg-gold/10"
+            >
+              Vérifier
+            </button>
           </div>
-          {deliveryMsg && <p className={`mt-1 text-xs ${deliveryMsg.ok ? "text-green-400" : "text-red-400"}`}>{deliveryMsg.text}</p>}
+          {deliveryMsg && (
+            <p
+              className={`mt-1 text-xs ${deliveryMsg.ok ? "text-green-400" : "text-red-400"}`}
+            >
+              {deliveryMsg.text}
+            </p>
+          )}
         </div>
       )}
 
       {/* Quand */}
       <div>
-        <h3 className="font-display text-lg font-semibold text-cream">Pour quand ?</h3>
+        <h3 className="font-display text-lg font-semibold text-cream">
+          Pour quand ?
+        </h3>
         <button
           type="button"
-          onClick={() => { setAsap(true); setSlotIso(null); }}
+          onClick={() => {
+            setAsap(true);
+            setSlotIso(null);
+          }}
           className={`mt-3 w-full rounded-xl border px-4 py-3 text-left text-sm transition ${
-            asap ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"
+            asap
+              ? "border-gold bg-gold/10 text-cream"
+              : "border-white/10 text-cream/70 hover:border-white/30"
           }`}
         >
           ⚡ Dès que possible
@@ -145,9 +192,14 @@ export function OrderStarter({
               <button
                 key={ds}
                 type="button"
-                onClick={() => { setDateStr(ds); setAsap(false); }}
+                onClick={() => {
+                  setDateStr(ds);
+                  setAsap(false);
+                }}
                 className={`shrink-0 rounded-xl border px-3 py-2 text-xs transition ${
-                  !asap && dateStr === ds ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"
+                  !asap && dateStr === ds
+                    ? "border-gold bg-gold/10 text-cream"
+                    : "border-white/10 text-cream/70 hover:border-white/30"
                 }`}
               >
                 {dayLabel(d)}
@@ -159,7 +211,11 @@ export function OrderStarter({
         {/* Créneaux */}
         {!asap && (
           <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6">
-            {slots.length === 0 && <p className="col-span-full text-sm text-muted">Fermé ce jour-là.</p>}
+            {slots.length === 0 && (
+              <p className="col-span-full text-sm text-muted">
+                Fermé ce jour-là.
+              </p>
+            )}
             {slots.map((s) => (
               <button
                 key={s.iso}

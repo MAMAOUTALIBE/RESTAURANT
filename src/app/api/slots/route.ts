@@ -7,7 +7,10 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const date = new URL(request.url).searchParams.get("date");
   if (!date) {
-    return NextResponse.json({ error: "Paramètre 'date' requis" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Paramètre 'date' requis" },
+      { status: 400 },
+    );
   }
   const slots = await getSlotsForDate(date);
   return NextResponse.json({ slots });

@@ -12,19 +12,59 @@ const categories = [
 
 // Plats supplémentaires pour étoffer le menu par catégorie.
 const extraDishes = [
-  { slug: "accras", name: "Accras de morue", description: "Beignets de morue épicés", price: 6, image: "/images/about-3.jpg", category: "entrees", sortOrder: 1 },
-  { slug: "samoussas", name: "Samoussas boeuf", description: "Croustillants à la viande épicée", price: 6.5, image: "/images/about-2.jpg", category: "entrees", sortOrder: 2 },
-  { slug: "thiakry", name: "Thiakry", description: "Dessert au mil et lait, vanille", price: 5, image: "/images/about-1.jpg", category: "desserts", sortOrder: 1 },
-  { slug: "bissap", name: "Bissap", description: "Jus d'hibiscus maison", price: 3.5, image: "/images/riz-jollof.jpg", category: "boissons", sortOrder: 1 },
-  { slug: "gingembre", name: "Jus de gingembre", description: "Boisson fraîche et tonique", price: 3.5, image: "/images/mafe.jpg", category: "boissons", sortOrder: 2 },
+  {
+    slug: "accras",
+    name: "Accras de morue",
+    description: "Beignets de morue épicés",
+    price: 6,
+    image: "/images/about-3.jpg",
+    category: "entrees",
+    sortOrder: 1,
+  },
+  {
+    slug: "samoussas",
+    name: "Samoussas boeuf",
+    description: "Croustillants à la viande épicée",
+    price: 6.5,
+    image: "/images/about-2.jpg",
+    category: "entrees",
+    sortOrder: 2,
+  },
+  {
+    slug: "thiakry",
+    name: "Thiakry",
+    description: "Dessert au mil et lait, vanille",
+    price: 5,
+    image: "/images/about-1.jpg",
+    category: "desserts",
+    sortOrder: 1,
+  },
+  {
+    slug: "bissap",
+    name: "Bissap",
+    description: "Jus d'hibiscus maison",
+    price: 3.5,
+    image: "/images/riz-jollof.jpg",
+    category: "boissons",
+    sortOrder: 1,
+  },
+  {
+    slug: "gingembre",
+    name: "Jus de gingembre",
+    description: "Boisson fraîche et tonique",
+    price: 3.5,
+    image: "/images/mafe.jpg",
+    category: "boissons",
+    sortOrder: 2,
+  },
 ];
 
 async function main() {
   // Restaurant par défaut (base mono-site aujourd'hui, prêt multi-restaurants).
   const defaultRestaurant = await prisma.restaurant.upsert({
-    where: { slug: "nkulu-paris-11" },
-    update: { name: "N'KULU Paris 11", active: true },
-    create: { slug: "nkulu-paris-11", name: "N'KULU Paris 11", active: true },
+    where: { slug: "afromk-loboko" },
+    update: { name: "AFRO MK LO BOKO", active: true },
+    create: { slug: "afromk-loboko", name: "AFRO MK LO BOKO", active: true },
   });
 
   // Catégories
@@ -67,7 +107,11 @@ async function main() {
   }
 
   // Plats supplémentaires (entrées, desserts, boissons) avec prep par catégorie.
-  const prepByCat: Record<string, number> = { entrees: 10, desserts: 5, boissons: 2 };
+  const prepByCat: Record<string, number> = {
+    entrees: 10,
+    desserts: 5,
+    boissons: 2,
+  };
   for (const d of extraDishes) {
     const prepMinutes = prepByCat[d.category] ?? 15;
     await prisma.dish.upsert({
@@ -136,9 +180,9 @@ async function main() {
 
   // Zones de livraison
   for (const z of [
-    { postalCode: "75011", fee: 3.5, minOrder: 15 },
-    { postalCode: "75012", fee: 4.5, minOrder: 20 },
-    { postalCode: "75020", fee: 4, minOrder: 18 },
+    { postalCode: "91260", fee: 3.5, minOrder: 15 },
+    { postalCode: "91200", fee: 4.5, minOrder: 20 },
+    { postalCode: "91600", fee: 4, minOrder: 18 },
   ]) {
     await prisma.deliveryZone.upsert({
       where: { postalCode: z.postalCode },
@@ -158,20 +202,31 @@ async function main() {
   await prisma.orderingSetting.upsert({
     where: { id: "default" },
     update: {},
-    create: { id: "default", slotIntervalMin: 15, leadTimeMin: 20, capacityPerSlot: 8 },
+    create: {
+      id: "default",
+      slotIntervalMin: 15,
+      leadTimeMin: 20,
+      capacityPerSlot: 8,
+    },
   });
 
-  // Code promo affiché sur le site
+  // Code promo affiché sur le site.
+  await prisma.promoCode.upsert({
+    where: { code: "AFROMK10" },
+    update: { type: "percent", value: 10, active: true },
+    create: { code: "AFROMK10", type: "percent", value: 10, active: true },
+  });
+  // Ancien code conservé comme alias pour ne pas casser les campagnes déjà envoyées.
   await prisma.promoCode.upsert({
     where: { code: "AFRO10" },
-    update: {},
+    update: { type: "percent", value: 10, active: true },
     create: { code: "AFRO10", type: "percent", value: 10, active: true },
   });
 
   const dishes = await prisma.dish.count();
   const zones = await prisma.deliveryZone.count();
   console.log(
-    `✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, AFRO10, restaurant ${defaultRestaurant.slug}.`,
+    `✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, AFROMK10, restaurant ${defaultRestaurant.slug}.`,
   );
 }
 

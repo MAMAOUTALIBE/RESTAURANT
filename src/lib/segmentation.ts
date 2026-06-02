@@ -23,7 +23,7 @@ export const SEGMENTS: Segment[] = [
 
 export const segmentStyles: Record<Segment, string> = {
   VIP: "bg-gold/20 text-gold",
-  "Fidèle": "bg-green-500/15 text-green-300",
+  Fidèle: "bg-green-500/15 text-green-300",
   Nouveau: "bg-blue-500/15 text-blue-300",
   Actif: "bg-white/10 text-cream",
   "À risque": "bg-orange-500/15 text-orange-300",

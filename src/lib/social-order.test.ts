@@ -24,7 +24,7 @@ describe("social order helpers", () => {
       items: [item],
       choice: {
         fulfillment: "livraison",
-        postalCode: "75011",
+        postalCode: "91260",
         label: "Aujourd'hui 19:30",
       },
       subtotal: 30,
@@ -32,20 +32,20 @@ describe("social order helpers", () => {
       discount: 5,
       tip: 2,
       total: 31,
-      promoCode: "AFRO10",
+      promoCode: "AFROMK10",
     });
 
     expect(message).toContain("2 x Mafé");
     expect(message).toContain("Options : Riz");
-    expect(message).toContain("Code postal : 75011");
+    expect(message).toContain("Code postal : 91260");
     expect(message.replace(/\s/g, " ")).toContain("Total estimé : 31,00 €");
   });
 
   it("génère des URLs WhatsApp et Telegram encodées", () => {
-    const message = "Bonjour N'KULU\nCommande test";
+    const message = "Bonjour AFRO MK LO BOKO\nCommande test";
 
     expect(buildWhatsAppOrderUrl(message)).toMatch(
-      /^https:\/\/wa\.me\/33123456789\?text=/,
+      /^https:\/\/wa\.me\/33758426563\?text=/,
     );
     expect(buildWhatsAppOrderUrl(message)).toContain("Commande%20test");
     expect(buildTelegramOrderUrl(message)).toMatch(
