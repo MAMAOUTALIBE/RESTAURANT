@@ -123,8 +123,8 @@ export function Hero() {
             <div className="absolute -inset-6 rounded-full bg-[#D89A1C]/10 blur-3xl" />
             <div className="border-white/8 relative aspect-[16/9] overflow-hidden rounded-[26px] border bg-[#080808]/35 shadow-[0_24px_80px_-58px_rgba(216,154,28,0.72)] backdrop-blur-sm">
               <Image
-                src="/images/hero-premium-poulet-dg.png"
-                alt="Poulet DG gastronomique fumant avec riz, légumes et plantains"
+                src="/images/hero-premium-poulet-dg-boissons.png"
+                alt="Poulet DG avec riz, plantains, bissap et gingembre frais"
                 fill
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"

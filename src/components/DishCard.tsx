@@ -83,7 +83,7 @@ export function DishCard({ dish, href, unavailable }: DishCardProps) {
           {dish.name}
         </h3>
         <div className="mt-1.5 flex flex-1 items-start justify-between gap-3">
-          <p className="text-ink/62 line-clamp-2 text-base leading-relaxed">
+          <p className="line-clamp-2 text-base leading-relaxed text-ink/70">
             {dish.description}
           </p>
           {actionButton}

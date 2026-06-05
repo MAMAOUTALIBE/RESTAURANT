@@ -4,58 +4,84 @@ import { seedDishes } from "../src/data/dishes";
 const prisma = new PrismaClient();
 
 const categories = [
-  { slug: "entrees", name: "Entrées", sortOrder: 1 },
-  { slug: "plats", name: "Plats", sortOrder: 2 },
-  { slug: "desserts", name: "Desserts", sortOrder: 3 },
-  { slug: "boissons", name: "Boissons", sortOrder: 4 },
+  { slug: "entrees", name: "Entrées africaines", sortOrder: 1 },
+  { slug: "plats", name: "Plats africains", sortOrder: 2 },
+  { slug: "desserts", name: "Desserts africains", sortOrder: 3 },
+  { slug: "boissons", name: "Boissons africaines", sortOrder: 4 },
 ];
 
-// Plats supplémentaires pour étoffer le menu par catégorie.
 const extraDishes = [
   {
     slug: "accras",
     name: "Accras de morue",
-    description: "Beignets de morue épicés",
+    description: "Beignets de morue antillais, herbes fraîches et piment doux",
     price: 6,
-    image: "/images/about-3.jpg",
+    image: "/images/poulet-dg.jpg",
     category: "entrees",
     sortOrder: 1,
   },
   {
-    slug: "samoussas",
+    slug: "samoussas-boeuf",
     name: "Samoussas boeuf",
-    description: "Croustillants à la viande épicée",
+    description: "Croustillants d'inspiration est-africaine au boeuf épicé",
     price: 6.5,
-    image: "/images/about-2.jpg",
+    image: "/images/yassa-poulet.jpg",
     category: "entrees",
     sortOrder: 2,
   },
   {
+    slug: "pastels-thon",
+    name: "Pastels au thon",
+    description: "Chaussons sénégalais au thon, sauce tomate relevée",
+    price: 7,
+    image: "/images/thieboudienne.jpg",
+    category: "entrees",
+    sortOrder: 3,
+  },
+  {
     slug: "thiakry",
     name: "Thiakry",
-    description: "Dessert au mil et lait, vanille",
+    description: "Dessert ouest-africain au mil, lait caillé et vanille",
     price: 5,
-    image: "/images/about-1.jpg",
+    image: "/images/mafe.jpg",
     category: "desserts",
     sortOrder: 1,
   },
   {
+    slug: "degue",
+    name: "Dèguè",
+    description: "Dessert au mil et yaourt, doux et frais",
+    price: 5,
+    image: "/images/foutou-gombo.jpg",
+    category: "desserts",
+    sortOrder: 2,
+  },
+  {
     slug: "bissap",
     name: "Bissap",
-    description: "Jus d'hibiscus maison",
+    description: "Boisson maison à l'hibiscus, servie fraîche",
     price: 3.5,
-    image: "/images/riz-jollof.jpg",
+    image: "/images/boisson-bissap.png",
     category: "boissons",
     sortOrder: 1,
   },
   {
     slug: "gingembre",
-    name: "Jus de gingembre",
-    description: "Boisson fraîche et tonique",
+    name: "Gingembre frais",
+    description: "Boisson tonique au gingembre, citron et menthe",
     price: 3.5,
-    image: "/images/mafe.jpg",
+    image: "/images/boisson-gingembre.png",
     category: "boissons",
     sortOrder: 2,
+  },
+  {
+    slug: "sodas-frais",
+    name: "Sodas frais",
+    description: "Sélection de boissons fraîches en canette",
+    price: 4,
+    image: "/images/boisson-sodas.png",
+    category: "boissons",
+    sortOrder: 3,
   },
 ];
 
@@ -106,7 +132,7 @@ async function main() {
     });
   }
 
-  // Plats supplémentaires (entrées, desserts, boissons) avec prep par catégorie.
+  // Entrées, desserts et boissons africains.
   const prepByCat: Record<string, number> = {
     entrees: 10,
     desserts: 5,
@@ -138,43 +164,36 @@ async function main() {
     });
   }
 
-  // Options de démonstration sur le Poulet DG (si pas déjà présentes).
+  await prisma.dish.deleteMany({
+    where: { slug: { in: ["samoussas", "bouye"] } },
+  });
+
+  // Options de démonstration sur le Poulet DG.
   const pouletDg = await prisma.dish.findUnique({
     where: { slug: "poulet-dg" },
-    include: { optionGroups: true },
   });
-  if (pouletDg && pouletDg.optionGroups.length === 0) {
-    await prisma.optionGroup.create({
-      data: {
-        dishId: pouletDg.id,
-        name: "Accompagnement",
-        type: "single",
-        required: true,
-        sortOrder: 1,
-        options: {
-          create: [
-            { name: "Plantain", priceDelta: 0, sortOrder: 1 },
-            { name: "Riz", priceDelta: 0, sortOrder: 2 },
-            { name: "Frites", priceDelta: 1, sortOrder: 3 },
-          ],
-        },
-      },
+  if (pouletDg) {
+    await resetDemoOptionGroup(pouletDg.id, {
+      name: "Accompagnement",
+      type: "single",
+      required: true,
+      sortOrder: 1,
+      options: [
+        { name: "Plantain", priceDelta: 0, sortOrder: 1 },
+        { name: "Riz parfumé", priceDelta: 0, sortOrder: 2 },
+        { name: "Attiéké", priceDelta: 1, sortOrder: 3 },
+      ],
     });
-    await prisma.optionGroup.create({
-      data: {
-        dishId: pouletDg.id,
-        name: "Suppléments",
-        type: "multi",
-        required: false,
-        sortOrder: 2,
-        options: {
-          create: [
-            { name: "Piment fort", priceDelta: 0, sortOrder: 1 },
-            { name: "Sauce arachide", priceDelta: 1.5, sortOrder: 2 },
-            { name: "Avocat", priceDelta: 2, sortOrder: 3 },
-          ],
-        },
-      },
+    await resetDemoOptionGroup(pouletDg.id, {
+      name: "Suppléments",
+      type: "multi",
+      required: false,
+      sortOrder: 2,
+      options: [
+        { name: "Piment fort", priceDelta: 0, sortOrder: 1 },
+        { name: "Sauce arachide", priceDelta: 1.5, sortOrder: 2 },
+        { name: "Avocat", priceDelta: 2, sortOrder: 3 },
+      ],
     });
   }
 
@@ -236,3 +255,43 @@ main()
     process.exit(1);
   })
   .finally(() => prisma.$disconnect());
+
+async function resetDemoOptionGroup(
+  dishId: string,
+  input: {
+    name: string;
+    type: string;
+    required: boolean;
+    sortOrder: number;
+    options: { name: string; priceDelta: number; sortOrder: number }[];
+  },
+) {
+  const group = await prisma.optionGroup.findFirst({
+    where: { dishId, name: input.name },
+  });
+
+  if (group) {
+    await prisma.option.deleteMany({ where: { groupId: group.id } });
+    await prisma.optionGroup.update({
+      where: { id: group.id },
+      data: {
+        type: input.type,
+        required: input.required,
+        sortOrder: input.sortOrder,
+        options: { create: input.options },
+      },
+    });
+    return;
+  }
+
+  await prisma.optionGroup.create({
+    data: {
+      dishId,
+      name: input.name,
+      type: input.type,
+      required: input.required,
+      sortOrder: input.sortOrder,
+      options: { create: input.options },
+    },
+  });
+}

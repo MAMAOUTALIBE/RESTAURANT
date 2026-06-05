@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Header } from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Finaliser ma commande",
@@ -11,5 +12,10 @@ export default function CommanderLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 }

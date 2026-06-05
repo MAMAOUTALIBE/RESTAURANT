@@ -18,7 +18,7 @@ function SubmitButton() {
 }
 
 const fieldClass =
-  "w-full rounded-xl border border-white/10 bg-ink px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none";
+  "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none focus:ring-1 focus:ring-gold/40";
 
 /** Formulaire de contact relié à la Server Action. */
 export function ContactForm() {

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Le Menu",
   description:
-    "Découvrez toute la carte AFRO MK LO BOKO : entrées, plats africains, desserts et boissons.",
+    "Découvrez toute la carte AFRO MK LO BOKO : entrées africaines, plats africains, desserts africains et boissons maison.",
 };
 
 export default async function MenuPage() {
@@ -19,20 +19,29 @@ export default async function MenuPage() {
   return (
     <>
       <Header />
-      <main className="bg-cream pb-20 pt-28 text-ink">
-        <div className="container-page">
-          <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-600">
-              Notre carte
-            </p>
-            <h1 className="mt-2 font-display text-4xl font-bold sm:text-5xl">
-              Le Menu
-            </h1>
-          </Reveal>
-
-          <div className="mt-8">
-            <MenuBrowser categories={categories} dishes={dishes} />
+      <main className="bg-ink pb-20 text-cream">
+        {/* Hero sombre, cohérent avec le reste du site, pour donner de la respiration */}
+        <section className="relative overflow-hidden bg-hero-radial pb-10 pt-32 sm:pb-12">
+          <div className="absolute inset-0 bg-kente opacity-50" aria-hidden />
+          <div className="container-page relative">
+            <Reveal>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
+                Notre carte
+              </p>
+              <h1 className="mt-3 font-display text-4xl font-bold text-cream sm:text-5xl">
+                Le Menu
+              </h1>
+              <p className="mt-3 max-w-xl text-base leading-relaxed text-cream/60">
+                Entrées africaines, Tiep Poulet, Yassa, Foutou, Mafé, desserts
+                au mil et boissons maison, préparés chaque jour avec des
+                produits frais.
+              </p>
+            </Reveal>
           </div>
+        </section>
+
+        <div className="container-page">
+          <MenuBrowser categories={categories} dishes={dishes} />
         </div>
       </main>
       <Footer />

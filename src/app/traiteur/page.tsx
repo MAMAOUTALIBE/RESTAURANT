@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft, ChefHat, Check } from "lucide-react";
+import { ChefHat, Check } from "lucide-react";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { CateringForm } from "@/components/CateringForm";
 
 export const metadata: Metadata = {
@@ -18,42 +19,38 @@ const atouts = [
 
 export default function TraiteurPage() {
   return (
-    <main className="min-h-screen bg-ink pb-20 pt-28">
-      <div className="container-page max-w-4xl">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-gold"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Retour à l&apos;accueil
-        </Link>
+    <>
+      <Header />
+      <main className="min-h-screen bg-ink pb-20 pt-28">
+        <div className="container-page max-w-4xl">
+          <h1 className="mt-2 flex items-center gap-3 font-display text-3xl font-bold text-cream sm:text-4xl">
+            <ChefHat className="h-8 w-8 text-gold" />
+            Service traiteur
+          </h1>
+          <p className="mt-3 max-w-2xl text-muted">
+            Pour vos mariages, événements d&apos;entreprise ou fêtes de famille,
+            nous apportons les saveurs de l&apos;Afrique à votre table. Décrivez
+            votre projet, nous vous envoyons un devis sur mesure.
+          </p>
 
-        <h1 className="mt-6 flex items-center gap-3 font-display text-3xl font-bold text-cream sm:text-4xl">
-          <ChefHat className="h-8 w-8 text-gold" />
-          Service traiteur
-        </h1>
-        <p className="mt-3 max-w-2xl text-muted">
-          Pour vos mariages, événements d&apos;entreprise ou fêtes de famille,
-          nous apportons les saveurs de l&apos;Afrique à votre table. Décrivez
-          votre projet, nous vous envoyons un devis sur mesure.
-        </p>
-
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-          <ul className="space-y-3">
-            {atouts.map((a) => (
-              <li key={a} className="flex items-center gap-3 text-cream/85">
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-gold">
-                  <Check className="h-4 w-4" />
-                </span>
-                {a}
-              </li>
-            ))}
-          </ul>
-          <div className="rounded-2xl border border-white/10 bg-ink-soft p-6 sm:p-8">
-            <CateringForm />
+          <div className="mt-8 grid gap-8 lg:grid-cols-2">
+            <ul className="space-y-3">
+              {atouts.map((a) => (
+                <li key={a} className="flex items-center gap-3 text-cream/85">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-gold">
+                    <Check className="h-4 w-4" />
+                  </span>
+                  {a}
+                </li>
+              ))}
+            </ul>
+            <div className="rounded-2xl border border-white/10 bg-ink-soft p-6 sm:p-8">
+              <CateringForm />
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }

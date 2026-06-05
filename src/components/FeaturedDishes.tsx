@@ -5,8 +5,15 @@ import { getMenuForBrowser } from "@/lib/dishes";
 
 /** Grille des plats phares (« Les incontournables »). */
 export async function FeaturedDishes() {
-  const { dishes } = await getMenuForBrowser();
-  const featured = dishes.filter((dish) => dish.available).slice(0, 4);
+  const { categories, dishes } = await getMenuForBrowser();
+  const mainDishCategory = categories.find((c) => c.slug === "plats");
+  const featured = dishes
+    .filter(
+      (dish) =>
+        dish.available &&
+        (!mainDishCategory || dish.categoryId === mainDishCategory.id),
+    )
+    .slice(0, 4);
   return (
     <section
       id="menu"

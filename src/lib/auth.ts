@@ -19,6 +19,16 @@ export function isAdminEmail(email: string | null): boolean {
   return adminEmails().includes(email.toLowerCase());
 }
 
+export function isValidAdminPassword(password: string): boolean {
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) return false;
+
+  const passwordBuffer = Buffer.from(password);
+  const expectedBuffer = Buffer.from(expected);
+  if (passwordBuffer.length !== expectedBuffer.length) return false;
+  return crypto.timingSafeEqual(passwordBuffer, expectedBuffer);
+}
+
 /**
  * Crée un lien magique pour `email` et l'envoie par mail.
  * Retourne l'URL (utile en mode simulation/dev pour la logguer).

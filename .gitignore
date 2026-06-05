@@ -8,6 +8,8 @@
 
 # testing
 /coverage
+/.playwright-mcp/
+/hero-new-image.png
 
 # next.js
 /.next/

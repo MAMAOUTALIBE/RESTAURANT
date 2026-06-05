@@ -37,7 +37,7 @@ export function CartDrawer() {
 
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
-  // Charge les suggestions (boissons/desserts) à la première ouverture.
+  // Charge les suggestions de desserts et boissons africains à la première ouverture.
   useEffect(() => {
     if (!open || suggestions.length > 0) return;
     fetch("/api/suggestions")

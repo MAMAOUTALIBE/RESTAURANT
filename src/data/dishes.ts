@@ -29,6 +29,14 @@ export const seedDishes: SeedDish[] = [
     description: "Riz parfumé à la tomate, épices et viande",
     price: 14,
     image: "/images/riz-jollof.jpg",
+    sortOrder: 7,
+  },
+  {
+    slug: "tiep-poulet",
+    name: "Tiep Poulet",
+    description: "Riz sénégalais mijoté aux légumes et poulet braisé",
+    price: 16,
+    image: "/images/thieboudienne.jpg",
     tag: "Populaire",
     sortOrder: 2,
   },
@@ -38,7 +46,7 @@ export const seedDishes: SeedDish[] = [
     description: "Foutou de manioc accompagné de sauce gombo et viande",
     price: 16,
     image: "/images/foutou-gombo.jpg",
-    sortOrder: 3,
+    sortOrder: 4,
   },
   {
     slug: "mafe",
@@ -46,7 +54,7 @@ export const seedDishes: SeedDish[] = [
     description: "Sauce à la pâte d'arachide, viande tendre et riz",
     price: 15,
     image: "/images/mafe.jpg",
-    sortOrder: 4,
+    sortOrder: 5,
   },
   {
     slug: "yassa-poulet",
@@ -54,7 +62,7 @@ export const seedDishes: SeedDish[] = [
     description: "Poulet mariné au citron, oignons caramélisés et riz",
     price: 15,
     image: "/images/yassa-poulet.jpg",
-    sortOrder: 5,
+    sortOrder: 3,
   },
   {
     slug: "thieboudienne",

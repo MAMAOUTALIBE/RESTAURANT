@@ -20,8 +20,12 @@ import {
 } from "@/lib/orders";
 import { startCheckout } from "@/lib/payment";
 import { upsertCustomer } from "@/lib/customers";
-import { destroySession, getSessionEmail } from "@/lib/session";
-import { createMagicLink, isAdminEmail } from "@/lib/auth";
+import { createSession, destroySession, getSessionEmail } from "@/lib/session";
+import {
+  createMagicLink,
+  isAdminEmail,
+  isValidAdminPassword,
+} from "@/lib/auth";
 import type { OrderStatus } from "@/types";
 import { sendEmail } from "@/lib/email";
 import { siteConfig } from "@/lib/config";
@@ -471,6 +475,51 @@ export async function login(
     message:
       "Un lien de connexion vient de vous être envoyé par email. Vérifiez votre boîte de réception.",
   };
+}
+
+/**
+ * Connexion directe réservée au back-office.
+ * Utilise l'allowlist ADMIN_EMAILS et le mot de passe ADMIN_PASSWORD.
+ */
+export async function adminLogin(
+  _prev: ActionState | null,
+  formData: FormData,
+): Promise<ActionState> {
+  if (!(await rateLimit(`admin-login:${await clientIp()}`, 5, 60_000)))
+    return TOO_MANY;
+
+  const parsed = z
+    .object({
+      email: z
+        .string()
+        .email("Adresse email invalide.")
+        .transform((v) => v.toLowerCase()),
+      password: z.string().min(1, "Mot de passe requis."),
+    })
+    .safeParse({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    });
+
+  if (!parsed.success) {
+    return {
+      ok: false,
+      message: "Email ou mot de passe invalide.",
+    };
+  }
+
+  if (
+    !isAdminEmail(parsed.data.email) ||
+    !isValidAdminPassword(parsed.data.password)
+  ) {
+    return {
+      ok: false,
+      message: "Email ou mot de passe invalide.",
+    };
+  }
+
+  await createSession(parsed.data.email);
+  redirect("/admin");
 }
 
 /** Déconnexion. */

@@ -24,8 +24,8 @@ import {
 } from "@/lib/social-order";
 
 const fieldClass =
-  "w-full rounded-xl border border-white/10 bg-ink-soft px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none";
-const TIPS = [0, 1, 2, 5];
+  "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none focus:ring-1 focus:ring-gold/40";
+const TIP_OPTIONS = [2, 5];
 
 export default function CommanderPage() {
   const { items, totalPrice, clear, cartId } = useCart();
@@ -41,6 +41,7 @@ export default function CommanderPage() {
     text: string;
   } | null>(null);
   const [tip, setTip] = useState(0);
+  const [tipInput, setTipInput] = useState("");
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   // Recalcule les frais de livraison à partir du choix mémorisé.
@@ -80,6 +81,17 @@ export default function CommanderPage() {
     const r = await checkPromo(promo, totalPrice);
     setPromoMsg({ ok: r.ok, text: r.message });
     setDiscount(r.ok ? (r.discount ?? 0) : 0);
+  }
+
+  function updateTipInput(value: string) {
+    if (!/^\d*([,.]\d{0,2})?$/.test(value)) return;
+    setTipInput(value);
+    const normalized = value.trim().replace(",", ".");
+    if (!normalized) {
+      setTip(0);
+      return;
+    }
+    setTip(Math.max(0, Number(normalized) || 0));
   }
 
   async function action(formData: FormData) {
@@ -130,9 +142,7 @@ export default function CommanderPage() {
           Finaliser ma commande
         </h1>
 
-        {items.length > 0 && (
-          <StepIndicator current={choice ? 2 : 1} />
-        )}
+        {items.length > 0 && <StepIndicator current={choice ? 2 : 1} />}
 
         {items.length === 0 ? (
           <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-ink-soft p-12 text-center">
@@ -346,17 +356,32 @@ export default function CommanderPage() {
                     <span className="mb-1.5 block text-sm text-cream/80">
                       Pourboire
                     </span>
-                    <div className="flex gap-2">
-                      {TIPS.map((t) => (
+                    <div className="grid gap-2 sm:grid-cols-[repeat(2,minmax(0,1fr))_minmax(9rem,1.2fr)]">
+                      {TIP_OPTIONS.map((t) => (
                         <button
                           key={t}
                           type="button"
-                          onClick={() => setTip(t)}
-                          className={`flex-1 rounded-xl border px-3 py-2 text-sm transition ${tip === t ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"}`}
+                          onClick={() => {
+                            setTip(t);
+                            setTipInput(String(t));
+                          }}
+                          aria-pressed={tip === t}
+                          className={`rounded-xl border px-3 py-2 text-sm transition ${tip === t ? "border-gold bg-gold/10 text-cream" : "border-white/10 text-cream/70 hover:border-white/30"}`}
                         >
-                          {t === 0 ? "Aucun" : `${t} €`}
+                          {t} €
                         </button>
                       ))}
+                      <label className="min-w-0">
+                        <span className="sr-only">Montant libre</span>
+                        <input
+                          type="text"
+                          inputMode="decimal"
+                          value={tipInput}
+                          onChange={(e) => updateTipInput(e.target.value)}
+                          placeholder="Montant libre"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none"
+                        />
+                      </label>
                     </div>
                   </div>
                   <div>

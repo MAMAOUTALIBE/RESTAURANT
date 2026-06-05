@@ -52,6 +52,18 @@ body {
   }
 }
 
+/* Champs de formulaire natifs (date, heure, nombre) lisibles sur fond sombre */
+input[type="date"],
+input[type="time"],
+input[type="number"] {
+  color-scheme: dark;
+}
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.75;
+  cursor: pointer;
+}
+
 /* Scrollbar premium */
 ::-webkit-scrollbar {
   width: 10px;
