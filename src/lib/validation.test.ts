@@ -37,7 +37,7 @@ describe("orderSchema", () => {
       name: "Jean Dupont",
       email: "a@b.fr",
       phone: "0612345678",
-      items: [{ id: "x", name: "Mafé", price: 15, quantity: 2 }],
+      items: [{ id: "x", name: "Kebab grillé", price: 15, quantity: 2 }],
     });
     expect(r.success).toBe(true);
   });

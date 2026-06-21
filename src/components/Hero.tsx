@@ -6,37 +6,35 @@ import { motion } from "framer-motion";
 import {
   Leaf,
   MapPin,
+  MessageCircle,
   ShoppingBag,
-  Star,
-  Truck,
   UtensilsCrossed,
   type LucideIcon,
 } from "lucide-react";
+import { siteConfig } from "@/lib/config";
 
-const trustSignals: { label: string; Icon: LucideIcon }[] = [
-  { label: "4.8/5 Google", Icon: Star },
-  { label: "Livraison rapide", Icon: Truck },
-  { label: "Produits frais", Icon: Leaf },
-];
-
-const advantages: { label: string; detail: string; Icon: LucideIcon }[] = [
+const serviceHighlights: {
+  title: string;
+  detail: string;
+  Icon: LucideIcon;
+}[] = [
   {
-    label: "À emporter",
+    title: "À emporter",
     detail: "Prêt au créneau choisi",
     Icon: ShoppingBag,
   },
   {
-    label: "Livraison",
+    title: "Livraison",
     detail: "Juvisy et alentours",
     Icon: MapPin,
   },
   {
-    label: "Sur place",
+    title: "Sur place",
     detail: "Réservation simple",
     Icon: UtensilsCrossed,
   },
   {
-    label: "Ingrédients frais",
+    title: "Ingrédients frais",
     detail: "Qualité garantie",
     Icon: Leaf,
   },
@@ -47,125 +45,95 @@ export function Hero() {
   return (
     <section
       id="accueil"
-      className="relative overflow-hidden bg-[#050505] px-4 pb-5 pt-[6.75rem] text-cream sm:px-6 sm:pb-6 lg:min-h-[760px] lg:pt-[7.35rem]"
+      className="relative overflow-hidden bg-[#050505] px-4 pb-8 pt-[6.75rem] text-cream sm:px-6 sm:pb-10 lg:min-h-[690px] lg:pt-[7.35rem]"
     >
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_34%,rgba(216,154,28,0.22),transparent_25%),radial-gradient(circle_at_72%_18%,rgba(216,154,28,0.16),transparent_28%),linear-gradient(180deg,#050505_0%,#070707_52%,#050505_100%)]" />
-        <div className="absolute inset-y-0 left-0 w-[58%] bg-[linear-gradient(90deg,rgba(5,5,5,0.98)_0%,rgba(5,5,5,0.88)_56%,rgba(5,5,5,0.22)_86%,transparent_100%)]" />
-        <div className="bg-[#D89A1C]/8 absolute bottom-0 left-1/2 h-72 w-[68vw] -translate-x-1/2 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
+        <Image
+          src="/images/hero-plateau-turc-premium.png"
+          alt="Grand plateau de spécialités turques grillées avec brochettes, köfte, riz pilaf, boulgour et sauces"
+          fill
+          priority
+          sizes="100vw"
+          className="origin-right scale-[0.98] object-cover object-[54%_center] brightness-[1.08] contrast-[1.08] saturate-[1.08] sm:scale-[0.96] sm:object-[56%_center] lg:scale-[0.94] lg:object-center"
+        />
       </div>
 
-      <div className="relative mx-auto flex w-full max-w-[1540px] flex-col gap-6 lg:gap-7">
-        <div className="grid items-center gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:gap-5 xl:gap-7">
+      <div className="relative z-20 mx-auto flex w-full max-w-[1540px] flex-col gap-6 lg:gap-7">
+        <div className="flex min-h-[470px] items-center pb-2 sm:min-h-[500px] lg:min-h-[535px]">
           <motion.div
-            className="relative z-20 max-w-[590px] lg:pl-2 xl:pl-4"
+            className="relative z-20 -mt-[4.5rem] max-w-[650px] py-4 sm:-mt-[5.5rem] lg:-mt-[6.75rem] lg:pl-2 xl:pl-4"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.65 }}
           >
-            <div className="bg-[#D89A1C]/12 pointer-events-none absolute -left-10 top-16 h-52 w-52 rounded-full blur-3xl" />
-
-            <h1 className="relative font-display text-5xl font-bold leading-[0.98] text-[#F8F3EA] sm:text-6xl lg:text-[4.25rem] xl:text-[5rem] 2xl:text-[5.25rem]">
-              <span className="block">AFRO MK</span>
-              <span className="block text-[#D89A1C]">LO BOKO</span>
-            </h1>
-
             <div
-              className="mt-4 flex items-center gap-4 text-[#D89A1C]"
+              className="pointer-events-none absolute -bottom-5 -left-5 -right-8 -top-5 bg-[linear-gradient(90deg,rgba(5,5,5,0.76)_0%,rgba(5,5,5,0.58)_56%,rgba(5,5,5,0.18)_82%,transparent_100%)] sm:-left-7 lg:-bottom-8 lg:-left-10 lg:-right-24 lg:-top-8"
               aria-hidden
-            >
-              <span className="h-px w-16 bg-[#D89A1C]/70" />
-              <UtensilsCrossed className="h-5 w-5" />
-              <span className="h-px w-16 bg-[#D89A1C]/70" />
-            </div>
+            />
 
-            <p className="text-[#F8F3EA]/84 mt-5 max-w-lg text-base leading-7 sm:text-lg sm:leading-8">
-              La saveur de l&apos;Afrique dans votre assiette : Poulet DG,
-              yassa, mafé et bissap maison à commander ou à partager sur place.
-            </p>
+            <div className="relative z-10">
+              <h1 className="font-display text-5xl font-bold leading-[0.98] text-[#F8F3EA] drop-shadow-[0_3px_8px_rgba(0,0,0,0.96)] sm:text-6xl lg:text-[4.15rem] xl:text-[4.8rem]">
+                <span className="block text-[#D89A1C]">Restaurant</span>
+              </h1>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/commander"
-                className="inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full bg-[#D89A1C] px-8 py-3 text-base font-bold text-[#050505] shadow-[0_18px_48px_-24px_rgba(216,154,28,0.95)] transition hover:-translate-y-1 hover:bg-[#f0ad2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D89A1C]/70"
-              >
-                <ShoppingBag className="h-5 w-5" />
-                Commander
-              </Link>
-              <Link
-                href="/menu"
-                className="border-white/28 inline-flex min-h-[3.25rem] items-center justify-center gap-3 rounded-full border bg-white/[0.04] px-8 py-3 text-base font-bold text-[#F8F3EA] backdrop-blur transition hover:-translate-y-1 hover:border-[#D89A1C]/70 hover:bg-white/[0.08] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-              >
-                <UtensilsCrossed className="h-5 w-5" />
-                Voir le menu
-              </Link>
-            </div>
+              <p className="text-[#F8F3EA]/94 mt-5 max-w-xl text-lg font-semibold leading-7 drop-shadow-[0_2px_5px_rgba(0,0,0,0.98)] sm:text-xl sm:leading-8">
+                Spécialités turques grillées, à emporter ou en livraison.
+              </p>
 
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              {trustSignals.map(({ label, Icon }) => (
-                <div
-                  key={label}
-                  className="border-white/12 text-[#F8F3EA]/88 inline-flex items-center gap-2 rounded-full border bg-white/[0.05] px-3.5 py-1.5 text-sm font-semibold backdrop-blur"
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link
+                  href="/commander"
+                  className="inline-flex min-h-[3.75rem] items-center justify-center gap-3 rounded-full bg-[#D89A1C] px-10 py-3.5 text-lg font-black text-[#050505] shadow-[0_24px_58px_-24px_rgba(216,154,28,0.98)] transition hover:-translate-y-1 hover:bg-[#f0ad2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D89A1C]/70"
                 >
-                  <Icon className="h-4 w-4 fill-[#D89A1C] text-[#D89A1C]" />
-                  {label}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="relative z-10 mx-auto w-full max-w-[860px] lg:mr-0 lg:max-w-[900px]"
-            initial={{ opacity: 0, scale: 0.98, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
-          >
-            <div className="absolute -inset-6 rounded-full bg-[#D89A1C]/10 blur-3xl" />
-            <div className="border-white/8 relative aspect-[16/9] overflow-hidden rounded-[26px] border bg-[#080808]/35 shadow-[0_24px_80px_-58px_rgba(216,154,28,0.72)] backdrop-blur-sm">
-              <Image
-                src="/images/hero-premium-poulet-dg-boissons.png"
-                alt="Poulet DG avec riz, plantains, bissap et gingembre frais"
-                fill
-                priority
-                sizes="(min-width: 1024px) 58vw, 100vw"
-                className="scale-[0.985] object-cover [object-position:right_center]"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.66)_0%,rgba(5,5,5,0.24)_28%,rgba(5,5,5,0.05)_64%,rgba(5,5,5,0.16)_100%)]" />
-              <div className="absolute inset-y-0 -left-2 w-1/3 bg-[linear-gradient(90deg,#050505_0%,rgba(5,5,5,0.48)_42%,transparent_100%)]" />
+                  <ShoppingBag className="h-5 w-5" />
+                  Commander
+                </Link>
+                <a
+                  href={siteConfig.socials.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#25D366]/16 hover:bg-[#25D366]/24 inline-flex min-h-[3.75rem] items-center justify-center gap-3 rounded-full border border-[#25D366]/70 px-8 py-3.5 text-base font-bold text-[#F8F3EA] transition hover:-translate-y-1 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/70"
+                >
+                  <MessageCircle className="h-5 w-5 text-[#25D366]" />
+                  WhatsApp
+                </a>
+                <span className="hidden basis-full sm:block" aria-hidden />
+                <Link
+                  href="/menu"
+                  className="border-white/26 bg-black/22 inline-flex min-h-[3rem] items-center justify-center gap-2.5 rounded-full border px-6 py-2.5 text-sm font-bold text-[#F8F3EA] transition hover:-translate-y-1 hover:border-[#D89A1C]/70 hover:bg-black/35 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  <UtensilsCrossed className="h-4 w-4" />
+                  Voir le menu
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>
 
         <motion.div
           aria-label="Services disponibles"
-          className="bg-black/42 relative z-20 overflow-hidden rounded-[26px] border border-white/10 shadow-[0_22px_70px_-58px_rgba(0,0,0,0.95)] backdrop-blur-xl"
+          className="bg-black/48 relative z-20 overflow-hidden rounded-[28px] border border-white/10 shadow-[0_22px_60px_-34px_rgba(216,154,28,0.95)] backdrop-blur-[2px]"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, delay: 0.22 }}
+          transition={{ duration: 0.65, delay: 0.2 }}
         >
-          <div className="grid grid-cols-2 gap-0 lg:grid-cols-4">
-            {advantages.map(({ label, detail, Icon }, index) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {serviceHighlights.map(({ title, detail, Icon }) => (
               <div
-                key={label}
-                className="flex items-start gap-2.5 border-white/10 p-3 sm:items-center sm:gap-3.5 sm:p-4 lg:border-l lg:first:border-l-0"
+                key={title}
+                className="flex items-center gap-4 border-t border-white/10 px-5 py-4 first:border-t-0 sm:px-6 lg:border-l lg:border-t-0 lg:px-7 lg:first:border-l-0"
               >
-                <span className="bg-[#D89A1C]/12 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#D89A1C]/65 text-[#D89A1C] sm:h-11 sm:w-11">
-                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="border-[#D89A1C]/58 bg-black/28 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border text-[#D89A1C] sm:h-14 sm:w-14">
+                  <Icon className="h-5 w-5" />
                 </span>
-                <span>
-                  <span className="block text-sm font-bold text-[#F8F3EA] sm:text-lg">
-                    {label}
+                <span className="min-w-0">
+                  <span className="block text-lg font-black leading-tight text-[#F8F3EA] sm:text-xl">
+                    {title}
                   </span>
-                  <span className="text-[#F8F3EA]/64 mt-1 block text-xs sm:text-sm">
+                  <span className="text-[#F8F3EA]/78 mt-1 block text-sm font-medium leading-snug sm:text-base">
                     {detail}
                   </span>
                 </span>
-                {index < advantages.length - 1 && (
-                  <span
-                    className="ml-auto hidden h-12 w-px bg-white/10 lg:block"
-                    aria-hidden
-                  />
-                )}
               </div>
             ))}
           </div>

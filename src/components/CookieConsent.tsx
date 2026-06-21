@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-const STORAGE_KEY = "afromk-cookie-consent";
+const STORAGE_KEY = "restaurant-cookie-consent";
 
 /** Bandeau de consentement cookies (RGPD), persisté en localStorage. */
 export function CookieConsent() {

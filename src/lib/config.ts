@@ -1,23 +1,23 @@
 const whatsappOrderNumber =
-  process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33758426563";
+  process.env.NEXT_PUBLIC_WHATSAPP_ORDER_NUMBER ?? "+33775787825";
 const telegramOrderUsername =
-  process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "afromk_loboko";
+  process.env.NEXT_PUBLIC_TELEGRAM_ORDER_USERNAME ?? "restaurant";
 const telegramUrl = telegramOrderUsername
   ? `https://t.me/${telegramOrderUsername.replace(/^@/, "")}`
   : "";
 
 /** Configuration centrale du site (SEO, QR code, emails, coordonnées). */
 export const siteConfig = {
-  name: "AFRO MK LO BOKO",
-  shortName: "AFRO MK",
+  name: "restaurant",
+  shortName: "restaurant",
   description:
-    "La saveur de l'Afrique dans votre assiette : recettes africaines généreuses, ingrédients frais et commande en ligne.",
+    "La saveur de la Turquie dans votre assiette : recettes turques généreuses, ingrédients frais et commande en ligne.",
   /** URL publique (override en prod via NEXT_PUBLIC_SITE_URL). */
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   locale: "fr_FR",
   contact: {
-    phone: "07 58 42 65 63",
-    email: "contact@afromkloboko.fr",
+    phone: "07 75 78 78 25",
+    email: "contact@restaurant.fr",
     address: "5 Rue Jules Vallès, 91260 Juvisy-sur-Orge",
   },
   messaging: {

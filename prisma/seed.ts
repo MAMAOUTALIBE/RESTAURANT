@@ -4,73 +4,73 @@ import { seedDishes } from "../src/data/dishes";
 const prisma = new PrismaClient();
 
 const categories = [
-  { slug: "entrees", name: "Entrées africaines", sortOrder: 1 },
-  { slug: "plats", name: "Plats africains", sortOrder: 2 },
-  { slug: "desserts", name: "Desserts africains", sortOrder: 3 },
-  { slug: "boissons", name: "Boissons africaines", sortOrder: 4 },
+  { slug: "entrees", name: "Entrées turques", sortOrder: 1 },
+  { slug: "plats", name: "Plats turcs", sortOrder: 2 },
+  { slug: "desserts", name: "Desserts turcs", sortOrder: 3 },
+  { slug: "boissons", name: "Boissons turques", sortOrder: 4 },
 ];
 
 const extraDishes = [
   {
-    slug: "accras",
-    name: "Accras de morue",
-    description: "Beignets de morue antillais, herbes fraîches et piment doux",
+    slug: "houmous",
+    name: "Houmous",
+    description: "Purée de pois chiches, tahini, citron et huile d'olive",
     price: 6,
-    image: "/images/poulet-dg.jpg",
+    image: "/images/kebab-grille.jpg",
     category: "entrees",
     sortOrder: 1,
   },
   {
-    slug: "samoussas-boeuf",
-    name: "Samoussas boeuf",
-    description: "Croustillants d'inspiration est-africaine au boeuf épicé",
+    slug: "borek-fromage",
+    name: "Börek fromage",
+    description: "Feuilleté turc au fromage, persil et herbes fraîches",
     price: 6.5,
-    image: "/images/yassa-poulet.jpg",
+    image: "/images/manti.jpg",
     category: "entrees",
     sortOrder: 2,
   },
   {
-    slug: "pastels-thon",
-    name: "Pastels au thon",
-    description: "Chaussons sénégalais au thon, sauce tomate relevée",
+    slug: "mercimek-corbasi",
+    name: "Mercimek çorbası",
+    description: "Soupe turque de lentilles corail, citron et paprika",
     price: 7,
-    image: "/images/thieboudienne.jpg",
+    image: "/images/iskender-kebab.jpg",
     category: "entrees",
     sortOrder: 3,
   },
   {
-    slug: "thiakry",
-    name: "Thiakry",
-    description: "Dessert ouest-africain au mil, lait caillé et vanille",
+    slug: "baklava",
+    name: "Baklava",
+    description: "Feuilleté aux pistaches, noix et sirop parfumé",
     price: 5,
-    image: "/images/mafe.jpg",
+    image: "/images/baklava.png",
     category: "desserts",
     sortOrder: 1,
   },
   {
-    slug: "degue",
-    name: "Dèguè",
-    description: "Dessert au mil et yaourt, doux et frais",
+    slug: "sutlac",
+    name: "Sütlaç",
+    description: "Riz au lait turc, vanille et cannelle",
     price: 5,
-    image: "/images/foutou-gombo.jpg",
+    image: "/images/lahmacun.jpg",
     category: "desserts",
     sortOrder: 2,
   },
   {
-    slug: "bissap",
-    name: "Bissap",
-    description: "Boisson maison à l'hibiscus, servie fraîche",
+    slug: "ayran",
+    name: "Ayran",
+    description: "Boisson turque au yaourt, fraîche et légèrement salée",
     price: 3.5,
-    image: "/images/boisson-bissap.png",
+    image: "/images/ayran.png",
     category: "boissons",
     sortOrder: 1,
   },
   {
-    slug: "gingembre",
-    name: "Gingembre frais",
-    description: "Boisson tonique au gingembre, citron et menthe",
+    slug: "the-turc",
+    name: "Thé turc",
+    description: "Thé noir traditionnel servi chaud",
     price: 3.5,
-    image: "/images/boisson-gingembre.png",
+    image: "/images/the-turc.png",
     category: "boissons",
     sortOrder: 2,
   },
@@ -88,9 +88,9 @@ const extraDishes = [
 async function main() {
   // Restaurant par défaut (base mono-site aujourd'hui, prêt multi-restaurants).
   const defaultRestaurant = await prisma.restaurant.upsert({
-    where: { slug: "afromk-loboko" },
-    update: { name: "AFRO MK LO BOKO", active: true },
-    create: { slug: "afromk-loboko", name: "AFRO MK LO BOKO", active: true },
+    where: { slug: "restaurant" },
+    update: { name: "restaurant", active: true },
+    create: { slug: "restaurant", name: "restaurant", active: true },
   });
 
   // Catégories
@@ -132,7 +132,7 @@ async function main() {
     });
   }
 
-  // Entrées, desserts et boissons africains.
+  // Entrées, desserts et boissons turcs.
   const prepByCat: Record<string, number> = {
     entrees: 10,
     desserts: 5,
@@ -164,35 +164,31 @@ async function main() {
     });
   }
 
-  await prisma.dish.deleteMany({
-    where: { slug: { in: ["samoussas", "bouye"] } },
+  // Options de démonstration sur le kebab grillé.
+  const kebab = await prisma.dish.findUnique({
+    where: { slug: "kebab-grille" },
   });
-
-  // Options de démonstration sur le Poulet DG.
-  const pouletDg = await prisma.dish.findUnique({
-    where: { slug: "poulet-dg" },
-  });
-  if (pouletDg) {
-    await resetDemoOptionGroup(pouletDg.id, {
+  if (kebab) {
+    await resetDemoOptionGroup(kebab.id, {
       name: "Accompagnement",
       type: "single",
       required: true,
       sortOrder: 1,
       options: [
-        { name: "Plantain", priceDelta: 0, sortOrder: 1 },
-        { name: "Riz parfumé", priceDelta: 0, sortOrder: 2 },
-        { name: "Attiéké", priceDelta: 1, sortOrder: 3 },
+        { name: "Riz pilav", priceDelta: 0, sortOrder: 1 },
+        { name: "Boulgour", priceDelta: 0, sortOrder: 2 },
+        { name: "Frites", priceDelta: 1, sortOrder: 3 },
       ],
     });
-    await resetDemoOptionGroup(pouletDg.id, {
+    await resetDemoOptionGroup(kebab.id, {
       name: "Suppléments",
       type: "multi",
       required: false,
       sortOrder: 2,
       options: [
-        { name: "Piment fort", priceDelta: 0, sortOrder: 1 },
-        { name: "Sauce arachide", priceDelta: 1.5, sortOrder: 2 },
-        { name: "Avocat", priceDelta: 2, sortOrder: 3 },
+        { name: "Sauce yaourt", priceDelta: 0, sortOrder: 1 },
+        { name: "Piment doux", priceDelta: 0, sortOrder: 2 },
+        { name: "Fromage", priceDelta: 2, sortOrder: 3 },
       ],
     });
   }
@@ -231,21 +227,14 @@ async function main() {
 
   // Code promo affiché sur le site.
   await prisma.promoCode.upsert({
-    where: { code: "AFROMK10" },
+    where: { code: "RESTAURANT10" },
     update: { type: "percent", value: 10, active: true },
-    create: { code: "AFROMK10", type: "percent", value: 10, active: true },
+    create: { code: "RESTAURANT10", type: "percent", value: 10, active: true },
   });
-  // Ancien code conservé comme alias pour ne pas casser les campagnes déjà envoyées.
-  await prisma.promoCode.upsert({
-    where: { code: "AFRO10" },
-    update: { type: "percent", value: 10, active: true },
-    create: { code: "AFRO10", type: "percent", value: 10, active: true },
-  });
-
   const dishes = await prisma.dish.count();
   const zones = await prisma.deliveryZone.count();
   console.log(
-    `✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, AFROMK10, restaurant ${defaultRestaurant.slug}.`,
+    `✓ Seed : ${dishes} plats, ${categories.length} catégories, ${zones} zones, RESTAURANT10, restaurant ${defaultRestaurant.slug}.`,
   );
 }
 

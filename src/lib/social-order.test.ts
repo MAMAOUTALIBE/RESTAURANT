@@ -7,10 +7,10 @@ import {
 import type { CartItem } from "@/types";
 
 const item: CartItem = {
-  lineId: "mafe-1",
-  dishId: "mafe",
-  name: "Mafé",
-  image: "/images/mafe.jpg",
+  lineId: "kebab-1",
+  dishId: "kebab-grille",
+  name: "Kebab grillé",
+  image: "/images/kebab-grille.jpg",
   basePrice: 14,
   unitPrice: 15,
   quantity: 2,
@@ -32,20 +32,20 @@ describe("social order helpers", () => {
       discount: 5,
       tip: 2,
       total: 31,
-      promoCode: "AFROMK10",
+      promoCode: "RESTAURANT10",
     });
 
-    expect(message).toContain("2 x Mafé");
+    expect(message).toContain("2 x Kebab grillé");
     expect(message).toContain("Options : Riz");
     expect(message).toContain("Code postal : 91260");
     expect(message.replace(/\s/g, " ")).toContain("Total estimé : 31,00 €");
   });
 
   it("génère des URLs WhatsApp et Telegram encodées", () => {
-    const message = "Bonjour AFRO MK LO BOKO\nCommande test";
+    const message = "Bonjour restaurant\nCommande test";
 
     expect(buildWhatsAppOrderUrl(message)).toMatch(
-      /^https:\/\/wa\.me\/33758426563\?text=/,
+      /^https:\/\/wa\.me\/33775787825\?text=/,
     );
     expect(buildWhatsAppOrderUrl(message)).toContain("Commande%20test");
     expect(buildTelegramOrderUrl(message)).toMatch(

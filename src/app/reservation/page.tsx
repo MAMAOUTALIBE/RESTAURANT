@@ -6,7 +6,7 @@ import { ReservationForm } from "@/components/ReservationForm";
 
 export const metadata: Metadata = {
   title: "Réserver une table",
-  description: "Réservez votre table chez AFRO MK LO BOKO en quelques clics.",
+  description: "Réservez votre table chez restaurant en quelques clics.",
 };
 
 function str(value: string | string[] | undefined): string | undefined {

@@ -3,10 +3,10 @@ import { getMenuForBrowser } from "@/lib/dishes";
 
 export const dynamic = "force-dynamic";
 
-// Boissons et desserts africains proposés en vente additionnelle dans le panier.
+// Boissons et desserts turcs proposés en vente additionnelle dans le panier.
 const SUGGEST_CATEGORIES = ["boissons", "desserts"];
 
-/** GET /api/suggestions — boissons & desserts africains ajoutables en 1 clic. */
+/** GET /api/suggestions — boissons & desserts turcs ajoutables en 1 clic. */
 export async function GET() {
   try {
     const { categories, dishes } = await getMenuForBrowser();

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Le Menu",
   description:
-    "Découvrez toute la carte AFRO MK LO BOKO : entrées africaines, plats africains, desserts africains et boissons maison.",
+    "Découvrez toute la carte restaurant : entrées turques, plats turcs, desserts turcs et boissons maison.",
 };
 
 export default async function MenuPage() {
@@ -32,9 +32,8 @@ export default async function MenuPage() {
                 Le Menu
               </h1>
               <p className="mt-3 max-w-xl text-base leading-relaxed text-cream/60">
-                Entrées africaines, Tiep Poulet, Yassa, Foutou, Mafé, desserts
-                au mil et boissons maison, préparés chaque jour avec des
-                produits frais.
+                Entrées turques, kebab grillé, lahmacun, pide, baklava et
+                boissons maison, préparés chaque jour avec des produits frais.
               </p>
             </Reveal>
           </div>

@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "AFRO MK LO BOKO",
-    short_name: "AFRO MK",
-    description: "Commandez vos plats africains en ligne.",
+    name: "restaurant",
+    short_name: "restaurant",
+    description: "Commandez vos plats turcs en ligne.",
     start_url: "/",
     display: "standalone",
     background_color: "#080808",

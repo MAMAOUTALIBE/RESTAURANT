@@ -1,4 +1,4 @@
-// Schéma Prisma — base PostgreSQL pour AFRO MK LO BOKO.
+// Schéma Prisma — base PostgreSQL pour restaurant.
 generator client {
   provider = "prisma-client-js"
 }

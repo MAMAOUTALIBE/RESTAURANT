@@ -37,8 +37,8 @@ const COLUMNS: { status: string; label: string; cta: string }[] = [
   { status: "prête", label: "Prêtes", cta: "Livrée" },
 ];
 
-const ACK_KEY = "afromk-service-ack";
-const MODE_KEY = "afromk-service-mode";
+const ACK_KEY = "restaurant-service-ack";
+const MODE_KEY = "restaurant-service-mode";
 
 type AlertMode = "voix" | "bip" | "muet";
 

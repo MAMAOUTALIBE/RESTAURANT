@@ -1,4 +1,4 @@
-# Déploiement sur Hostinger (VPS) — AFRO MK LO BOKO
+# Déploiement sur Hostinger (VPS) — restaurant
 
 > ⚠️ **Important** : l'application est **Next.js full-stack** (Server Actions, API, Prisma,
 > PostgreSQL). Elle nécessite un **serveur Node.js** → choisir un **VPS Hostinger**
@@ -39,7 +39,7 @@ ufw allow OpenSSH && ufw allow 'Nginx Full' && ufw --force enable
 ## 4. Récupérer le code + configurer
 
 ```bash
-git clone VOTRE_DEPOT afro-mk-loboko && cd afro-mk-loboko
+git clone VOTRE_DEPOT restaurant && cd restaurant
 cp .env.production.example .env
 nano .env   # remplir les valeurs (voir ci-dessous)
 ```
@@ -77,9 +77,9 @@ Vérifier : `curl http://127.0.0.1:3000/api/health` → `{"status":"ok","db":"up
 ## 6. Nginx (reverse proxy)
 
 ```bash
-cp deploy/nginx.conf /etc/nginx/sites-available/afro-mk-loboko
-sed -i 's/VOTRE-DOMAINE/votre-domaine.fr/g' /etc/nginx/sites-available/afro-mk-loboko
-ln -s /etc/nginx/sites-available/afro-mk-loboko /etc/nginx/sites-enabled/afro-mk-loboko
+cp deploy/nginx.conf /etc/nginx/sites-available/restaurant
+sed -i 's/VOTRE-DOMAINE/votre-domaine.fr/g' /etc/nginx/sites-available/restaurant
+ln -s /etc/nginx/sites-available/restaurant /etc/nginx/sites-enabled/restaurant
 rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 ```
@@ -114,13 +114,13 @@ Sur le VPS, `crontab -e` :
 
 ```bash
 # Dump quotidien à 3h
-0 3 * * * docker compose -f /root/afro-mk-loboko/docker-compose.yml exec -T db pg_dump -U afromk afromk > /root/backups/afromk-$(date +\%F).sql
+0 3 * * * docker compose -f /root/restaurant/docker-compose.yml exec -T db pg_dump -U restaurant restaurant > /root/backups/restaurant-$(date +\%F).sql
 ```
 
 ## 11. Mises à jour de l'app
 
 ```bash
-cd /root/afro-mk-loboko
+cd /root/restaurant
 git pull
 docker compose --env-file .env up -d --build    # rebuild + migrations auto
 ```

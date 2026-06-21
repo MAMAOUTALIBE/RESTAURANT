@@ -90,7 +90,7 @@ export async function subscribeNewsletter(
     subject: `Bienvenue chez ${siteConfig.shortName} 🍲`,
     html: `<h1>Bienvenue !</h1>
       <p>Merci de rejoindre la communauté ${siteConfig.name}.</p>
-      <p>Profitez de <strong>-10%</strong> sur votre première commande avec le code <strong>AFROMK10</strong>.</p>`,
+      <p>Profitez de <strong>-10%</strong> sur votre première commande avec le code <strong>RESTAURANT10</strong>.</p>`,
   });
 
   return { ok: true, message: "Merci ! Votre inscription est confirmée." };
@@ -429,7 +429,7 @@ export async function getReorderItems(reference: string): Promise<
     name: i.name,
     price: i.price,
     quantity: i.quantity,
-    image: imageBySlug.get(i.id) ?? "/images/poulet-dg.jpg",
+    image: imageBySlug.get(i.id) ?? "/images/kebab-grille.jpg",
     options: i.options,
     note: i.note,
   }));
@@ -1064,7 +1064,7 @@ export async function adminRelaunchCart(formData: FormData): Promise<void> {
       subject: `Votre panier vous attend chez ${siteConfig.shortName} 🍲`,
       html: `<h1>Vous avez oublié quelque chose ?</h1>
         <p>Votre panier (${cart.itemCount} article·s) est toujours là.</p>
-        <p>Finalisez votre commande avec <strong>-10%</strong> grâce au code <strong>AFROMK10</strong>.</p>
+        <p>Finalisez votre commande avec <strong>-10%</strong> grâce au code <strong>RESTAURANT10</strong>.</p>
         <p><a href="${siteConfig.url}/commander">Reprendre ma commande</a></p>`,
     });
     await prisma.abandonedCart.update({

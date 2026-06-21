@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Palette AFRO MK LO BOKO
+        // Palette restaurant
         ink: {
           DEFAULT: "#080808", // Noir profond
           soft: "#111111", // Noir secondaire

@@ -21,7 +21,7 @@ export async function GET() {
   return new NextResponse(body, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="abonnes-afro-mk.csv"',
+      "Content-Disposition": 'attachment; filename="abonnes-restaurant.csv"',
     },
   });
 }

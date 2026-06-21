@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Menu,
+  MessageCircle,
+  Phone,
   Search,
   ShoppingBag,
   SlidersHorizontal,
@@ -18,12 +20,14 @@ import { cn } from "@/lib/utils";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
 import { useLang } from "@/context/LangContext";
+import { siteConfig } from "@/lib/config";
 
 /** Liens masqués dans l'en-tête pour l'aérer (restent accessibles via footer). */
 const HEADER_HIDDEN_HREFS = ["/commander", "/traiteur", "/contact"];
 const headerLinks = navLinks.filter(
   (link) => !HEADER_HIDDEN_HREFS.includes(link.href),
 );
+const phoneHref = `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`;
 
 /** En-tête sticky avec navigation desktop, panier et menu mobile. */
 export function Header() {
@@ -104,6 +108,24 @@ export function Header() {
         </form>
 
         <div className="flex items-center gap-3 lg:gap-4">
+          <a
+            href={phoneHref}
+            className="hidden min-h-[3rem] items-center justify-center gap-2 rounded-full border border-white/15 bg-black/28 px-4 py-2 text-sm font-bold text-cream transition hover:-translate-y-0.5 hover:border-[#D89A1C]/70 hover:text-[#D89A1C] 2xl:inline-flex"
+          >
+            <Phone className="h-4 w-4 text-[#D89A1C]" />
+            {siteConfig.contact.phone}
+          </a>
+
+          <a
+            href={siteConfig.socials.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden min-h-[3rem] items-center justify-center gap-2 rounded-full border border-[#25D366]/45 bg-[#25D366]/12 px-4 py-2 text-sm font-bold text-cream transition hover:-translate-y-0.5 hover:border-[#25D366] hover:bg-[#25D366]/20 lg:inline-flex"
+          >
+            <MessageCircle className="h-4 w-4 text-[#25D366]" />
+            WhatsApp
+          </a>
+
           <button
             aria-label={`Voir le panier (${cartCount} article${cartCount > 1 ? "s" : ""})`}
             onClick={() => setCartOpen(true)}

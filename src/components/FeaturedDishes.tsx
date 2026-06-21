@@ -3,17 +3,20 @@ import { ArrowRight } from "lucide-react";
 import { DishCard } from "@/components/DishCard";
 import { getMenuForBrowser } from "@/lib/dishes";
 
-/** Grille des plats phares (« Les incontournables »). */
+const specialtySlugs = ["kebab-grille", "lahmacun", "baklava"];
+
+/** Grille des spécialités mises en avant sur l'accueil. */
 export async function FeaturedDishes() {
-  const { categories, dishes } = await getMenuForBrowser();
-  const mainDishCategory = categories.find((c) => c.slug === "plats");
-  const featured = dishes
-    .filter(
-      (dish) =>
-        dish.available &&
-        (!mainDishCategory || dish.categoryId === mainDishCategory.id),
-    )
-    .slice(0, 4);
+  const { dishes } = await getMenuForBrowser();
+  const availableDishes = dishes.filter((dish) => dish.available);
+  const specialtyDishes = specialtySlugs
+    .map((slug) => availableDishes.find((dish) => dish.id === slug))
+    .filter((dish): dish is (typeof availableDishes)[number] => Boolean(dish));
+  const featured =
+    specialtyDishes.length === specialtySlugs.length
+      ? specialtyDishes
+      : availableDishes.slice(0, 3);
+
   return (
     <section
       id="menu"
@@ -24,7 +27,7 @@ export async function FeaturedDishes() {
           <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between xl:gap-6">
             <div className="min-w-0 flex-1">
               <h2 className="font-display text-2xl font-bold leading-tight text-ink sm:text-3xl lg:text-4xl">
-                Une carte courte, généreuse, bien exécutée.
+                Nos spécialités turques.
               </h2>
             </div>
             <div className="xl:shrink-0">
@@ -39,13 +42,13 @@ export async function FeaturedDishes() {
           </div>
           <div className="max-w-4xl">
             <p className="text-ink/68 text-sm leading-7 sm:text-base">
-              Des classiques africains, une présentation soignée et une commande
-              rapide.
+              Kebab grillé, lahmacun croustillant et baklava maison : trois
+              signatures à commander rapidement.
             </p>
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {featured.map((dish) => (
             <div key={dish.id}>
               <DishCard

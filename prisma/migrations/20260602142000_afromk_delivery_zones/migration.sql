@@ -1,4 +1,4 @@
--- Align delivery zones with AFRO MK LO BOKO service area.
+-- Align delivery zones with restaurant service area.
 INSERT INTO "DeliveryZone" ("id", "postalCode", "fee", "minOrder")
 VALUES
   ('delivery-zone-91260', '91260', 3.5, 15),

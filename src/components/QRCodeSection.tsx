@@ -74,7 +74,7 @@ export async function QRCodeSection() {
                 <div className="mx-auto mb-3 h-5 w-24 rounded-full bg-black/85" />
                 <p className="text-xs text-cream/70">Bonjour</p>
                 <p className="mt-1 text-sm font-semibold">
-                  Pret a savourer l Afrique ?
+                  Pret a savourer la Turquie ?
                 </p>
 
                 <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3">

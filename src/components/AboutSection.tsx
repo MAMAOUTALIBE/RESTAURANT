@@ -4,7 +4,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { aboutPoints } from "@/data/services";
 
 const gallery = [
-  { src: "/images/about-1.jpg", alt: "Salle du restaurant AFRO MK LO BOKO" },
+  { src: "/images/about-1.jpg", alt: "Salle du restaurant" },
   { src: "/images/about-2.jpg", alt: "Chefs en cuisine" },
   { src: "/images/about-3.jpg", alt: "Plat dressé" },
 ];
@@ -21,7 +21,7 @@ export function AboutSection() {
           Une table pensée pour recevoir
         </h3>
         <p className="mt-3 text-sm leading-relaxed text-ink/70">
-          AFRO MK LO BOKO assume une cuisine africaine lisible, généreuse et
+          restaurant assume une cuisine turque lisible, généreuse et
           contemporaine : des recettes familières, un service direct et une
           atmosphère qui donne envie de revenir.
         </p>

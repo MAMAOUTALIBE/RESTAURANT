@@ -89,10 +89,7 @@ function BrandLogo() {
       </span>
       <div className="leading-none">
         <p className="font-display text-3xl font-bold tracking-tight text-cream">
-          AFRO MK
-        </p>
-        <p className="text-lg font-bold uppercase tracking-[0.32em] text-gold">
-          LO BOKO
+          restaurant
         </p>
       </div>
     </div>
@@ -165,7 +162,7 @@ export async function PremiumEngagementSection() {
             </div>
             <p className="mt-1.5 text-sm text-cream/80">
               Vos avis nous motivent chaque jour à vous offrir le meilleur de
-              l&apos;Afrique.
+              la Turquie.
             </p>
           </div>
 
@@ -199,7 +196,7 @@ export async function PremiumEngagementSection() {
                       Basé sur +230 avis clients
                     </p>
                     <a
-                      href="https://www.google.com/search?q=AFRO+MK+LO+BOKO+avis"
+                      href="https://www.google.com/search?q=restaurant+avis"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-gold transition hover:text-gold-400"
@@ -321,7 +318,7 @@ export async function PremiumEngagementSection() {
                   Code Promo
                 </p>
                 <p className="mt-1 font-display text-3xl font-bold text-gold-600">
-                  AFROMK10
+                  RESTAURANT10
                 </p>
                 <p className="mt-1 text-sm font-semibold text-[#050505]">
                   -10% sur votre première commande
@@ -350,7 +347,7 @@ export async function PremiumEngagementSection() {
             <div>
               <BrandLogo />
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/75">
-                La saveur de l&apos;Afrique dans votre assiette.
+                La saveur de la Turquie dans votre assiette.
               </p>
               <div className="mt-4 flex gap-3">
                 {["Facebook", "Instagram", "TikTok", "WhatsApp"].map(
@@ -405,7 +402,7 @@ export async function PremiumEngagementSection() {
           </div>
 
           <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.08] pt-6 text-sm text-cream/60 lg:flex-row">
-            <p>© 2025 AFRO MK LO BOKO - Tous droits réservés.</p>
+            <p>© 2025 restaurant - Tous droits réservés.</p>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
               <Link
                 href="/mentions-legales"

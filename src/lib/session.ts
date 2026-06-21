@@ -2,7 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 
-const COOKIE = "afromk-session";
+const COOKIE = "restaurant-session";
 const MAX_AGE = 60 * 60 * 24 * 30; // 30 jours
 
 function secret() {

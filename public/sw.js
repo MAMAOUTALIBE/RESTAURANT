@@ -1,5 +1,5 @@
 // Service worker minimal : cache du shell + repli hors-ligne pour le menu.
-const CACHE = "afromk-v1";
+const CACHE = "restaurant-v1";
 const SHELL = ["/", "/menu"];
 
 self.addEventListener("install", (event) => {

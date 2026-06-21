@@ -3,6 +3,23 @@ import type { Dish as DishRow } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { Dish } from "@/types";
 
+const dishImageOverrides: Record<string, string> = {
+  baklava: "/images/baklava.png",
+};
+
+function resolveDishImage(row: Pick<DishRow, "slug" | "image">): string {
+  return dishImageOverrides[row.slug] ?? row.image;
+}
+
+function withDishPresentation<T extends { slug: string; image: string }>(
+  row: T,
+): T {
+  return {
+    ...row,
+    image: dishImageOverrides[row.slug] ?? row.image,
+  };
+}
+
 /** Convertit une ligne Prisma en `Dish` applicatif (id = slug, stable). */
 function toDish(row: DishRow): Dish {
   return {
@@ -10,7 +27,7 @@ function toDish(row: DishRow): Dish {
     name: row.name,
     description: row.description,
     price: row.price,
-    image: row.image,
+    image: resolveDishImage(row),
     tag: row.tag ?? undefined,
   };
 }
@@ -119,7 +136,7 @@ export async function getMenuForBrowser() {
 
 /** Fiche plat complète avec ses groupes d'options (pour la page détail). */
 export async function getDishWithOptions(slug: string) {
-  return prisma.dish.findFirst({
+  const dish = await prisma.dish.findFirst({
     where: { slug },
     orderBy: { id: "asc" },
     include: {
@@ -130,4 +147,5 @@ export async function getDishWithOptions(slug: string) {
       },
     },
   });
+  return dish ? withDishPresentation(dish) : null;
 }

@@ -33,7 +33,7 @@ export async function GET(request: Request) {
       to: c.email,
       subject: `Vous nous manquez chez ${siteConfig.shortName} 🍲`,
       html: `<h1>Ça fait un moment ${c.name ?? ""} !</h1>
-        <p>Revenez savourer nos plats : profitez de <strong>-10%</strong> avec le code <strong>AFROMK10</strong>.</p>`,
+        <p>Revenez savourer nos plats : profitez de <strong>-10%</strong> avec le code <strong>RESTAURANT10</strong>.</p>`,
     });
     const phone = await prisma.customer.findUnique({
       where: { email: c.email },
@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     if (phone?.phone) {
       await sendSms({
         to: phone.phone,
-        body: `${siteConfig.shortName} : vous nous manquez ! -10% avec le code AFROMK10 sur votre prochaine commande.`,
+        body: `${siteConfig.shortName} : vous nous manquez ! -10% avec le code RESTAURANT10 sur votre prochaine commande.`,
       });
     }
   }

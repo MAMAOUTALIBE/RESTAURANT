@@ -14,11 +14,24 @@ interface DishCardProps {
   href?: string;
   /** Plat indisponible (épuisé). */
   unavailable?: boolean;
+  /** Badges commerciaux affichés sur la photo. */
+  badges?: string[];
+  /** Infos courtes : options, sauces, allergènes. */
+  details?: string[];
 }
 
 /** Carte produit : image, titre, description, prix et action (ajout ou choix). */
-export function DishCard({ dish, href, unavailable }: DishCardProps) {
+export function DishCard({
+  dish,
+  href,
+  unavailable,
+  badges = [],
+  details = [],
+}: DishCardProps) {
   const { addItem } = useCart();
+  const displayBadges = Array.from(
+    new Set([dish.tag, ...badges].filter(Boolean)),
+  );
   const actionButton = unavailable ? (
     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-ink/10 text-ink/35">
       —
@@ -62,10 +75,17 @@ export function DishCard({ dish, href, unavailable }: DishCardProps) {
           sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, (max-width: 1536px) 30vw, 22vw"
           className={`object-cover transition-transform duration-500 group-hover:scale-110 ${unavailable ? "grayscale" : ""}`}
         />
-        {dish.tag && !unavailable && (
-          <span className="bg-cream/92 absolute left-3 top-3 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-forest backdrop-blur">
-            {dish.tag}
-          </span>
+        {displayBadges.length > 0 && !unavailable && (
+          <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1.5">
+            {displayBadges.map((badge) => (
+              <span
+                key={badge}
+                className="bg-cream/92 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-forest backdrop-blur"
+              >
+                {badge}
+              </span>
+            ))}
+          </div>
         )}
         {unavailable && (
           <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-red-300 backdrop-blur">
@@ -88,6 +108,18 @@ export function DishCard({ dish, href, unavailable }: DishCardProps) {
           </p>
           {actionButton}
         </div>
+        {details.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {details.slice(0, 4).map((detail) => (
+              <span
+                key={detail}
+                className="rounded-full border border-ink/10 bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/62"
+              >
+                {detail}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </motion.article>
   );

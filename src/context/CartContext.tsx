@@ -10,8 +10,8 @@ import {
 } from "react";
 import type { AddToCartInput, CartItem } from "@/types";
 
-const STORAGE_KEY = "afromk-cart";
-const CART_ID_KEY = "afromk-cart-id";
+const STORAGE_KEY = "restaurant-cart";
+const CART_ID_KEY = "restaurant-cart-id";
 
 /** Construit une clé de ligne stable à partir du plat, des options et de la note. */
 function buildLineId(input: AddToCartInput): string {

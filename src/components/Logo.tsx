@@ -7,13 +7,13 @@ interface LogoProps {
   tone?: "light" | "dark";
 }
 
-/** Logo AFRO MK LO BOKO : cloche stylisée + wordmark. */
+/** Logo restaurant : cloche stylisée + wordmark. */
 export function Logo({ className, tone = "light" }: LogoProps) {
   return (
     <Link
       href="/"
       className={cn("group flex items-center gap-3.5", className)}
-      aria-label="AFRO MK LO BOKO — Accueil"
+      aria-label="restaurant — Accueil"
     >
       <span
         className={cn(
@@ -55,10 +55,7 @@ export function Logo({ className, tone = "light" }: LogoProps) {
             tone === "light" ? "text-cream" : "text-ink",
           )}
         >
-          AFRO MK
-        </span>
-        <span className="block text-sm font-bold uppercase tracking-[0.32em] text-gold">
-          LO BOKO
+          restaurant
         </span>
       </span>
     </Link>

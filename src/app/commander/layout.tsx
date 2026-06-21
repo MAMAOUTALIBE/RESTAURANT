@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 export const metadata: Metadata = {
   title: "Finaliser ma commande",
   description:
-    "Validez votre commande chez AFRO MK LO BOKO : à emporter, en livraison ou sur place. Paiement sécurisé.",
+    "Validez votre commande chez restaurant : à emporter, en livraison ou sur place. Paiement sécurisé.",
 };
 
 export default function CommanderLayout({

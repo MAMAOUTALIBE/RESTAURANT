@@ -1,7 +1,7 @@
-# AFRO MK LO BOKO 🍲
+# restaurant 🍲
 
 Application **full-stack** (vitrine + commande en ligne) pour un restaurant
-africain. Design noir / blanc cassé / orange-or, ambiance africaine moderne.
+turc. Design noir / blanc cassé / orange-or, ambiance turque moderne.
 
 > ✅ **Full-stack TypeScript / Next.js.** Panier réel persistant, formulaires
 > connectés (Server Actions + Zod), API REST, commandes persistées, paiement
@@ -55,8 +55,8 @@ africain. Design noir / blanc cassé / orange-or, ambiance africaine moderne.
 
 ```bash
 # 1. Base de données PostgreSQL (exemple via Docker)
-docker run --name afromk-pg -e POSTGRES_PASSWORD=afromk -e POSTGRES_USER=afromk \
-  -e POSTGRES_DB=afromk -p 5440:5432 -d postgres:16
+docker run --name restaurant-pg -e POSTGRES_PASSWORD=restaurant -e POSTGRES_USER=restaurant \
+  -e POSTGRES_DB=restaurant -p 5440:5432 -d postgres:16
 
 # 2. Configuration
 cp .env.example .env.local      # puis ajuster si besoin
@@ -92,7 +92,7 @@ src/
     DishCard.tsx        # carte plat (hover, bouton +)
     QRCodeSection.tsx   # « Commandez en un scan »
     AboutSection.tsx    # « À propos de nous » + galerie
-    PromoSection.tsx    # offre -10 % + code AFRO10
+    PromoSection.tsx    # offre -10 % + code RESTAURANT10
     Testimonials.tsx    # avis clients (étoiles)
     Footer.tsx          # liens, contact, newsletter, paiements
     Logo.tsx            # logo + wordmark

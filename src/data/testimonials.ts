@@ -16,7 +16,7 @@ export const testimonials: Testimonial[] = [
     avatar: "/images/avatar-benoit.jpg",
     rating: 5,
     comment:
-      "Le meilleur restaurant africain que j'ai testé ! Service rapide et portions généreuses.",
+      "Le meilleur restaurant turc que j'ai testé ! Service rapide et portions généreuses.",
     city: "Lyon",
   },
   {

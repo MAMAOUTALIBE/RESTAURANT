@@ -97,7 +97,7 @@ export function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
-              La saveur de l&apos;Afrique dans votre assiette.
+              La saveur de la Turquie dans votre assiette.
             </p>
             <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold">
               Suivez-nous

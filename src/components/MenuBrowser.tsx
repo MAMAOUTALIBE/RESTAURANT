@@ -1,7 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import {
+  CakeSlice,
+  CupSoda,
+  Flame,
+  Search,
+  Star,
+  UtensilsCrossed,
+  type LucideIcon,
+} from "lucide-react";
 import { DishCard } from "@/components/DishCard";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Dish } from "@/types";
@@ -17,6 +25,42 @@ export interface BrowserCategory {
   name: string;
 }
 
+type MenuFilter = "all" | "grillades" | "pides" | "desserts" | "boissons";
+
+const quickFilters: {
+  id: MenuFilter;
+  label: string;
+  Icon: LucideIcon;
+}[] = [
+  { id: "all", label: "Tout", Icon: Star },
+  { id: "grillades", label: "Grillades", Icon: Flame },
+  { id: "pides", label: "Pides", Icon: UtensilsCrossed },
+  { id: "desserts", label: "Desserts", Icon: CakeSlice },
+  { id: "boissons", label: "Boissons", Icon: CupSoda },
+];
+
+const popularDishIds = new Set([
+  "kebab-grille",
+  "iskender-kebab",
+  "lahmacun",
+  "baklava",
+]);
+
+const dishDetails: Record<string, string[]> = {
+  "kebab-grille": ["Sauces au choix", "Supplément fromage", "Gluten"],
+  "adana-kebab": ["Grillade épicée", "Sauces au choix", "Gluten"],
+  "iskender-kebab": ["Yaourt", "Sauce tomate", "Gluten/lait"],
+  lahmacun: ["Citron & salade", "Sauce au choix", "Gluten"],
+  "pide-sucuk": ["Fromage", "Supplément sucuk", "Gluten/lait"],
+  manti: ["Yaourt à l'ail", "Beurre paprika", "Gluten/lait"],
+  kofte: ["Grillade", "Sauces au choix", "Gluten"],
+  baklava: ["Pistache/noix", "Portion dessert", "Fruits à coque"],
+  sutlac: ["Lait", "Cannelle", "Dessert frais"],
+  ayran: ["Boisson fraîche", "Lait", "Sans alcool"],
+  "the-turc": ["Chaud", "Traditionnel", "Sans alcool"],
+  "sodas-frais": ["Frais", "Canette", "Sans alcool"],
+};
+
 /** Menu interactif : recherche plein-texte + filtres catégorie / dispo / prix. */
 export function MenuBrowser({
   categories,
@@ -26,15 +70,20 @@ export function MenuBrowser({
   dishes: BrowserDish[];
 }) {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState<string>("all");
+  const [filter, setFilter] = useState<MenuFilter>("all");
   const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [sort, setSort] = useState<"default" | "price-asc" | "price-desc">(
     "default",
   );
+  const categoryById = useMemo(
+    () => new Map(categories.map((category) => [category.id, category])),
+    [categories],
+  );
 
   const filtered = useMemo(() => {
     let list = dishes.filter((d) => {
-      if (cat !== "all" && d.categoryId !== cat) return false;
+      const category = categoryById.get(d.categoryId);
+      if (!matchesQuickFilter(d, category?.slug, filter)) return false;
       if (onlyAvailable && !d.available) return false;
       if (q.trim()) {
         const n = q.toLowerCase();
@@ -50,18 +99,18 @@ export function MenuBrowser({
     if (sort === "price-desc")
       list = [...list].sort((a, b) => b.price - a.price);
     return list;
-  }, [dishes, q, cat, onlyAvailable, sort]);
+  }, [categoryById, dishes, filter, q, onlyAvailable, sort]);
 
   // Regroupe par catégorie (ordre des catégories), sauf si tri prix actif.
   const grouped = useMemo(() => {
-    if (sort !== "default") return null;
+    if (sort !== "default" || filter !== "all" || q.trim()) return null;
     return categories
       .map((c) => ({
         cat: c,
         items: filtered.filter((d) => d.categoryId === c.id),
       }))
       .filter((g) => g.items.length > 0);
-  }, [categories, filtered, sort]);
+  }, [categories, filter, filtered, q, sort]);
 
   return (
     <div>
@@ -98,13 +147,21 @@ export function MenuBrowser({
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
-          <Chip active={cat === "all"} onClick={() => setCat("all")}>
-            Tout
-          </Chip>
-          {categories.map((c) => (
-            <Chip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
-              {c.name}
+          {quickFilters.map(({ id, label, Icon }) => (
+            <Chip key={id} active={filter === id} onClick={() => setFilter(id)}>
+              <Icon className="h-4 w-4" />
+              {label}
             </Chip>
+          ))}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-cream/70">
+          {["Taille", "Sauce", "Boisson", "Supplément"].map((option) => (
+            <span
+              key={option}
+              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1"
+            >
+              Option {option}
+            </span>
           ))}
         </div>
       </div>
@@ -136,7 +193,9 @@ export function MenuBrowser({
               {g.items.map((dish, i) => (
                 <Reveal key={dish.id} delay={0.04 * i}>
                   <DishCard
-                    dish={dish}
+                    dish={withDisplayTag(dish)}
+                    badges={getDishBadges(dish)}
+                    details={getDishDetails(dish)}
                     unavailable={!dish.available}
                     href={dish.hasOptions ? `/menu/${dish.id}` : undefined}
                   />
@@ -150,7 +209,9 @@ export function MenuBrowser({
           {filtered.map((dish, i) => (
             <Reveal key={dish.id} delay={0.03 * i}>
               <DishCard
-                dish={dish}
+                dish={withDisplayTag(dish)}
+                badges={getDishBadges(dish)}
+                details={getDishDetails(dish)}
                 unavailable={!dish.available}
                 href={dish.hasOptions ? `/menu/${dish.id}` : undefined}
               />
@@ -174,7 +235,7 @@ function Chip({
   return (
     <button
       onClick={onClick}
-      className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+      className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition ${
         active
           ? "bg-forest-600 text-cream shadow-[0_10px_26px_-16px_rgba(27,94,54,0.95)]"
           : "border border-white/15 text-cream/70 hover:border-gold-400/50 hover:text-cream"
@@ -183,4 +244,39 @@ function Chip({
       {children}
     </button>
   );
+}
+
+function matchesQuickFilter(
+  dish: BrowserDish,
+  categorySlug: string | undefined,
+  filter: MenuFilter,
+) {
+  const text = `${dish.id} ${dish.name} ${dish.description}`.toLowerCase();
+  if (filter === "all") return true;
+  if (filter === "desserts") return categorySlug === "desserts";
+  if (filter === "boissons") return categorySlug === "boissons";
+  if (filter === "pides") return text.includes("pide") || text.includes("lahmacun");
+  if (filter === "grillades") {
+    return (
+      categorySlug === "plats" &&
+      ["kebab", "köfte", "kofte", "grill"].some((term) => text.includes(term))
+    );
+  }
+  return true;
+}
+
+function withDisplayTag(dish: BrowserDish): BrowserDish {
+  if (dish.tag || !popularDishIds.has(dish.id)) return dish;
+  return { ...dish, tag: "Populaire" };
+}
+
+function getDishBadges(dish: BrowserDish) {
+  const badges = [];
+  if (popularDishIds.has(dish.id)) badges.push("Populaire");
+  if (dish.hasOptions) badges.push("Options");
+  return badges;
+}
+
+function getDishDetails(dish: BrowserDish) {
+  return dishDetails[dish.id] ?? (dish.hasOptions ? ["Taille", "Sauce", "Supplément"] : []);
 }

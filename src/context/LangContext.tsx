@@ -10,7 +10,7 @@ import {
 } from "react";
 import { translate, type Locale } from "@/lib/i18n";
 
-const STORAGE_KEY = "afromk-locale";
+const STORAGE_KEY = "restaurant-locale";
 
 interface LangContextValue {
   locale: Locale;

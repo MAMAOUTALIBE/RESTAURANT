@@ -7,12 +7,12 @@ import { CateringForm } from "@/components/CateringForm";
 export const metadata: Metadata = {
   title: "Service traiteur",
   description:
-    "Mariages, entreprises, événements : AFRO MK LO BOKO régale vos invités. Demandez un devis.",
+    "Mariages, entreprises, événements : restaurant régale vos invités. Demandez un devis.",
 };
 
 const atouts = [
   "Buffets et plateaux pour tous événements",
-  "Cuisine africaine généreuse et raffinée",
+  "Cuisine turque généreuse et raffinée",
   "Devis personnalisé sous 48 h",
   "De 10 à plusieurs centaines de convives",
 ];
@@ -29,7 +29,7 @@ export default function TraiteurPage() {
           </h1>
           <p className="mt-3 max-w-2xl text-muted">
             Pour vos mariages, événements d&apos;entreprise ou fêtes de famille,
-            nous apportons les saveurs de l&apos;Afrique à votre table. Décrivez
+            nous apportons les saveurs de la Turquie à votre table. Décrivez
             votre projet, nous vous envoyons un devis sur mesure.
           </p>
 

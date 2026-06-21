@@ -5,17 +5,27 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowLeft,
+  Clock3,
+  CreditCard,
+  MapPin,
   ShoppingBag,
   Pencil,
   MessageCircle,
+  Phone,
   Send,
+  ShieldCheck,
   Lock,
   Sparkles,
+  Star,
+  Truck,
+  UtensilsCrossed,
+  type LucideIcon,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useOrderChoice } from "@/context/OrderContext";
 import { placeOrder, checkPromo, checkDelivery } from "@/app/actions";
 import { OrderStarter } from "@/components/OrderStarter";
+import { siteConfig } from "@/lib/config";
 import { formatPrice } from "@/lib/utils";
 import {
   buildTelegramOrderUrl,
@@ -26,6 +36,47 @@ import {
 const fieldClass =
   "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-cream placeholder:text-muted focus:border-gold/60 focus:outline-none focus:ring-1 focus:ring-gold/40";
 const TIP_OPTIONS = [2, 5];
+const starterLinks = [
+  {
+    href: "/menu/kebab-grille",
+    name: "Kebab grillé",
+    text: "Signature",
+    image: "/images/kebab-grille.jpg",
+  },
+  {
+    href: "/menu/lahmacun",
+    name: "Lahmacun",
+    text: "Populaire",
+    image: "/images/lahmacun.jpg",
+  },
+  {
+    href: "/menu/baklava",
+    name: "Baklava",
+    text: "Dessert",
+    image: "/images/baklava.png",
+  },
+];
+const checkoutHighlights: {
+  title: string;
+  text: string;
+  Icon: LucideIcon;
+}[] = [
+  {
+    title: "Créneau au choix",
+    text: "Dès que possible ou horaire programmé.",
+    Icon: Clock3,
+  },
+  {
+    title: "Livraison ou retrait",
+    text: "Juvisy-sur-Orge et alentours.",
+    Icon: Truck,
+  },
+  {
+    title: "Paiement sécurisé",
+    text: "Validation claire avant paiement.",
+    Icon: CreditCard,
+  },
+];
 
 export default function CommanderPage() {
   const { items, totalPrice, clear, cartId } = useCart();
@@ -145,17 +196,14 @@ export default function CommanderPage() {
         {items.length > 0 && <StepIndicator current={choice ? 2 : 1} />}
 
         {items.length === 0 ? (
-          <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-ink-soft p-12 text-center">
-            <ShoppingBag className="h-12 w-12 text-muted" />
-            <p className="text-muted">Votre panier est vide.</p>
-            <Link href="/menu" className="btn-primary">
-              Voir le menu
-            </Link>
-          </div>
+          <EmptyCartState />
         ) : !choice ? (
           /* ÉTAPE 1 — mode + calendrier (entrée de commande) */
-          <div className="mt-8 max-w-xl rounded-2xl border border-white/10 bg-ink-soft p-6">
-            <OrderStarter subtotal={totalPrice} />
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr]">
+            <section className="rounded-2xl border border-white/10 bg-ink-soft p-6">
+              <OrderStarter subtotal={totalPrice} />
+            </section>
+            <CheckoutHelpPanel subtotal={totalPrice} />
           </div>
         ) : (
           /* ÉTAPE 2 — récap + coordonnées */
@@ -425,6 +473,161 @@ export default function CommanderPage() {
         )}
       </div>
     </main>
+  );
+}
+
+function EmptyCartState() {
+  return (
+    <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr]">
+      <section className="overflow-hidden rounded-2xl border border-white/10 bg-ink-soft">
+        <div className="border-b border-white/10 p-6 sm:p-7">
+          <div className="flex items-start gap-4">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-gold/40 bg-gold/10 text-gold">
+              <ShoppingBag className="h-7 w-7" />
+            </span>
+            <div>
+              <h2 className="font-display text-2xl font-bold text-cream">
+                Votre panier est vide.
+              </h2>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-muted">
+                Ajoutez un plat depuis la carte pour choisir votre mode de
+                service et finaliser la commande.
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href="/menu" className="btn-primary">
+              <UtensilsCrossed className="h-4 w-4" />
+              Voir le menu
+            </Link>
+            <Link
+              href="/menu"
+              className="inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-full border border-gold/45 bg-gold/10 px-5 py-2.5 text-sm font-bold text-gold transition hover:border-gold hover:bg-gold hover:text-ink"
+            >
+              <ShoppingBag className="h-4 w-4" />
+              Commande simple
+            </Link>
+            <a
+              href={siteConfig.socials.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-full border border-[#25D366]/45 bg-[#25D366]/10 px-5 py-2.5 text-sm font-bold text-cream transition hover:border-[#25D366] hover:bg-[#25D366]/18"
+            >
+              <MessageCircle className="h-4 w-4 text-[#25D366]" />
+              Commander par WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-5">
+          {starterLinks.map((dish) => (
+            <Link
+              key={dish.href}
+              href={dish.href}
+              className="group overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] transition hover:-translate-y-0.5 hover:border-gold/50"
+            >
+              <div className="relative aspect-[5/3]">
+                <Image
+                  src={dish.image}
+                  alt={dish.name}
+                  fill
+                  sizes="(max-width: 640px) 80vw, 220px"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/85 to-transparent" />
+              </div>
+              <div className="p-3">
+                <p className="font-display text-lg font-semibold text-cream">
+                  {dish.name}
+                </p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gold">
+                  {dish.text}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <CheckoutHelpPanel />
+    </div>
+  );
+}
+
+function CheckoutHelpPanel({ subtotal }: { subtotal?: number }) {
+  const phoneHref = `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`;
+
+  return (
+    <aside className="rounded-2xl border border-gold/25 bg-gold/[0.06] p-5 shadow-[0_18px_50px_-42px_rgba(245,158,11,0.65)] lg:sticky lg:top-32">
+      <div className="flex items-start gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gold/50 bg-ink text-gold">
+          <ShieldCheck className="h-5 w-5" />
+        </span>
+        <div>
+          <h2 className="font-display text-xl font-bold text-cream">
+            Commande accompagnée
+          </h2>
+          <p className="mt-1 text-sm leading-6 text-muted">
+            L&apos;équipe reste joignable si vous voulez confirmer un horaire,
+            une adresse ou une option.
+          </p>
+        </div>
+      </div>
+
+      {typeof subtotal === "number" && (
+        <div className="mt-5 rounded-xl border border-white/10 bg-ink/55 px-4 py-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-cream/70">Panier actuel</span>
+            <span className="font-display text-xl font-bold text-gold">
+              {formatPrice(subtotal)}
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-5 space-y-3">
+        {checkoutHighlights.map(({ title, text, Icon }) => (
+          <div key={title} className="flex gap-3">
+            <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-ink/75 text-gold">
+              <Icon className="h-4 w-4" />
+            </span>
+            <div>
+              <p className="text-sm font-bold text-cream">{title}</p>
+              <p className="mt-0.5 text-xs leading-5 text-muted">{text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        <a
+          href={phoneHref}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/12 bg-ink px-4 py-3 text-sm font-bold text-cream transition hover:border-gold hover:text-gold"
+        >
+          <Phone className="h-4 w-4" />
+          Appeler
+        </a>
+        <a
+          href={siteConfig.socials.whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/12 px-4 py-3 text-sm font-bold text-cream transition hover:border-[#25D366] hover:bg-[#25D366]/18"
+        >
+          <MessageCircle className="h-4 w-4 text-[#25D366]" />
+          WhatsApp
+        </a>
+      </div>
+
+      <div className="mt-5 space-y-2 border-t border-white/10 pt-4 text-xs leading-5 text-muted">
+        <p className="flex gap-2">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
+          {siteConfig.contact.address}
+        </p>
+        <p className="flex gap-2">
+          <Star className="mt-0.5 h-3.5 w-3.5 shrink-0 fill-gold text-gold" />
+          4.8/5 Google · produits frais · service rapide
+        </p>
+      </div>
+    </aside>
   );
 }
 

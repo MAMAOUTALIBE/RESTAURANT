@@ -23,28 +23,28 @@ const display = Playfair_Display({
   weight: ["500", "600", "700", "800"],
 });
 
-const heroImage = "/images/hero-premium-poulet-dg.png";
+const heroImage = "/images/hero-premium-kebab.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | Restaurant africain premium`,
+    default: `${siteConfig.name} | Restaurant turc premium`,
     template: `%s | ${siteConfig.name}`,
   },
-  description: `${siteConfig.name} : recettes africaines préparées avec amour, ingrédients frais et épices d'exception. Commandez en ligne ou scannez le QR code.`,
+  description: `${siteConfig.name} : recettes turques préparées avec amour, ingrédients frais et épices d'exception. Commandez en ligne ou scannez le QR code.`,
   keywords: [
-    "restaurant africain",
-    "cuisine africaine",
-    "Poulet DG",
-    "Riz Jollof",
-    "Yassa",
-    "Mafé",
+    "restaurant turc",
+    "cuisine turque",
+    "kebab",
+    "lahmacun",
+    "pide",
+    "baklava",
     "livraison",
   ],
   alternates: { canonical: "/" },
   openGraph: {
     title: siteConfig.name,
-    description: "L'Afrique dans chaque bouchée.",
+    description: "La Turquie dans chaque bouchée.",
     type: "website",
     locale: siteConfig.locale,
     url: siteConfig.url,
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
-    description: "L'Afrique dans chaque bouchée.",
+    description: "La Turquie dans chaque bouchée.",
     images: [heroImage],
   },
   robots: {
@@ -81,7 +81,7 @@ export default function RootLayout({
     name: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.url,
-    servesCuisine: "Africaine",
+    servesCuisine: "Turque",
     priceRange: siteConfig.priceRange,
     telephone: siteConfig.contact.phone,
     email: siteConfig.contact.email,
