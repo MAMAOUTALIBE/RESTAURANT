@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Menu,
-  MessageCircle,
   Phone,
   Search,
   ShoppingBag,
@@ -54,17 +53,14 @@ export function Header() {
     >
       <div
         className={cn(
-          "mx-auto grid h-[76px] w-full max-w-[1540px] grid-cols-[auto_auto] items-center justify-between gap-4 rounded-[28px] border border-gold/35 bg-[linear-gradient(110deg,rgba(5,5,5,0.94)_0%,rgba(19,16,12,0.92)_45%,rgba(77,50,9,0.55)_100%)] px-4 shadow-[0_22px_70px_-45px_rgba(0,0,0,0.95)] backdrop-blur-xl sm:h-[82px] sm:px-6 lg:h-[96px] lg:grid-cols-[auto_auto_minmax(280px,0.78fr)_auto] lg:gap-7 lg:px-7 xl:px-8",
+          "mx-auto grid h-[76px] w-full max-w-[1540px] grid-cols-[auto_auto] items-center justify-between gap-4 rounded-[28px] border border-gold/35 bg-[linear-gradient(110deg,rgba(5,5,5,0.94)_0%,rgba(19,16,12,0.92)_45%,rgba(77,50,9,0.55)_100%)] px-4 shadow-[0_22px_70px_-45px_rgba(0,0,0,0.95)] backdrop-blur-xl sm:h-[82px] sm:px-6 lg:h-[96px] lg:grid-cols-[auto_auto_minmax(340px,1fr)_auto] lg:gap-7 lg:px-7 xl:px-8",
           scrolled &&
             "h-[70px] border-gold/45 bg-[linear-gradient(110deg,rgba(5,5,5,0.96)_0%,rgba(19,16,12,0.94)_45%,rgba(77,50,9,0.62)_100%)] shadow-[0_18px_55px_-42px_rgba(216,154,28,0.5)] sm:h-[74px] lg:h-[86px]",
         )}
       >
         <div className="flex min-w-0 items-center gap-6">
           <Logo className="shrink-0" />
-          <span
-            className="hidden h-12 w-px bg-gold/25 lg:block"
-            aria-hidden
-          />
+          <span className="hidden h-12 w-px bg-gold/25 lg:block" aria-hidden />
         </div>
 
         <nav className="hidden items-center justify-center gap-7 lg:flex">
@@ -72,7 +68,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="group relative inline-flex items-center gap-2.5 text-base font-semibold text-cream/88 transition hover:text-white"
+              className="text-cream/88 group relative inline-flex items-center gap-2.5 text-base font-semibold transition hover:text-white"
             >
               {link.href === "/reservation" ? (
                 <CalendarDays className="h-5 w-5 text-[#D89A1C]" />
@@ -87,7 +83,7 @@ export function Header() {
 
         <form
           action="/menu"
-          className="hidden h-16 min-w-0 items-center gap-3 rounded-full border border-white/28 bg-black/32 px-5 text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition focus-within:border-gold/70 xl:flex"
+          className="border-white/28 bg-black/32 hidden h-16 min-w-0 items-center gap-3 rounded-full border px-5 text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition focus-within:border-gold/70 xl:flex"
           role="search"
         >
           <Search className="h-5 w-5 shrink-0 text-[#D89A1C]" />
@@ -96,7 +92,7 @@ export function Header() {
             type="search"
             aria-label="Rechercher un plat ou une boisson"
             placeholder="Rechercher un plat, une boisson..."
-            className="min-w-0 flex-1 bg-transparent text-base font-medium text-cream placeholder:text-cream/46 focus:outline-none"
+            className="placeholder:text-cream/46 min-w-0 flex-1 bg-transparent text-base font-medium text-cream focus:outline-none"
           />
           <button
             type="submit"
@@ -110,20 +106,10 @@ export function Header() {
         <div className="flex items-center gap-3 lg:gap-4">
           <a
             href={phoneHref}
-            className="hidden min-h-[3rem] items-center justify-center gap-2 rounded-full border border-white/15 bg-black/28 px-4 py-2 text-sm font-bold text-cream transition hover:-translate-y-0.5 hover:border-[#D89A1C]/70 hover:text-[#D89A1C] 2xl:inline-flex"
+            className="bg-black/28 hidden min-h-[3rem] items-center justify-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-cream transition hover:-translate-y-0.5 hover:border-[#D89A1C]/70 hover:text-[#D89A1C] 2xl:inline-flex"
           >
             <Phone className="h-4 w-4 text-[#D89A1C]" />
             {siteConfig.contact.phone}
-          </a>
-
-          <a
-            href={siteConfig.socials.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden min-h-[3rem] items-center justify-center gap-2 rounded-full border border-[#25D366]/45 bg-[#25D366]/12 px-4 py-2 text-sm font-bold text-cream transition hover:-translate-y-0.5 hover:border-[#25D366] hover:bg-[#25D366]/20 lg:inline-flex"
-          >
-            <MessageCircle className="h-4 w-4 text-[#25D366]" />
-            WhatsApp
           </a>
 
           <button
