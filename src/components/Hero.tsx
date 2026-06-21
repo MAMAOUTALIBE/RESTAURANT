@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -40,21 +41,90 @@ const serviceHighlights: {
   },
 ];
 
+const heroSlides = [
+  {
+    label: "Grillades turques",
+    src: "/images/hero-slide-grillades-turques.png",
+    alt: "Plateau de grillades turques avec kebab, köfte, riz, boulgour, légumes grillés et sauces",
+  },
+  {
+    label: "Adana kebab",
+    src: "/images/hero-slide-adana-kebab.png",
+    alt: "Adana kebab grillé avec lavash, boulgour, piments, tomates, oignons rouges et sauces",
+  },
+  {
+    label: "Pide et lahmacun",
+    src: "/images/hero-slide-pide-lahmacun.png",
+    alt: "Pide au sucuk et lahmacun croustillant servis avec citron, herbes et sauces",
+  },
+  {
+    label: "Desserts turcs",
+    src: "/images/hero-slide-desserts-turcs.png",
+    alt: "Baklava, künefe, loukoums, pistaches, thé turc et café turc sur table sombre",
+  },
+  {
+    label: "Boissons turques",
+    src: "/images/hero-slide-boissons-turques.png",
+    alt: "Ayran, thé turc, café turc, jus de grenade et limonade à la menthe",
+  },
+] as const;
+
+const HERO_SLIDE_INTERVAL_MS = 5600;
+
 /** Hero premium : promesse forte, image immersive et réassurance immédiate. */
 export function Hero() {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    if (prefersReducedMotion.matches) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length);
+    }, HERO_SLIDE_INTERVAL_MS);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <section
       id="accueil"
       className="relative overflow-hidden bg-[#050505] px-4 pb-8 pt-[6.75rem] text-cream sm:px-6 sm:pb-10 lg:min-h-[690px] lg:pt-[7.35rem]"
     >
       <div className="pointer-events-none absolute inset-0 z-0 h-full w-full">
-        <Image
-          src="/images/hero-plateau-turc-premium.png"
-          alt="Grand plateau de spécialités turques grillées avec brochettes, köfte, riz pilaf, boulgour et sauces"
-          fill
-          priority
-          sizes="100vw"
-          className="origin-right scale-[0.98] object-cover object-[54%_center] brightness-[1.08] contrast-[1.08] saturate-[1.08] sm:scale-[0.96] sm:object-[56%_center] lg:scale-[0.94] lg:object-center"
+        {heroSlides.map((slide, index) => (
+          <motion.div
+            key={slide.src}
+            aria-hidden={index !== activeSlide}
+            className="absolute inset-0"
+            initial={false}
+            animate={{
+              opacity: index === activeSlide ? 1 : 0,
+              scale: index === activeSlide ? 1.055 : 1.015,
+            }}
+            transition={{
+              opacity: { duration: 1.05, ease: "easeInOut" },
+              scale: { duration: 6.2, ease: "easeOut" },
+            }}
+          >
+            <Image
+              src={slide.src}
+              alt={index === activeSlide ? slide.alt : ""}
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className="origin-right object-cover object-[56%_60%] brightness-[1.08] contrast-[1.08] saturate-[1.08] sm:object-[58%_60%] lg:object-[58%_62%]"
+            />
+          </motion.div>
+        ))}
+        <div
+          className="via-black/38 absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/75 to-transparent"
+          aria-hidden
         />
       </div>
 
@@ -105,6 +175,26 @@ export function Hero() {
                   <UtensilsCrossed className="h-4 w-4" />
                   Voir le menu
                 </Link>
+              </div>
+
+              <div
+                className="mt-5 flex items-center gap-2"
+                aria-label="Images du hero"
+              >
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={slide.src}
+                    type="button"
+                    aria-label={`Afficher ${slide.label}`}
+                    aria-current={index === activeSlide ? "true" : undefined}
+                    onClick={() => setActiveSlide(index)}
+                    className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D89A1C]/70 ${
+                      index === activeSlide
+                        ? "w-8 bg-[#D89A1C]"
+                        : "w-2 bg-white/45 hover:bg-white/75"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </motion.div>

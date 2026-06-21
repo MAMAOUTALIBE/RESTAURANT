@@ -4,7 +4,21 @@ import { prisma } from "@/lib/prisma";
 import type { Dish } from "@/types";
 
 const dishImageOverrides: Record<string, string> = {
-  baklava: "/images/baklava.png",
+  "adana-kebab": "/images/hero-slide-adana-kebab.png",
+  ayran: "/images/hero-slide-boissons-turques.png",
+  baklava: "/images/hero-slide-desserts-turcs.png",
+  "borek-fromage": "/images/hero-slide-pide-lahmacun.png",
+  houmous: "/images/hero-slide-pide-lahmacun.png",
+  "iskender-kebab": "/images/hero-slide-grillades-turques.png",
+  "kebab-grille": "/images/hero-slide-grillades-turques.png",
+  kofte: "/images/hero-slide-grillades-turques.png",
+  lahmacun: "/images/hero-slide-pide-lahmacun.png",
+  manti: "/images/hero-slide-pide-lahmacun.png",
+  "mercimek-corbasi": "/images/hero-slide-pide-lahmacun.png",
+  "pide-sucuk": "/images/hero-slide-pide-lahmacun.png",
+  "sodas-frais": "/images/hero-slide-boissons-turques.png",
+  sutlac: "/images/hero-slide-desserts-turcs.png",
+  "the-turc": "/images/hero-slide-boissons-turques.png",
 };
 
 function resolveDishImage(row: Pick<DishRow, "slug" | "image">): string {

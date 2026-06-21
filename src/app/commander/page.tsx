@@ -41,19 +41,19 @@ const starterLinks = [
     href: "/menu/kebab-grille",
     name: "Kebab grillé",
     text: "Signature",
-    image: "/images/kebab-grille.jpg",
+    image: "/images/hero-slide-grillades-turques.png",
   },
   {
     href: "/menu/lahmacun",
     name: "Lahmacun",
     text: "Populaire",
-    image: "/images/lahmacun.jpg",
+    image: "/images/hero-slide-pide-lahmacun.png",
   },
   {
     href: "/menu/baklava",
     name: "Baklava",
     text: "Dessert",
-    image: "/images/baklava.png",
+    image: "/images/hero-slide-desserts-turcs.png",
   },
 ];
 const checkoutHighlights: {
@@ -511,7 +511,7 @@ function EmptyCartState() {
               href={siteConfig.socials.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-full border border-[#25D366]/45 bg-[#25D366]/10 px-5 py-2.5 text-sm font-bold text-cream transition hover:border-[#25D366] hover:bg-[#25D366]/18"
+              className="hover:bg-[#25D366]/18 inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-full border border-[#25D366]/45 bg-[#25D366]/10 px-5 py-2.5 text-sm font-bold text-cream transition hover:border-[#25D366]"
             >
               <MessageCircle className="h-4 w-4 text-[#25D366]" />
               Commander par WhatsApp
@@ -601,7 +601,7 @@ function CheckoutHelpPanel({ subtotal }: { subtotal?: number }) {
       <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         <a
           href={phoneHref}
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/12 bg-ink px-4 py-3 text-sm font-bold text-cream transition hover:border-gold hover:text-gold"
+          className="border-white/12 inline-flex items-center justify-center gap-2 rounded-xl border bg-ink px-4 py-3 text-sm font-bold text-cream transition hover:border-gold hover:text-gold"
         >
           <Phone className="h-4 w-4" />
           Appeler
@@ -610,7 +610,7 @@ function CheckoutHelpPanel({ subtotal }: { subtotal?: number }) {
           href={siteConfig.socials.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 bg-[#25D366]/12 px-4 py-3 text-sm font-bold text-cream transition hover:border-[#25D366] hover:bg-[#25D366]/18"
+          className="bg-[#25D366]/12 hover:bg-[#25D366]/18 inline-flex items-center justify-center gap-2 rounded-xl border border-[#25D366]/40 px-4 py-3 text-sm font-bold text-cream transition hover:border-[#25D366]"
         >
           <MessageCircle className="h-4 w-4 text-[#25D366]" />
           WhatsApp
