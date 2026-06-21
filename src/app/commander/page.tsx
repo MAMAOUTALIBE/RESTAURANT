@@ -180,8 +180,8 @@ export default function CommanderPage() {
   }
 
   return (
-    <main className="min-h-screen bg-ink pb-20 pt-28">
-      <div className="container-page max-w-5xl">
+    <main className="min-h-screen bg-ink pb-20 pt-24 sm:pt-28 3xl:pt-36">
+      <div className="container-page max-w-6xl 3xl:max-w-[1540px]">
         <Link
           href="/menu"
           className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-gold"
@@ -199,7 +199,7 @@ export default function CommanderPage() {
           <EmptyCartState />
         ) : !choice ? (
           /* ÉTAPE 1 — mode + calendrier (entrée de commande) */
-          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr]">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr] 3xl:grid-cols-[minmax(0,1.25fr)_0.85fr] 3xl:gap-8">
             <section className="rounded-2xl border border-white/10 bg-ink-soft p-6">
               <OrderStarter subtotal={totalPrice} />
             </section>
@@ -221,7 +221,7 @@ export default function CommanderPage() {
               </button>
             </div>
 
-            <div className="mt-8 grid gap-10 lg:grid-cols-2">
+            <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] 3xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.15fr)] 3xl:gap-12">
               {/* Récap */}
               <section aria-label="Récapitulatif">
                 <h2 className="font-display text-xl font-semibold text-cream">
@@ -478,7 +478,7 @@ export default function CommanderPage() {
 
 function EmptyCartState() {
   return (
-    <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr]">
+    <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_0.9fr] 3xl:grid-cols-[minmax(0,1.25fr)_0.85fr] 3xl:gap-8">
       <section className="overflow-hidden rounded-2xl border border-white/10 bg-ink-soft">
         <div className="border-b border-white/10 p-6 sm:p-7">
           <div className="flex items-start gap-4">
@@ -519,7 +519,7 @@ function EmptyCartState() {
           </div>
         </div>
 
-        <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-5">
+        <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-5 3xl:gap-5 3xl:p-6">
           {starterLinks.map((dish) => (
             <Link
               key={dish.href}
@@ -531,16 +531,16 @@ function EmptyCartState() {
                   src={dish.image}
                   alt={dish.name}
                   fill
-                  sizes="(max-width: 640px) 80vw, 220px"
+                  sizes="(max-width: 640px) 80vw, (max-width: 1920px) 220px, 300px"
                   className="object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-ink/85 to-transparent" />
               </div>
               <div className="p-3">
-                <p className="font-display text-lg font-semibold text-cream">
+                <p className="font-display text-lg font-semibold text-cream 3xl:text-2xl">
                   {dish.name}
                 </p>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gold">
+                <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gold 3xl:text-sm">
                   {dish.text}
                 </p>
               </div>

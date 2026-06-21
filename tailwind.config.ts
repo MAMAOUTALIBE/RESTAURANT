@@ -28,6 +28,10 @@ const config: Config = {
         },
         muted: "#A3A3A3", // Gris texte
       },
+      screens: {
+        "3xl": "1920px",
+        "4xl": "2560px",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "serif"],

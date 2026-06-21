@@ -67,20 +67,20 @@ export function DishCard({
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
       className="group flex h-full flex-col overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_16px_40px_-30px_rgba(8,8,8,0.62)] transition-shadow duration-300 hover:shadow-[0_22px_52px_-34px_rgba(8,8,8,0.72)]"
     >
-      <div className="relative aspect-[5/3] w-full overflow-hidden bg-ink">
+      <div className="relative aspect-[5/3] w-full overflow-hidden bg-ink 3xl:aspect-[16/10]">
         <Image
           src={dish.image}
           alt={dish.name}
           fill
-          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, (max-width: 1536px) 30vw, 22vw"
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, (max-width: 1536px) 30vw, (max-width: 1920px) 23vw, (max-width: 2560px) 18vw, 15vw"
           className={`object-cover transition-transform duration-500 group-hover:scale-110 ${unavailable ? "grayscale" : ""}`}
         />
         {displayBadges.length > 0 && !unavailable && (
-          <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1.5">
+          <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1.5 3xl:left-4 3xl:top-4">
             {displayBadges.map((badge) => (
               <span
                 key={badge}
-                className="bg-cream/92 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-forest backdrop-blur"
+                className="bg-cream/92 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-forest backdrop-blur 3xl:px-3.5 3xl:text-xs"
               >
                 {badge}
               </span>
@@ -93,17 +93,17 @@ export function DishCard({
           </span>
         )}
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-ink/80 to-transparent" />
-        <span className="absolute bottom-3 left-3 rounded-md bg-black/35 px-2 py-1 font-display text-2xl font-bold text-cream backdrop-blur-[2px]">
+        <span className="absolute bottom-3 left-3 rounded-md bg-black/35 px-2 py-1 font-display text-2xl font-bold text-cream backdrop-blur-[2px] 3xl:bottom-4 3xl:left-4 3xl:text-3xl">
           {formatPrice(dish.price)}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col px-5 pb-4 pt-3.5">
-        <h3 className="font-display text-2xl font-semibold leading-tight text-ink">
+      <div className="flex flex-1 flex-col px-5 pb-4 pt-3.5 3xl:px-6 3xl:pb-5 3xl:pt-4">
+        <h3 className="font-display text-2xl font-semibold leading-tight text-ink 3xl:text-3xl">
           {dish.name}
         </h3>
         <div className="mt-1.5 flex flex-1 items-start justify-between gap-3">
-          <p className="line-clamp-2 text-base leading-relaxed text-ink/70">
+          <p className="line-clamp-2 text-base leading-relaxed text-ink/70 3xl:text-lg 3xl:leading-8">
             {dish.description}
           </p>
           {actionButton}
@@ -113,7 +113,7 @@ export function DishCard({
             {details.slice(0, 4).map((detail) => (
               <span
                 key={detail}
-                className="rounded-full border border-ink/10 bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold text-ink/62"
+                className="text-ink/62 rounded-full border border-ink/10 bg-ink/[0.04] px-2.5 py-1 text-xs font-semibold"
               >
                 {detail}
               </span>
