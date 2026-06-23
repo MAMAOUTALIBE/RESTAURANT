@@ -129,7 +129,7 @@ export function Hero() {
       </div>
 
       <div className="relative z-20 mx-auto flex w-full max-w-[1680px] flex-col gap-5 sm:gap-6 lg:gap-7 3xl:max-w-[2100px] 4xl:max-w-[2360px]">
-        <div className="flex min-h-[430px] items-center pb-2 sm:min-h-[490px] lg:min-h-[560px] 2xl:min-h-[630px] 3xl:min-h-[720px] 4xl:min-h-[820px]">
+        <div className="flex min-h-[360px] items-center pb-2 sm:min-h-[490px] lg:min-h-[560px] 2xl:min-h-[630px] 3xl:min-h-[720px] 4xl:min-h-[820px]">
           <motion.div
             className="relative z-20 -mt-14 max-w-[620px] py-4 sm:-mt-[5.25rem] sm:max-w-[650px] lg:-mt-[6rem] lg:pl-2 xl:-mt-[6.75rem] xl:pl-4 3xl:-mt-32 3xl:max-w-[780px]"
             initial={{ opacity: 0, y: 18 }}

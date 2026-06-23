@@ -115,7 +115,7 @@ export function MenuBrowser({
   return (
     <div>
       {/* Barre de recherche + filtres (sombre, glissée sous la pilule du header) */}
-      <div className="sticky top-[5.75rem] z-10 -mx-4 mb-8 border-b border-white/10 bg-ink/85 px-4 py-4 backdrop-blur-xl sm:top-28 sm:mb-10 3xl:top-32 3xl:py-5">
+      <div className="sticky top-[5.75rem] z-10 -mx-4 mb-6 border-b border-white/10 bg-ink/85 px-4 py-3 backdrop-blur-xl sm:top-28 sm:mb-10 sm:py-4 3xl:top-32 3xl:py-5">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cream/35 3xl:left-4 3xl:h-5 3xl:w-5" />
@@ -154,7 +154,7 @@ export function MenuBrowser({
             </Chip>
           ))}
         </div>
-        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-cream/70 3xl:text-sm">
+        <div className="mt-3 hidden flex-wrap gap-2 text-xs font-semibold text-cream/70 sm:flex 3xl:text-sm">
           {["Taille", "Sauce", "Boisson", "Supplément"].map((option) => (
             <span
               key={option}
@@ -175,7 +175,7 @@ export function MenuBrowser({
           <section
             key={g.cat.id}
             id={g.cat.slug}
-            className="mb-12 scroll-mt-44"
+            className="mb-8 scroll-mt-44 sm:mb-12"
           >
             <div className="flex items-baseline gap-4">
               <span className="font-display text-sm font-semibold tracking-wider text-gold-400">

@@ -342,8 +342,8 @@ export async function PremiumEngagementSection() {
           </div>
         </div>
 
-        <footer className="border-t border-white/[0.08] px-5 py-8 sm:px-8 lg:px-10">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr_1.1fr_1.2fr_1.25fr]">
+        <footer className="border-t border-white/[0.08] px-5 py-7 sm:px-8 sm:py-8 lg:px-10">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1.1fr_1fr_1.1fr_1.2fr_1.25fr]">
             <div>
               <BrandLogo />
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-cream/75">
@@ -368,9 +368,21 @@ export async function PremiumEngagementSection() {
             </div>
 
             <FooterColumn title="Contact">
-              <FooterLine Icon={Phone} text={siteConfig.contact.phone} />
-              <FooterLine Icon={Mail} text={siteConfig.contact.email} />
-              <FooterLine Icon={MapPin} text={siteConfig.contact.address} />
+              <FooterLine
+                Icon={Phone}
+                text={siteConfig.contact.phone}
+                href={`tel:${siteConfig.contact.phone.replace(/\s/g, "")}`}
+              />
+              <FooterLine
+                Icon={Mail}
+                text={siteConfig.contact.email}
+                href={`mailto:${siteConfig.contact.email}`}
+              />
+              <FooterLine
+                Icon={MapPin}
+                text={siteConfig.contact.address}
+                href={`https://maps.google.com/?q=${encodeURIComponent(siteConfig.contact.address)}`}
+              />
             </FooterColumn>
 
             <FooterColumn title="Horaires">
@@ -402,7 +414,7 @@ export async function PremiumEngagementSection() {
           </div>
 
           <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-white/[0.08] pt-6 text-sm text-cream/60 lg:flex-row">
-            <p>© 2025 restaurant - Tous droits réservés.</p>
+            <p>© 2026 {siteConfig.name} - Tous droits réservés.</p>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
               <Link
                 href="/mentions-legales"
@@ -447,11 +459,25 @@ function FooterColumn({
   );
 }
 
-function FooterLine({ Icon, text }: { Icon: LucideIcon; text: string }) {
+function FooterLine({
+  Icon,
+  text,
+  href,
+}: {
+  Icon: LucideIcon;
+  text: string;
+  href?: string;
+}) {
   return (
     <div className="flex gap-3">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-      <span>{text}</span>
+      {href ? (
+        <a href={href} className="transition hover:text-gold">
+          {text}
+        </a>
+      ) : (
+        <span>{text}</span>
+      )}
     </div>
   );
 }

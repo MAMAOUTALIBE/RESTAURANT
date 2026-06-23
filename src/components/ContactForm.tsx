@@ -10,7 +10,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="btn-primary disabled:opacity-60"
+      className="btn-primary w-full disabled:opacity-60 sm:w-auto"
     >
       {pending ? "Envoi…" : "Envoyer le message"}
     </button>

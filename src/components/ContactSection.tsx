@@ -1,12 +1,24 @@
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, Navigation } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { siteConfig } from "@/lib/config";
 
-const infos = [
-  { Icon: MapPin, label: siteConfig.contact.address },
-  { Icon: Phone, label: siteConfig.contact.phone },
-  { Icon: Mail, label: siteConfig.contact.email },
+const mapsHref = `https://maps.google.com/?q=${encodeURIComponent(
+  siteConfig.contact.address,
+)}`;
+
+const infos: { Icon: typeof MapPin; label: string; href?: string }[] = [
+  { Icon: MapPin, label: siteConfig.contact.address, href: mapsHref },
+  {
+    Icon: Phone,
+    label: siteConfig.contact.phone,
+    href: `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`,
+  },
+  {
+    Icon: Mail,
+    label: siteConfig.contact.email,
+    href: `mailto:${siteConfig.contact.email}`,
+  },
   { Icon: Clock, label: "Lun – Dim : 11h00 – 23h00" },
 ];
 
@@ -24,18 +36,36 @@ export function ContactSection() {
           </h2>
         </Reveal>
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+        <div className="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-2 lg:gap-10">
           <Reveal>
-            <ul className="space-y-5">
-              {infos.map(({ Icon, label }) => (
+            <ul className="space-y-4">
+              {infos.map(({ Icon, label, href }) => (
                 <li key={label} className="flex items-center gap-4">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 text-gold">
                     <Icon className="h-5 w-5" />
                   </span>
-                  <span className="text-cream/85">{label}</span>
+                  {href ? (
+                    <a
+                      href={href}
+                      className="text-cream/85 transition hover:text-gold"
+                    >
+                      {label}
+                    </a>
+                  ) : (
+                    <span className="text-cream/85">{label}</span>
+                  )}
                 </li>
               ))}
             </ul>
+            <a
+              href={mapsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline mt-5 w-full sm:w-auto"
+            >
+              <Navigation className="h-4 w-4 text-gold" />
+              Itinéraire
+            </a>
           </Reveal>
           <Reveal>
             <ContactForm />

@@ -20,7 +20,7 @@ export async function FeaturedDishes() {
   return (
     <section
       id="menu"
-      className="bg-[#F8F3EA] pb-16 pt-6 text-ink sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10 3xl:pb-32 3xl:pt-14"
+      className="bg-[#F8F3EA] pb-10 pt-5 text-ink sm:pb-20 sm:pt-8 lg:pb-24 lg:pt-10 3xl:pb-32 3xl:pt-14"
     >
       <div className="container-page">
         <div className="flex flex-col gap-3">
@@ -48,7 +48,7 @@ export async function FeaturedDishes() {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 3xl:mt-10 3xl:gap-7">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:mt-8 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3 3xl:mt-10 3xl:gap-7">
           {featured.map((dish) => (
             <div key={dish.id}>
               <DishCard

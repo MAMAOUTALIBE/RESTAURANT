@@ -47,7 +47,7 @@ export function CateringForm() {
         aria-hidden="true"
         className="absolute left-[-9999px] h-0 w-0 opacity-0"
       />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <Field
           id="name"
           label="Nom / organisation"
@@ -67,12 +67,14 @@ export function CateringForm() {
         error={state?.errors?.email}
       />
       <div className="grid gap-4 sm:grid-cols-2">
+        {/* Date optionnelle : masquée sur mobile pour alléger (le back l'accepte vide). */}
         <Field
           id="eventDate"
           label="Date de l'événement (optionnel)"
           type="date"
           required={false}
           error={state?.errors?.eventDate}
+          className="hidden sm:block"
         />
         <Field
           id="guests"
@@ -112,15 +114,17 @@ function Field({
   type = "text",
   required = true,
   error,
+  className,
 }: {
   id: string;
   label: string;
   type?: string;
   required?: boolean;
   error?: string;
+  className?: string;
 }) {
   return (
-    <div>
+    <div className={className}>
       <label htmlFor={id} className="mb-1.5 block text-sm text-cream/80">
         {label}
       </label>

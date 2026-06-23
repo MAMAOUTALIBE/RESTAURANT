@@ -78,11 +78,27 @@ const socials = [
   { label: "Telegram", Icon: IconTelegram, href: siteConfig.socials.telegram },
 ].filter((item) => Boolean(item.href));
 
-const contact = [
-  { Icon: MapPin, lines: [siteConfig.contact.address] },
-  { Icon: Phone, lines: [siteConfig.contact.phone] },
-  { Icon: Mail, lines: [siteConfig.contact.email] },
-  { Icon: Clock, lines: ["Lun – Dim : 11h00 – 23h00"] },
+const contact: {
+  Icon: typeof MapPin;
+  text: string;
+  href?: string;
+}[] = [
+  {
+    Icon: MapPin,
+    text: siteConfig.contact.address,
+    href: `https://maps.google.com/?q=${encodeURIComponent(siteConfig.contact.address)}`,
+  },
+  {
+    Icon: Phone,
+    text: siteConfig.contact.phone,
+    href: `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`,
+  },
+  {
+    Icon: Mail,
+    text: siteConfig.contact.email,
+    href: `mailto:${siteConfig.contact.email}`,
+  },
+  { Icon: Clock, text: "Lun – Dim : 11h00 – 23h00" },
 ];
 
 const payments = ["VISA", "Mastercard", "PayPal", "Apple Pay"];
@@ -91,8 +107,8 @@ const payments = ["VISA", "Mastercard", "PayPal", "Apple Pay"];
 export function Footer() {
   return (
     <footer className="border-t border-white/10 bg-ink-soft">
-      <div className="container-page py-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container-page py-10 sm:py-14">
+        <div className="grid gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Marque + socials */}
           <div>
             <Logo />
@@ -124,7 +140,7 @@ export function Footer() {
             <h4 className="font-display text-lg font-semibold text-cream">
               Liens rapides
             </h4>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 sm:block sm:space-y-2.5">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <a
@@ -144,16 +160,16 @@ export function Footer() {
               Informations
             </h4>
             <ul className="mt-4 space-y-3">
-              {contact.map(({ Icon, lines }, i) => (
+              {contact.map(({ Icon, text, href }, i) => (
                 <li key={i} className="flex gap-3 text-sm text-muted">
                   <Icon className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  <span>
-                    {lines.map((l) => (
-                      <span key={l} className="block">
-                        {l}
-                      </span>
-                    ))}
-                  </span>
+                  {href ? (
+                    <a href={href} className="transition hover:text-gold">
+                      {text}
+                    </a>
+                  ) : (
+                    <span>{text}</span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -172,7 +188,7 @@ export function Footer() {
         </div>
 
         {/* Liens légaux */}
-        <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-xs text-muted">
+        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-white/10 pt-6 text-xs text-muted sm:mt-10">
           <a href="/mentions-legales" className="transition hover:text-gold">
             Mentions légales
           </a>

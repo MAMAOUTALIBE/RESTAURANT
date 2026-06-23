@@ -15,7 +15,7 @@ function SubmitButton() {
       disabled={pending}
       className="btn-primary w-full disabled:opacity-60"
     >
-      {pending ? "Envoi…" : "Demander une réservation"}
+      {pending ? "Envoi…" : "Réserver"}
     </button>
   );
 }
@@ -61,7 +61,7 @@ export function ReservationForm({
         aria-hidden="true"
         className="absolute left-[-9999px] h-0 w-0 opacity-0"
       />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <Field
           id="name"
           label="Nom complet"
@@ -83,7 +83,7 @@ export function ReservationForm({
         error={state?.errors?.email}
         defaultValue={defaults.email}
       />
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <Field
           id="date"
           label="Date"
@@ -104,6 +104,7 @@ export function ReservationForm({
           type="number"
           error={state?.errors?.guests}
           defaultValue={defaults.guests}
+          className="col-span-2 sm:col-span-1"
         />
       </div>
       <div>
@@ -124,6 +125,7 @@ export function ReservationForm({
         </p>
       )}
       <SubmitButton />
+      <p className="text-center text-xs text-muted">Confirmation par email</p>
     </form>
   );
 }
@@ -134,15 +136,17 @@ function Field({
   type = "text",
   error,
   defaultValue,
+  className,
 }: {
   id: string;
   label: string;
   type?: string;
   error?: string;
   defaultValue?: string;
+  className?: string;
 }) {
   return (
-    <div>
+    <div className={className}>
       <label htmlFor={id} className="mb-1.5 block text-sm text-cream/80">
         {label}
       </label>
