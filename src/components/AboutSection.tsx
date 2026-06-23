@@ -4,9 +4,9 @@ import { Reveal } from "@/components/ui/Reveal";
 import { aboutPoints } from "@/data/services";
 
 const gallery = [
-  { src: "/images/about-1.jpg", alt: "Salle du restaurant" },
-  { src: "/images/about-2.jpg", alt: "Chefs en cuisine" },
-  { src: "/images/about-3.jpg", alt: "Plat dressé" },
+  { src: "/images/about-1.webp", alt: "Salle du restaurant" },
+  { src: "/images/about-2.webp", alt: "Chefs en cuisine" },
+  { src: "/images/about-3.webp", alt: "Plat dressé" },
 ];
 
 /** Bloc « À propos de nous » (colonne centrale de la bande). */

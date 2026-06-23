@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ShoppingBag, User } from "lucide-react";
+import { X, ShoppingBag, User, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { LangToggle } from "@/components/LangToggle";
 import type { NavLink } from "@/types";
@@ -13,8 +13,22 @@ interface MobileNavProps {
   cartCount: number;
 }
 
+/** Pages principales (le reste va dans « Autres pages »). */
+const PRINCIPAL_HREFS = ["/menu", "/commander", "/reservation", "/contact"];
+const SECONDARY_LINKS: NavLink[] = [
+  { label: "Mentions légales", href: "/mentions-legales" },
+  { label: "CGV", href: "/cgv" },
+  { label: "Confidentialité", href: "/confidentialite" },
+];
+
 /** Panneau de navigation mobile coulissant (hamburger menu). */
 export function MobileNav({ open, onClose, links, cartCount }: MobileNavProps) {
+  const principal = links.filter((l) => PRINCIPAL_HREFS.includes(l.href));
+  const autres = [
+    ...links.filter((l) => !PRINCIPAL_HREFS.includes(l.href)),
+    ...SECONDARY_LINKS,
+  ];
+
   return (
     <AnimatePresence>
       {open && (
@@ -48,23 +62,17 @@ export function MobileNav({ open, onClose, links, cartCount }: MobileNavProps) {
               </button>
             </div>
 
-            <nav className="mt-10 flex flex-col gap-1">
-              {links.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  onClick={onClose}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.06 * i }}
-                  className="rounded-xl px-4 py-3 text-lg font-medium text-cream/90 transition hover:bg-white/5 hover:text-gold"
-                >
-                  {link.label}
-                </motion.a>
-              ))}
+            <nav className="mt-6 flex-1 overflow-y-auto">
+              <NavGroup
+                title="Pages principales"
+                links={principal}
+                onClose={onClose}
+                defaultOpen
+              />
+              <NavGroup title="Autres pages" links={autres} onClose={onClose} />
             </nav>
 
-            <div className="mt-8 space-y-4 border-t border-white/10 pt-6">
+            <div className="mt-4 space-y-4 border-t border-white/10 pt-5">
               <a
                 href="/compte"
                 onClick={onClose}
@@ -81,17 +89,54 @@ export function MobileNav({ open, onClose, links, cartCount }: MobileNavProps) {
               </div>
             </div>
 
-            <a
-              href="/commander"
-              onClick={onClose}
-              className="btn-primary mt-auto w-full"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              Commander {cartCount > 0 && `(${cartCount})`}
-            </a>
+            {cartCount > 0 && (
+              <a
+                href="/commander"
+                onClick={onClose}
+                className="btn-primary mt-4 w-full"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                Finaliser ma commande ({cartCount})
+              </a>
+            )}
           </motion.aside>
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+/** Groupe de liens repliable, aligné à gauche. */
+function NavGroup({
+  title,
+  links,
+  onClose,
+  defaultOpen = false,
+}: {
+  title: string;
+  links: NavLink[];
+  onClose: () => void;
+  defaultOpen?: boolean;
+}) {
+  if (links.length === 0) return null;
+  return (
+    <details open={defaultOpen} className="group border-b border-white/10">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-1 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-cream/50">
+        {title}
+        <ChevronDown className="h-4 w-4 transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <div className="pb-2">
+        {links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            onClick={onClose}
+            className="block rounded-lg px-3 py-2.5 text-base font-medium text-cream/90 transition hover:bg-white/5 hover:text-gold"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </details>
   );
 }

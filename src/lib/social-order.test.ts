@@ -10,7 +10,7 @@ const item: CartItem = {
   lineId: "kebab-1",
   dishId: "kebab-grille",
   name: "Kebab grillé",
-  image: "/images/kebab-grille.jpg",
+  image: "/images/kebab-grille.webp",
   basePrice: 14,
   unitPrice: 15,
   quantity: 2,

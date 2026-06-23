@@ -429,7 +429,7 @@ export async function getReorderItems(reference: string): Promise<
     name: i.name,
     price: i.price,
     quantity: i.quantity,
-    image: imageBySlug.get(i.id) ?? "/images/hero-slide-grillades-turques.png",
+    image: imageBySlug.get(i.id) ?? "/images/hero-slide-grillades-turques.webp",
     options: i.options,
     note: i.note,
   }));

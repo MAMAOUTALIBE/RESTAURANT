@@ -3,14 +3,40 @@ import { ContactForm } from "@/components/ContactForm";
 import { Reveal } from "@/components/ui/Reveal";
 import { siteConfig } from "@/lib/config";
 
+const phoneHref = `tel:${siteConfig.contact.phone.replace(/\s/g, "")}`;
+const mailHref = `mailto:${siteConfig.contact.email}`;
+const mapsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  siteConfig.contact.address,
+)}`;
+
 const infos = [
-  { Icon: MapPin, label: siteConfig.contact.address },
-  { Icon: Phone, label: siteConfig.contact.phone },
-  { Icon: Mail, label: siteConfig.contact.email },
-  { Icon: Clock, label: "Lun – Dim : 11h00 – 23h00" },
+  {
+    Icon: MapPin,
+    label: siteConfig.contact.address,
+    href: mapsHref,
+    external: true,
+  },
+  {
+    Icon: Phone,
+    label: siteConfig.contact.phone,
+    href: phoneHref,
+    external: false,
+  },
+  {
+    Icon: Mail,
+    label: siteConfig.contact.email,
+    href: mailHref,
+    external: false,
+  },
+  {
+    Icon: Clock,
+    label: "Lun – Dim : 11h00 – 23h00",
+    href: null,
+    external: false,
+  },
 ];
 
-/** Section Contact : coordonnées + formulaire connecté. */
+/** Section Contact : coordonnées cliquables + formulaire connecté. */
 export function ContactSection() {
   return (
     <section id="contact" className="section bg-ink">
@@ -26,15 +52,36 @@ export function ContactSection() {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           <Reveal>
-            <ul className="space-y-5">
-              {infos.map(({ Icon, label }) => (
-                <li key={label} className="flex items-center gap-4">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 text-gold">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <span className="text-cream/85">{label}</span>
-                </li>
-              ))}
+            <ul className="space-y-3">
+              {infos.map(({ Icon, label, href, external }) => {
+                const inner = (
+                  <>
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/10 text-gold">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-cream/85">{label}</span>
+                  </>
+                );
+                return (
+                  <li key={label}>
+                    {href ? (
+                      <a
+                        href={href}
+                        {...(external
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : {})}
+                        className="flex items-center gap-4 rounded-xl py-2 transition hover:text-gold [&_span:last-child]:hover:text-gold"
+                      >
+                        {inner}
+                      </a>
+                    ) : (
+                      <div className="flex items-center gap-4 py-2">
+                        {inner}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </Reveal>
           <Reveal>

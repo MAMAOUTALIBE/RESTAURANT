@@ -6,7 +6,7 @@ import type { AddToCartInput } from "@/types";
 const kebab: AddToCartInput = {
   dishId: "kebab-grille",
   name: "Kebab grillé",
-  image: "/images/kebab-grille.jpg",
+  image: "/images/kebab-grille.webp",
   basePrice: 15,
 };
 

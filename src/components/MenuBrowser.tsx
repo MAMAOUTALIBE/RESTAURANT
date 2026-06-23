@@ -126,42 +126,64 @@ export function MenuBrowser({
               className="border-white/12 w-full rounded-full border bg-white/[0.04] py-2.5 pl-10 pr-4 text-sm text-cream placeholder:text-cream/40 focus:border-gold-400 focus:outline-none 3xl:py-3.5 3xl:pl-12 3xl:text-base"
             />
           </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as typeof sort)}
-            className="border-white/12 rounded-full border bg-white/[0.04] px-4 py-2.5 text-sm text-cream focus:border-gold-400 focus:outline-none 3xl:py-3.5 3xl:text-base [&>option]:text-ink"
-          >
-            <option value="default">Tri : par catégorie</option>
-            <option value="price-asc">Prix croissant</option>
-            <option value="price-desc">Prix décroissant</option>
-          </select>
-          <label className="flex items-center gap-2 text-sm text-cream/70 3xl:text-base">
-            <input
-              type="checkbox"
-              checked={onlyAvailable}
-              onChange={(e) => setOnlyAvailable(e.target.checked)}
-              className="accent-gold-400"
-            />
-            Disponibles
-          </label>
+          <div className="flex items-center gap-3 lg:contents">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as typeof sort)}
+              className="border-white/12 flex-1 rounded-full border bg-white/[0.04] px-4 py-2.5 text-sm text-cream focus:border-gold-400 focus:outline-none lg:flex-none 3xl:py-3.5 3xl:text-base [&>option]:text-ink"
+            >
+              <option value="default">Tri : par catégorie</option>
+              <option value="price-asc">Prix croissant</option>
+              <option value="price-desc">Prix décroissant</option>
+            </select>
+            <label className="flex shrink-0 items-center gap-2 text-sm text-cream/70 3xl:text-base">
+              <input
+                type="checkbox"
+                checked={onlyAvailable}
+                onChange={(e) => setOnlyAvailable(e.target.checked)}
+                className="accent-gold-400"
+              />
+              Disponibles
+            </label>
+          </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap gap-2 3xl:gap-3">
+        {/* Mobile : « Tout » + menu déroulant des catégories (pas de scroll horizontal) */}
+        <div className="mt-3 flex items-center gap-2 sm:hidden">
+          <button
+            onClick={() => setFilter("all")}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition ${
+              filter === "all"
+                ? "bg-forest-600 text-cream"
+                : "border border-white/15 text-cream/70"
+            }`}
+          >
+            Tout
+          </button>
+          <select
+            aria-label="Filtrer par catégorie"
+            value={filter === "all" ? "" : filter}
+            onChange={(e) => setFilter((e.target.value || "all") as MenuFilter)}
+            className="border-white/12 min-w-0 flex-1 rounded-full border bg-white/[0.04] px-4 py-2 text-sm text-cream focus:border-gold-400 focus:outline-none [&>option]:text-ink"
+          >
+            <option value="">Catégories…</option>
+            {quickFilters
+              .filter((f) => f.id !== "all")
+              .map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.label}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        {/* Desktop : chips */}
+        <div className="mt-3 hidden flex-wrap gap-2 sm:flex 3xl:gap-3">
           {quickFilters.map(({ id, label, Icon }) => (
             <Chip key={id} active={filter === id} onClick={() => setFilter(id)}>
               <Icon className="h-4 w-4" />
               {label}
             </Chip>
-          ))}
-        </div>
-        <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-cream/70 3xl:text-sm">
-          {["Taille", "Sauce", "Boisson", "Supplément"].map((option) => (
-            <span
-              key={option}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1"
-            >
-              Option {option}
-            </span>
           ))}
         </div>
       </div>

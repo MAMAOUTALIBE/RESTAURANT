@@ -44,27 +44,27 @@ const serviceHighlights: {
 const heroSlides = [
   {
     label: "Grillades turques",
-    src: "/images/hero-slide-grillades-turques.png",
+    src: "/images/hero-slide-grillades-turques.webp",
     alt: "Plateau de grillades turques avec kebab, köfte, riz, boulgour, légumes grillés et sauces",
   },
   {
     label: "Adana kebab",
-    src: "/images/hero-slide-adana-kebab.png",
+    src: "/images/hero-slide-adana-kebab.webp",
     alt: "Adana kebab grillé avec lavash, boulgour, piments, tomates, oignons rouges et sauces",
   },
   {
     label: "Pide et lahmacun",
-    src: "/images/hero-slide-pide-lahmacun.png",
+    src: "/images/hero-slide-pide-lahmacun.webp",
     alt: "Pide au sucuk et lahmacun croustillant servis avec citron, herbes et sauces",
   },
   {
     label: "Desserts turcs",
-    src: "/images/hero-slide-desserts-turcs.png",
+    src: "/images/hero-slide-desserts-turcs.webp",
     alt: "Baklava, künefe, loukoums, pistaches, thé turc et café turc sur table sombre",
   },
   {
     label: "Boissons turques",
-    src: "/images/hero-slide-boissons-turques.png",
+    src: "/images/hero-slide-boissons-turques.webp",
     alt: "Ayran, thé turc, café turc, jus de grenade et limonade à la menthe",
   },
 ] as const;
@@ -129,7 +129,7 @@ export function Hero() {
       </div>
 
       <div className="relative z-20 mx-auto flex w-full max-w-[1680px] flex-col gap-5 sm:gap-6 lg:gap-7 3xl:max-w-[2100px] 4xl:max-w-[2360px]">
-        <div className="flex min-h-[430px] items-center pb-2 sm:min-h-[490px] lg:min-h-[560px] 2xl:min-h-[630px] 3xl:min-h-[720px] 4xl:min-h-[820px]">
+        <div className="flex min-h-[290px] items-center pb-2 sm:min-h-[490px] lg:min-h-[560px] 2xl:min-h-[630px] 3xl:min-h-[720px] 4xl:min-h-[820px]">
           <motion.div
             className="relative z-20 -mt-14 max-w-[620px] py-4 sm:-mt-[5.25rem] sm:max-w-[650px] lg:-mt-[6rem] lg:pl-2 xl:-mt-[6.75rem] xl:pl-4 3xl:-mt-32 3xl:max-w-[780px]"
             initial={{ opacity: 0, y: 18 }}
@@ -146,11 +146,12 @@ export function Hero() {
                 <span className="block text-[#D89A1C]">Restaurant</span>
               </h1>
 
-              <p className="text-[#F8F3EA]/94 mt-4 max-w-xl text-base font-semibold leading-7 drop-shadow-[0_2px_5px_rgba(0,0,0,0.98)] sm:mt-5 sm:text-xl sm:leading-8 3xl:max-w-3xl 3xl:text-2xl 3xl:leading-10">
+              <p className="text-[#F8F3EA]/94 mt-3 hidden max-w-xl text-base font-semibold leading-7 drop-shadow-[0_2px_5px_rgba(0,0,0,0.98)] sm:mt-5 sm:block sm:text-xl sm:leading-8 3xl:max-w-3xl 3xl:text-2xl 3xl:leading-10">
                 Spécialités turques grillées, à emporter ou en livraison.
               </p>
 
-              <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:flex-wrap 3xl:gap-4">
+              {/* CTA masqués sur mobile (repris dans les actions rapides sous le hero) ; visibles dès la tablette */}
+              <div className="mt-5 hidden flex-col gap-3 sm:mt-6 sm:flex sm:flex-row sm:flex-wrap 3xl:gap-4">
                 <Link
                   href="/commander"
                   className="inline-flex min-h-[3.5rem] items-center justify-center gap-3 rounded-full bg-[#D89A1C] px-8 py-3 text-base font-black text-[#050505] shadow-[0_24px_58px_-24px_rgba(216,154,28,0.98)] transition hover:-translate-y-1 hover:bg-[#f0ad2f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D89A1C]/70 sm:min-h-[3.75rem] sm:px-10 sm:py-3.5 sm:text-lg 3xl:min-h-[4.4rem] 3xl:px-12 3xl:text-xl"
@@ -200,9 +201,25 @@ export function Hero() {
           </motion.div>
         </div>
 
+        {/* Mobile : réassurance en bandeau de chips défilant (1 ligne, swipe) */}
+        <div
+          className="relative z-20 -mx-4 flex gap-2 overflow-x-auto px-4 pb-0.5 [scrollbar-width:none] sm:hidden [&::-webkit-scrollbar]:hidden"
+          aria-label="Services disponibles"
+        >
+          {serviceHighlights.map(({ title, Icon }) => (
+            <span
+              key={title}
+              className="flex shrink-0 items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-sm font-semibold text-[#F8F3EA] backdrop-blur-[2px]"
+            >
+              <Icon className="h-4 w-4 shrink-0 text-[#D89A1C]" />
+              {title}
+            </span>
+          ))}
+        </div>
+
         <motion.div
           aria-label="Services disponibles"
-          className="bg-black/48 relative z-20 overflow-hidden rounded-[24px] border border-white/10 shadow-[0_22px_60px_-34px_rgba(216,154,28,0.95)] backdrop-blur-[2px] sm:rounded-[28px] 3xl:rounded-[34px]"
+          className="bg-black/48 relative z-20 hidden overflow-hidden rounded-[24px] border border-white/10 shadow-[0_22px_60px_-34px_rgba(216,154,28,0.95)] backdrop-blur-[2px] sm:block sm:rounded-[28px] 3xl:rounded-[34px]"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.65, delay: 0.2 }}

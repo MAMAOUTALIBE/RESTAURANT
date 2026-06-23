@@ -41,19 +41,19 @@ const starterLinks = [
     href: "/menu/kebab-grille",
     name: "Kebab grillé",
     text: "Signature",
-    image: "/images/hero-slide-grillades-turques.png",
+    image: "/images/hero-slide-grillades-turques.webp",
   },
   {
     href: "/menu/lahmacun",
     name: "Lahmacun",
     text: "Populaire",
-    image: "/images/hero-slide-pide-lahmacun.png",
+    image: "/images/hero-slide-pide-lahmacun.webp",
   },
   {
     href: "/menu/baklava",
     name: "Baklava",
     text: "Dessert",
-    image: "/images/hero-slide-desserts-turcs.png",
+    image: "/images/hero-slide-desserts-turcs.webp",
   },
 ];
 const checkoutHighlights: {
